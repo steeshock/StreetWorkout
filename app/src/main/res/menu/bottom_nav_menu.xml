@@ -8,17 +8,17 @@
 
     <item
         android:id="@+id/navigation_training"
-        android:icon="@drawable/ic_places_24dp"
+        android:icon="@drawable/ic_traning_24dp"
         android:title="@string/title_training" />
 
     <item
         android:id="@+id/navigation_favorites"
-        android:icon="@drawable/ic_places_24dp"
+        android:icon="@drawable/ic_favorites_24dp"
         android:title="@string/title_favorites" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_places_24dp"
+        android:icon="@drawable/ic_profile_24dp"
         android:title="@string/title_profile" />
 
 </menu>
