@@ -1,13 +1,13 @@
-package com.example.android.streetworkout.ui.dashboard
+package com.example.android.streetworkout.ui.training
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class TraningViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "Тренировки"
     }
     val text: LiveData<String> = _text
 }
