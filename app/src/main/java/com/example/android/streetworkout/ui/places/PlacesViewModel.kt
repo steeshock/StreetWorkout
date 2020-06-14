@@ -3,8 +3,8 @@ package com.example.android.streetworkout.ui.places
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.android.streetworkout.model.PlaceObject
-import com.example.android.streetworkout.model.Storage
+import com.example.android.streetworkout.data.model.PlaceObject
+import com.example.android.streetworkout.data.Storage
 
 class PlacesViewModel(var storage: Storage?) : ViewModel() {
 

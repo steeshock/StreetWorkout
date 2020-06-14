@@ -1,9 +1,10 @@
-package com.example.android.streetworkout.model
+package com.example.android.streetworkout.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.android.streetworkout.data.model.PlaceObject
 
 @Dao
 interface PlacesDao {

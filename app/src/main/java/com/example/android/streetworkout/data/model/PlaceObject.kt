@@ -1,4 +1,4 @@
-package com.example.android.streetworkout.model
+package com.example.android.streetworkout.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

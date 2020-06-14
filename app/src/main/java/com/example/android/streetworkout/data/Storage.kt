@@ -1,4 +1,7 @@
-package com.example.android.streetworkout.model
+package com.example.android.streetworkout.data
+
+import com.example.android.streetworkout.data.model.PlaceObject
+import com.example.android.streetworkout.data.database.PlacesDao
 
 class Storage(placesDao: PlacesDao) {
 
