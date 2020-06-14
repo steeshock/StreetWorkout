@@ -1,7 +1,5 @@
 package com.example.android.streetworkout.ui.places
 
-import android.app.Application
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,7 @@ import com.example.android.streetworkout.R
 import com.example.android.streetworkout.model.PlaceObject
 import com.squareup.picasso.Picasso
 
-class PlaceAdapter(var items: List<PlaceObject>, val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
+class PlaceAdapter(var items: MutableList<PlaceObject>, val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             = PlaceHolder(LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false))
@@ -21,6 +19,19 @@ class PlaceAdapter(var items: List<PlaceObject>, val callback: Callback) : Recyc
 
     override fun onBindViewHolder(holder: PlaceHolder, position: Int) {
         holder.bind(items[position])
+    }
+
+    fun AddItem(newItem: PlaceObject)
+    {
+        items.add(newItem)
+        notifyDataSetChanged()
+    }
+
+    fun RefreshAdapter(newItems: List<PlaceObject>)
+    {
+        items.clear()
+        items.addAll(newItems)
+        notifyDataSetChanged()
     }
 
     inner class PlaceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,10 +53,15 @@ class PlaceAdapter(var items: List<PlaceObject>, val callback: Callback) : Recyc
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
             }
+
+//            itemView.setOnLongClickListener {
+//                if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemLongClicked(items[adapterPosition])
+//            }
         }
     }
 
     interface Callback {
         fun onItemClicked(item: PlaceObject)
+        fun onItemLongClicked(item: PlaceObject)
     }
 }
