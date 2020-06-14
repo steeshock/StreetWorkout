@@ -3,14 +3,18 @@ package com.example.android.streetworkout
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.android.streetworkout.model.PlaceObject
+import com.example.android.streetworkout.model.Storage
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), Storage.StorageOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,5 +45,9 @@ class MainActivity : AppCompatActivity() {
                 true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun obtainStorage(): Storage? {
+        return (applicationContext as AppDelegate).getStorage()
     }
 }
