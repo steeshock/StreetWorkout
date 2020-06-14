@@ -8,10 +8,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.android.streetworkout.data.Storage
+import com.example.android.streetworkout.data.Repository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), Storage.StorageOwner {
+class MainActivity : AppCompatActivity(), Repository.RepositoryOwner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), Storage.StorageOwner {
         }
     }
 
-    override fun obtainStorage(): Storage? {
+    override fun obtainRepository(): Repository? {
         return (applicationContext as AppDelegate).getStorage()
     }
 }
