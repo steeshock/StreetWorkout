@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.streetworkout.R
-import com.example.android.streetworkout.model.PlaceObject
+import com.example.android.streetworkout.data.model.PlaceObject
 import com.squareup.picasso.Picasso
 
 class PlaceAdapter(var items: MutableList<PlaceObject>, val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
@@ -53,15 +53,10 @@ class PlaceAdapter(var items: MutableList<PlaceObject>, val callback: Callback) 
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
             }
-
-//            itemView.setOnLongClickListener {
-//                if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemLongClicked(items[adapterPosition])
-//            }
         }
     }
 
     interface Callback {
         fun onItemClicked(item: PlaceObject)
-        fun onItemLongClicked(item: PlaceObject)
     }
 }

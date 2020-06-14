@@ -1,9 +1,10 @@
-package com.example.android.streetworkout.model
+package com.example.android.streetworkout.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.android.streetworkout.data.model.PlaceObject
 
 
 @Database(
@@ -22,7 +23,8 @@ abstract class PlacesDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): PlacesDatabase {
             synchronized(this) {
-                var instance = INSTANCE
+                var instance =
+                    INSTANCE
 
                 if (instance == null) {
                     instance = Room.databaseBuilder(

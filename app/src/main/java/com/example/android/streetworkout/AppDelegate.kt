@@ -1,8 +1,8 @@
 package com.example.android.streetworkout
 
 import android.app.Application
-import com.example.android.streetworkout.model.PlacesDatabase
-import com.example.android.streetworkout.model.Storage
+import com.example.android.streetworkout.data.database.PlacesDatabase
+import com.example.android.streetworkout.data.Storage
 
 class AppDelegate : Application() {
 
@@ -13,7 +13,8 @@ class AppDelegate : Application() {
 
         var database: PlacesDatabase = PlacesDatabase.getInstance(this)
 
-        mStorage = Storage(database.placesDao())
+        mStorage =
+            Storage(database.placesDao())
     }
 
     fun getStorage(): Storage? {
