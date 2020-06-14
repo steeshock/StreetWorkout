@@ -9,28 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.streetworkout.databinding.FragmentPlacesBinding
+import com.example.android.streetworkout.model.PlaceObject
 
 class PlacesFragment : Fragment() {
 
     private lateinit var placesViewModel: PlacesViewModel
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
-
-    val items = listOf(
-        PlaceObject("Александр Пушкин"),
-        PlaceObject("Михаил Лермонтов"),
-        PlaceObject("Михаил Лермонтов"),
-        PlaceObject("Михаил Лермонтов"),
-        PlaceObject("Александр Блок"),
-        PlaceObject("Николай Некрасов"),
-        PlaceObject("Николай Некрасов"),
-        PlaceObject("Николай Некрасов"),
-        PlaceObject("Фёдор Тютчев"),
-        PlaceObject("Сергей Есенин"),
-        PlaceObject("Сергей Есенин"),
-        PlaceObject("Сергей Есенин"),
-        PlaceObject("Сергей Есенин"),
-        PlaceObject("Владимир Маяковский")
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +33,9 @@ class PlacesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val placesAdapter = PlaceAdapter(items, object : PlaceAdapter.Callback {
+        val placesAdapter = PlaceAdapter(placesViewModel.itemsMock, object : PlaceAdapter.Callback {
             override fun onItemClicked(item: PlaceObject) {
-                Toast.makeText(view.context, item.simpleText, Toast.LENGTH_SHORT).show()
+                Toast.makeText(view.context, item.description, Toast.LENGTH_SHORT).show()
             }
         })
 
