@@ -1,25 +1,40 @@
 package com.example.android.streetworkout.ui.places
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.android.streetworkout.data.model.PlaceObject
-import com.example.android.streetworkout.data.Storage
+import com.example.android.streetworkout.data.Repository
+import com.example.android.streetworkout.data.database.PlacesDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class PlacesViewModel(var storage: Storage?) : ViewModel() {
+class PlacesViewModel(application: Application) : AndroidViewModel(application) {
 
-    val itemsMock = listOf(
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/301/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/302/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/303/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/304/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/305/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/306/200"),
-        PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "https://picsum.photos/307/200")
-    )
+    private val repository: Repository
+    // Using LiveData and caching what getAlphabetizedWords returns has several benefits:
+    // - We can put an observer on the data (instead of polling for changes) and only update the
+    //   the UI when the data actually changes.
+    // - Repository is completely separated from the UI through the ViewModel.
+    val allPlacesLive: LiveData<List<PlaceObject>>
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Добро пожаловать в Уличные тренировки!"
+    init {
+        val placesDao = PlacesDatabase.getInstance(application).getPlacesDao()
+        repository = Repository(placesDao)
+        allPlacesLive = repository.allPlaces
     }
-    val text: LiveData<String> = _text
+
+    /**
+     * Launching a new coroutine to insert the data in a non-blocking way
+     */
+    fun insert(place: PlaceObject) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertPlace(place)
+    }
+
+    fun clearPlacesTable() = viewModelScope.launch(Dispatchers.IO) {
+        repository.clearPlacesTable()
+    }
+
+    fun getAllPlacesSize() = repository.getAllPlaces().size
 }

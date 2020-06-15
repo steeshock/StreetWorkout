@@ -14,7 +14,7 @@ import com.example.android.streetworkout.data.model.PlaceObject
 )
 abstract class PlacesDatabase : RoomDatabase() {
 
-    abstract fun placesDao() : PlacesDao
+    abstract fun getPlacesDao() : PlacesDao
 
     companion object {
 

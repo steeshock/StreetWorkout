@@ -10,7 +10,9 @@ import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.squareup.picasso.Picasso
 
-class PlaceAdapter(var items: MutableList<PlaceObject>, val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
+class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
+
+    private var items = emptyList<PlaceObject>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             = PlaceHolder(LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false))
@@ -21,16 +23,8 @@ class PlaceAdapter(var items: MutableList<PlaceObject>, val callback: Callback) 
         holder.bind(items[position])
     }
 
-    fun AddItem(newItem: PlaceObject)
-    {
-        items.add(newItem)
-        notifyDataSetChanged()
-    }
-
-    fun RefreshAdapter(newItems: List<PlaceObject>)
-    {
-        items.clear()
-        items.addAll(newItems)
+    internal fun setPlaces(places: List<PlaceObject>) {
+        this.items = places
         notifyDataSetChanged()
     }
 

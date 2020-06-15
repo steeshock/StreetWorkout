@@ -1,5 +1,6 @@
 package com.example.android.streetworkout.data.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,6 +15,9 @@ interface PlacesDao {
 
     @Query("select * from places_table")
     fun getPlaces(): MutableList<PlaceObject>
+
+    @Query("select * from places_table")
+    fun getPlacesLive(): LiveData<List<PlaceObject>>
 
     @Query("delete from places_table")
     fun clearPlacesTable()
