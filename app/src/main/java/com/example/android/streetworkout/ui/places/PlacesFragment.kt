@@ -66,7 +66,7 @@ class PlacesFragment : BaseFragment() {
             }
             else
             {
-                placesViewModel.insert(PlaceObject("Number #${counter++}", "https://picsum.photos/30${(0..9).random()}/200"))
+                placesViewModel.insert(PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "https://picsum.photos/30${(0..9).random()}/200"))
                 fragmentPlacesBinding.placesRecycler.smoothScrollToPosition(placesAdapter.itemCount)
             }
         }
