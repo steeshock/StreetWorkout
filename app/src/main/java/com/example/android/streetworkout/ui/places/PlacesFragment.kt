@@ -44,14 +44,14 @@ class PlacesFragment : BaseFragment() {
             }
         })
 
-        placesViewModel.allPlaces.observe(viewLifecycleOwner, Observer { places ->
+        placesViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
             places?.let { placesAdapter.setPlaces(it) }
         })
 
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener {
 
-            if(mRepository?.getAllPlaces()!!.size > 10)
+            if(placesViewModel.getAllPlacesSize() > 10)
             {
                 placesViewModel.clearPlacesTable()
             }

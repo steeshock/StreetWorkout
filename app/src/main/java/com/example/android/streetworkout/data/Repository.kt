@@ -17,8 +17,4 @@ class Repository(private val placesDao: PlacesDao) {
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
     }
-
-    interface RepositoryOwner {
-        fun obtainRepository(): Repository?
-    }
 }

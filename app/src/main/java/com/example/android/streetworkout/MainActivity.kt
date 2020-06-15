@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.android.streetworkout.data.Repository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), Repository.RepositoryOwner {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +42,5 @@ class MainActivity : AppCompatActivity(), Repository.RepositoryOwner {
                 true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun obtainRepository(): Repository? {
-        return (applicationContext as AppDelegate).getStorage()
     }
 }

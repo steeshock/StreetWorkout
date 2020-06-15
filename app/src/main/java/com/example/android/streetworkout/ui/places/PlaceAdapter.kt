@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
-    private var items = emptyList<PlaceObject>() // Cached copy of words
+    private var items = emptyList<PlaceObject>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
             = PlaceHolder(LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false))

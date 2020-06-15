@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.android.streetworkout.AppDelegate
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.data.Repository
 import com.example.android.streetworkout.data.database.PlacesDatabase
@@ -18,12 +19,12 @@ class PlacesViewModel(application: Application) : AndroidViewModel(application) 
     // - We can put an observer on the data (instead of polling for changes) and only update the
     //   the UI when the data actually changes.
     // - Repository is completely separated from the UI through the ViewModel.
-    val allPlaces: LiveData<List<PlaceObject>>
+    val allPlacesLive: LiveData<List<PlaceObject>>
 
     init {
         val placesDao = PlacesDatabase.getInstance(application).placesDao()
         repository = Repository(placesDao)
-        allPlaces = repository.allPlaces
+        allPlacesLive = repository.allPlaces
     }
 
     /**
@@ -36,4 +37,6 @@ class PlacesViewModel(application: Application) : AndroidViewModel(application) 
     fun clearPlacesTable() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearPlacesTable()
     }
+
+    fun getAllPlacesSize() = repository.getAllPlaces().size
 }
