@@ -3,9 +3,7 @@ package com.example.android.streetworkout.ui.places
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.android.streetworkout.AppDelegate
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.data.Repository
 import com.example.android.streetworkout.data.database.PlacesDatabase
@@ -22,7 +20,7 @@ class PlacesViewModel(application: Application) : AndroidViewModel(application) 
     val allPlacesLive: LiveData<List<PlaceObject>>
 
     init {
-        val placesDao = PlacesDatabase.getInstance(application).placesDao()
+        val placesDao = PlacesDatabase.getInstance(application).getPlacesDao()
         repository = Repository(placesDao)
         allPlacesLive = repository.allPlaces
     }
