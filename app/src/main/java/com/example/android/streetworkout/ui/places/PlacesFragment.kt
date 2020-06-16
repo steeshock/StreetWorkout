@@ -19,9 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class PlacesFragment : BaseFragment() {
 
     private var toolbar: Toolbar? = null
-
-    private var counter:Int = 0
-
     private lateinit var fab: FloatingActionButton
 
     private lateinit var placesViewModel: PlacesViewModel
@@ -38,9 +35,9 @@ class PlacesFragment : BaseFragment() {
         fragmentPlacesBinding.lifecycleOwner = this
 
         toolbar = fragmentPlacesBinding.toolbar
-        if (container != null) {
-            (container.context as MainActivity).setSupportActionBar(toolbar)
-        }
+        (container?.context as MainActivity).setSupportActionBar(toolbar)
+
+        fab = fragmentPlacesBinding.fab
 
         return fragmentPlacesBinding.root
     }
@@ -57,7 +54,6 @@ class PlacesFragment : BaseFragment() {
             places?.let { placesAdapter.setPlaces(it) }
         })
 
-        fab = view.findViewById(R.id.fab);
         fab.setOnClickListener {
 
             if(placesViewModel.getAllPlacesSize() > 10)
