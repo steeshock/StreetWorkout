@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data class="FragmentPlacesBinding">
+
         <variable
             name="viewmodel"
             type="com.example.android.streetworkout.ui.places.PlacesViewModel" />
@@ -9,19 +11,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:background="@color/mainBackGroundColor">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:title="Места тренировок"
-            android:background="@color/mainBackGroundColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/placesRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/mainBackGroundColor"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/places_title"
             app:titleTextColor="@android:color/black">
         </androidx.appcompat.widget.Toolbar>
 
@@ -30,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@android:color/black"
             android:tint="@android:color/background_light"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -42,6 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/mainBackGroundColor"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

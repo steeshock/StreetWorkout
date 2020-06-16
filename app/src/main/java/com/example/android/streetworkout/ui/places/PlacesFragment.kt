@@ -19,9 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class PlacesFragment : BaseFragment() {
 
     private var toolbar: Toolbar? = null
-
-    private var counter:Int = 0
-
     private lateinit var fab: FloatingActionButton
 
     private lateinit var placesViewModel: PlacesViewModel
@@ -38,9 +35,9 @@ class PlacesFragment : BaseFragment() {
         fragmentPlacesBinding.lifecycleOwner = this
 
         toolbar = fragmentPlacesBinding.toolbar
-        if (container != null) {
-            (container.context as MainActivity).setSupportActionBar(toolbar)
-        }
+        (container?.context as MainActivity).setSupportActionBar(toolbar)
+
+        fab = fragmentPlacesBinding.fab
 
         return fragmentPlacesBinding.root
     }
@@ -57,7 +54,6 @@ class PlacesFragment : BaseFragment() {
             places?.let { placesAdapter.setPlaces(it) }
         })
 
-        fab = view.findViewById(R.id.fab);
         fab.setOnClickListener {
 
             if(placesViewModel.getAllPlacesSize() > 10)
@@ -66,7 +62,7 @@ class PlacesFragment : BaseFragment() {
             }
             else
             {
-                placesViewModel.insert(PlaceObject("Number #${counter++}", "https://picsum.photos/30${(0..9).random()}/200"))
+                placesViewModel.insert(PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "https://picsum.photos/30${(0..9).random()}/200"))
                 fragmentPlacesBinding.placesRecycler.smoothScrollToPosition(placesAdapter.itemCount)
             }
         }
