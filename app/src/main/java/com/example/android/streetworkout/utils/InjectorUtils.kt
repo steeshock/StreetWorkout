@@ -11,4 +11,10 @@ object InjectorUtils {
         return Repository.getInstance(
             PlacesDatabase.getInstance(context.applicationContext).getPlacesDao())
     }
+
+    fun providePlacesViewModelFactory(
+        context: Context
+    ): CustomPlacesViewModelFactory {
+        return CustomPlacesViewModelFactory(getRepository(context))
+    }
 }

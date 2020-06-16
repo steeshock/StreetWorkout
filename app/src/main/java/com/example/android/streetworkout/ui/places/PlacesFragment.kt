@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,21 +15,20 @@ import com.example.android.streetworkout.MainActivity
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.databinding.FragmentPlacesBinding
+import com.example.android.streetworkout.utils.InjectorUtils
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PlacesFragment : BaseFragment() {
 
+    private val placesViewModel: PlacesViewModel by viewModels {
+        InjectorUtils.providePlacesViewModelFactory(requireActivity())
+    }
+
     private var toolbar: Toolbar? = null
     private lateinit var fab: FloatingActionButton
-
-    private lateinit var placesViewModel: PlacesViewModel
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
-    override fun getViewModel(): ViewModel? = ViewModelProvider(this).get(PlacesViewModel::class.java)
-
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
-
-        placesViewModel = getViewModel() as PlacesViewModel
 
         fragmentPlacesBinding  = FragmentPlacesBinding.inflate(inflater, container, false)
 
