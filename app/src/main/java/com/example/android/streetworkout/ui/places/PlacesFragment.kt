@@ -56,15 +56,8 @@ class PlacesFragment : BaseFragment() {
 
         fab.setOnClickListener {
 
-            if(placesViewModel.getAllPlacesSize() > 10)
-            {
-                placesViewModel.clearPlacesTable()
-            }
-            else
-            {
-                placesViewModel.insert(PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "https://picsum.photos/30${(0..9).random()}/200"))
-                fragmentPlacesBinding.placesRecycler.smoothScrollToPosition(placesAdapter.itemCount)
-            }
+            placesViewModel.insert(PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "https://picsum.photos/30${(0..9).random()}/200"))
+            fragmentPlacesBinding.placesRecycler.smoothScrollToPosition(placesAdapter.itemCount)
         }
 
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
@@ -102,6 +95,7 @@ class PlacesFragment : BaseFragment() {
                 true
             }
             R.id.action_map ->{
+                placesViewModel.clearPlacesTable()
                 true
             }
             else -> super.onOptionsItemSelected(item)

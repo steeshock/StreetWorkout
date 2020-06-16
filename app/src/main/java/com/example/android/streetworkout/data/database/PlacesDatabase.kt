@@ -30,7 +30,6 @@ abstract class PlacesDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context): PlacesDatabase {
             return Room.databaseBuilder(context, PlacesDatabase::class.java, "places_database")
-                .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build()
         }

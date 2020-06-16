@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.android.streetworkout.AppDelegate
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.data.Repository
 import com.example.android.streetworkout.data.database.PlacesDatabase
@@ -12,22 +13,10 @@ import kotlinx.coroutines.launch
 
 class PlacesViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: Repository
-    // Using LiveData and caching what getAlphabetizedWords returns has several benefits:
-    // - We can put an observer on the data (instead of polling for changes) and only update the
-    //   the UI when the data actually changes.
-    // - Repository is completely separated from the UI through the ViewModel.
-    val allPlacesLive: LiveData<List<PlaceObject>>
+    private val repository: Repository = (application as AppDelegate).getRepository()!!
 
-    init {
-        val placesDao = PlacesDatabase.getInstance(application).getPlacesDao()
-        repository = Repository(placesDao)
-        allPlacesLive = repository.allPlaces
-    }
+    val allPlacesLive: LiveData<List<PlaceObject>> = repository.allPlaces
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
     fun insert(place: PlaceObject) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)
     }
