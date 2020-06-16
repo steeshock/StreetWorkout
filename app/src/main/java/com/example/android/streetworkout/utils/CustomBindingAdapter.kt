@@ -1,15 +1,5 @@
 package com.example.android.streetworkout.utils
 
-import android.widget.AdapterView
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.android.streetworkout.data.model.PlaceObject
-import com.example.android.streetworkout.ui.places.PlaceAdapter
-import com.squareup.picasso.Picasso
-
 class CustomBindingAdapter {
 //    @BindingAdapter("bind:imageUrl")
 //    fun loadImage(imageView: ImageView, urlImage: String?) {

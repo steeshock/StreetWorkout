@@ -1,4 +1,4 @@
-package com.example.android.streetworkout.ui.profile
+package com.example.android.streetworkout.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

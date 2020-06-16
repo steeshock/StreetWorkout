@@ -1,36 +1,40 @@
-package com.example.android.streetworkout.ui.places
+package com.example.android.streetworkout.views
 
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android.streetworkout.BaseFragment
-import com.example.android.streetworkout.MainActivity
+import com.example.android.streetworkout.common.BaseFragment
+import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.databinding.FragmentPlacesBinding
+import com.example.android.streetworkout.adapters.PlaceAdapter
+import com.example.android.streetworkout.utils.InjectorUtils
+import com.example.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PlacesFragment : BaseFragment() {
 
+    private val placesViewModel: PlacesViewModel by viewModels {
+        InjectorUtils.providePlacesViewModelFactory(requireActivity())
+    }
+
     private var toolbar: Toolbar? = null
     private lateinit var fab: FloatingActionButton
-
-    private lateinit var placesViewModel: PlacesViewModel
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
-    override fun getViewModel(): ViewModel? = ViewModelProvider(this).get(PlacesViewModel::class.java)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-    override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
-
-        placesViewModel = getViewModel() as PlacesViewModel
-
-        fragmentPlacesBinding  = FragmentPlacesBinding.inflate(inflater, container, false)
+        fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
 
         fragmentPlacesBinding.lifecycleOwner = this
 
@@ -44,11 +48,13 @@ class PlacesFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
-            override fun onItemClicked(item: PlaceObject) {
-                Toast.makeText(view.context, item.description, Toast.LENGTH_SHORT).show()
-            }
-        })
+        val placesAdapter =
+            PlaceAdapter(object :
+                PlaceAdapter.Callback {
+                override fun onItemClicked(item: PlaceObject) {
+                    Toast.makeText(view.context, item.description, Toast.LENGTH_SHORT).show()
+                }
+            })
 
         placesViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
             places?.let { placesAdapter.setPlaces(it) }
@@ -56,12 +62,18 @@ class PlacesFragment : BaseFragment() {
 
         fab.setOnClickListener {
 
-            placesViewModel.insert(PlaceObject("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "https://picsum.photos/30${(0..9).random()}/200"))
+            placesViewModel.insert(
+                PlaceObject(
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    "https://picsum.photos/30${(0..9).random()}/200"
+                )
+            )
             fragmentPlacesBinding.placesRecycler.smoothScrollToPosition(placesAdapter.itemCount)
         }
 
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
-        fragmentPlacesBinding.placesRecycler.layoutManager = LinearLayoutManager(fragmentPlacesBinding.root.context)
+        fragmentPlacesBinding.placesRecycler.layoutManager =
+            LinearLayoutManager(fragmentPlacesBinding.root.context)
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -80,6 +92,7 @@ class PlacesFragment : BaseFragment() {
                 myActionMenuItem.collapseActionView()
                 return false
             }
+
             override fun onQueryTextChange(s: String?): Boolean {
                 //Здесь слушаем именение текста
                 return false
@@ -91,10 +104,10 @@ class PlacesFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_search ->{
+            R.id.action_search -> {
                 true
             }
-            R.id.action_map ->{
+            R.id.action_map -> {
                 placesViewModel.clearPlacesTable()
                 true
             }

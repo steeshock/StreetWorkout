@@ -5,7 +5,7 @@
     <data class="FragmentFavoritesBinding">
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.ui.favorites.FavoritesViewModel" />
+            type="com.example.android.streetworkout.viewmodels.FavoritesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

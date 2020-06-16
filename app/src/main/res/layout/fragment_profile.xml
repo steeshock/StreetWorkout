@@ -6,7 +6,7 @@
     <data class="FragmentProfileBinding">
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.ui.profile.ProfileViewModel" />
+            type="com.example.android.streetworkout.viewmodels.ProfileViewModel" />
     </data>
     <TextView
         android:text="@{viewmodel.text}"

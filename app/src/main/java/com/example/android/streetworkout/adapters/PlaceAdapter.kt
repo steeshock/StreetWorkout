@@ -1,4 +1,4 @@
-package com.example.android.streetworkout.ui.places
+package com.example.android.streetworkout.adapters
 
 import android.view.LayoutInflater
 import android.view.View

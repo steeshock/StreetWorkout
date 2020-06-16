@@ -1,13 +1,13 @@
-package com.example.android.streetworkout.ui.favorites
+package com.example.android.streetworkout.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class FavoritesViewModel : ViewModel() {
+class TraningViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "Избранное"
+        value = "Тренировки"
     }
     val text: LiveData<String> = _text
 }
