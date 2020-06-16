@@ -3,20 +3,19 @@ package com.example.android.streetworkout
 import android.app.Application
 import com.example.android.streetworkout.data.database.PlacesDatabase
 import com.example.android.streetworkout.data.Repository
+import com.example.android.streetworkout.utils.InjectorUtils
 
 class AppDelegate : Application() {
 
-    //private var mRepository: Repository? = null
+    private var mRepository: Repository? = null
 
     override fun onCreate() {
         super.onCreate()
-//
-//        val database: PlacesDatabase = PlacesDatabase.getInstance(this)
-//
-//        mRepository = Repository(database.placesDao())
+
+        mRepository = InjectorUtils.getRepository(this)
     }
 
-//    fun getRepository(): Repository? {
-//        return mRepository
-//    }
+    fun getRepository(): Repository? {
+        return mRepository
+    }
 }

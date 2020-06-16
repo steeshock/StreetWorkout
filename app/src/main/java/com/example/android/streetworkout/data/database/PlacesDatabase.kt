@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.android.streetworkout.data.model.PlaceObject
 
 
@@ -19,26 +20,18 @@ abstract class PlacesDatabase : RoomDatabase() {
     companion object {
 
         @Volatile
-        private var INSTANCE: PlacesDatabase? = null
+        private var instance: PlacesDatabase? = null
 
         fun getInstance(context: Context): PlacesDatabase {
-            synchronized(this) {
-                var instance =
-                    INSTANCE
-
-                if (instance == null) {
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        PlacesDatabase::class.java,
-                        "places_database"
-                    )
-                        .allowMainThreadQueries()
-                        .fallbackToDestructiveMigration()
-                        .build()
-                    INSTANCE = instance
-                }
-                return instance
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
             }
+        }
+
+        private fun buildDatabase(context: Context): PlacesDatabase {
+            return Room.databaseBuilder(context, PlacesDatabase::class.java, "places_database")
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 }
