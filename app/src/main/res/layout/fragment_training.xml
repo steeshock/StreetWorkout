@@ -5,7 +5,7 @@
     <data class="FragmentTrainingBinding">
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.ui.training.TraningViewModel" />
+            type="com.example.android.streetworkout.viewmodels.TraningViewModel" />
     </data>
     <TextView
         android:text="@{viewmodel.text}"

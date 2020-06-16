@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.ui.places.PlacesViewModel" />
+            type="com.example.android.streetworkout.viewmodels.PlacesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

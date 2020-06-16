@@ -1,17 +1,13 @@
-package com.example.android.streetworkout.ui.favorites
+package com.example.android.streetworkout.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.android.streetworkout.R
 import com.example.android.streetworkout.databinding.FragmentFavoritesBinding
-import com.example.android.streetworkout.databinding.FragmentPlacesBinding
-import com.example.android.streetworkout.ui.places.PlacesViewModel
+import com.example.android.streetworkout.viewmodels.FavoritesViewModel
 
 class FavoritesFragment : Fragment() {
 

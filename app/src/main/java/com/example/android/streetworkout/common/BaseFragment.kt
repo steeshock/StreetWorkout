@@ -1,4 +1,4 @@
-package com.example.android.streetworkout
+package com.example.android.streetworkout.common
 
 import android.content.Context
 import android.os.Bundle

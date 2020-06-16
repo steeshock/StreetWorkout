@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_places"
-        android:name="com.example.android.streetworkout.ui.places.PlacesFragment"
+        android:name="com.example.android.streetworkout.views.PlacesFragment"
         android:label="@string/title_places"
         tools:layout="@layout/fragment_places" />
 
     <fragment
         android:id="@+id/navigation_training"
-        android:name="com.example.android.streetworkout.ui.training.TraningFragment"
+        android:name="com.example.android.streetworkout.views.TraningFragment"
         android:label="@string/title_training"
         tools:layout="@layout/fragment_training" />
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.android.streetworkout.ui.favorites.FavoritesFragment"
+        android:name="com.example.android.streetworkout.views.FavoritesFragment"
         android:label="@string/title_favorites"
         tools:layout="@layout/fragment_favorites" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.android.streetworkout.ui.profile.ProfileFragment"
+        android:name="com.example.android.streetworkout.views.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -7,9 +7,10 @@ import com.example.android.streetworkout.data.database.PlacesDatabase
 
 object InjectorUtils {
 
-    fun getRepository(context: Context): Repository {
+    private fun getRepository(context: Context): Repository {
         return Repository.getInstance(
-            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao())
+            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao()
+        )
     }
 
     fun providePlacesViewModelFactory(

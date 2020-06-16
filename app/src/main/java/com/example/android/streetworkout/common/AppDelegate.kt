@@ -1,4 +1,4 @@
-package com.example.android.streetworkout
+package com.example.android.streetworkout.common
 
 import android.app.Application
 import com.example.android.streetworkout.data.database.PlacesDatabase
@@ -7,15 +7,15 @@ import com.example.android.streetworkout.utils.InjectorUtils
 
 class AppDelegate : Application() {
 
-    private var mRepository: Repository? = null
+    //private var mRepository: Repository? = null
 
     override fun onCreate() {
         super.onCreate()
 
-        mRepository = InjectorUtils.getRepository(this)
+        //mRepository = InjectorUtils.getRepository(this)
     }
 
-    fun getRepository(): Repository? {
-        return mRepository
-    }
+//    fun getRepository(): Repository? {
+//        return mRepository
+//    }
 }
