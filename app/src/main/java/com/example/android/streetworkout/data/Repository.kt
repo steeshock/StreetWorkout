@@ -1,7 +1,10 @@
 package com.example.android.streetworkout.data
 
+import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.room.Room
 import com.example.android.streetworkout.data.database.PlacesDao
+import com.example.android.streetworkout.data.database.PlacesDatabase
 import com.example.android.streetworkout.data.model.PlaceObject
 
 class Repository(private val placesDao: PlacesDao) {
@@ -16,5 +19,15 @@ class Repository(private val placesDao: PlacesDao) {
 
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    companion object {
+
+        @Volatile private var instance: Repository? = null
+
+        fun getInstance(placesDao:PlacesDao) =
+            instance ?: synchronized(this) {
+                instance ?: Repository(placesDao).also { instance = it }
+            }
     }
 }
