@@ -66,7 +66,6 @@ class AddPlaceFragment : DialogFragment() {
         val dialog = dialog
         if (dialog != null) {
             dialog.window ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 }
