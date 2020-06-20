@@ -43,7 +43,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         parent: ViewGroup
     ) : RecyclerView.ViewHolder(
         inflater.inflate(
-            R.layout.fragment_item_list_dialog_list_dialog_item,
+            R.layout.fragment_place_detail_item,
             parent,
             false
         )

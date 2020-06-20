@@ -8,4 +8,4 @@
     android:paddingTop="@dimen/list_item_spacing_half"
     android:paddingBottom="@dimen/list_item_spacing_half"
     tools:context=".views.ItemListDialogFragment"
-    tools:listitem="@layout/fragment_item_list_dialog_list_dialog_item" />
+    tools:listitem="@layout/fragment_place_detail_item" />
