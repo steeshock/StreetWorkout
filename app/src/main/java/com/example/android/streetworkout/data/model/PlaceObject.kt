@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class PlaceObject(
 
     @ColumnInfo(name = "description")
-    var description: String,
+    val description: String = "",
 
     @ColumnInfo(name = "imagePath")
-    var imagePath: String
+    val imagePath: String = ""
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

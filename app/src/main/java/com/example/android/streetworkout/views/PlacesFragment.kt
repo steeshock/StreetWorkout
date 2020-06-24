@@ -3,6 +3,7 @@ package com.example.android.streetworkout.views
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
@@ -53,8 +54,12 @@ class PlacesFragment : BaseFragment() {
         val placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onItemClicked(item: PlaceObject) {
+                override fun onPlaceClicked(item: PlaceObject) {
                     showBottomSheet()
+                }
+
+                override fun onLikeClicked(item: PlaceObject) {
+                    Toast.makeText(view.context, "${item.Id} Liked!", Toast.LENGTH_SHORT).show()
                 }
             })
 
