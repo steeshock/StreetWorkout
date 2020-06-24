@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/mainBackGroundColor">
+
     <data class="FragmentTrainingBinding">
+
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.viewmodels.TraningViewModel" />
+            type="com.example.android.streetworkout.viewmodels.TrainingViewModel" />
     </data>
+
     <TextView
-        android:text="@{viewmodel.text}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:text="@{viewmodel.text}"
         android:textAlignment="center"
         android:textSize="20sp" />
 </layout>

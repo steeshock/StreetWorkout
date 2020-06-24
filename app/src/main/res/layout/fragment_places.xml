@@ -21,8 +21,7 @@
             android:background="@color/mainBackGroundColor"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/places_title"
-            app:titleTextColor="@android:color/black">
-        </androidx.appcompat.widget.Toolbar>
+            app:titleTextColor="@android:color/black"></androidx.appcompat.widget.Toolbar>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -41,6 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/mainBackGroundColor"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -7,19 +7,24 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.android.streetworkout.databinding.FragmentTrainingBinding
-import com.example.android.streetworkout.viewmodels.TraningViewModel
+import com.example.android.streetworkout.viewmodels.TrainingViewModel
 
 class TraningFragment : Fragment() {
 
-    private lateinit var traningViewModel: TraningViewModel
+    private lateinit var trainingViewModel: TrainingViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        traningViewModel = ViewModelProviders.of(this).get(TraningViewModel::class.java)
+        trainingViewModel = ViewModelProviders.of(this).get(TrainingViewModel::class.java)
 
-        val binding: FragmentTrainingBinding = FragmentTrainingBinding.inflate(inflater, container, false)
+        val binding: FragmentTrainingBinding =
+            FragmentTrainingBinding.inflate(inflater, container, false)
 
-        binding.viewmodel = traningViewModel
+        binding.viewmodel = trainingViewModel
 
         return binding.root
     }

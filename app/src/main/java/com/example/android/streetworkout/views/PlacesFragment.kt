@@ -117,10 +117,12 @@ class PlacesFragment : BaseFragment() {
     }
 
     fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30).show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
+        ItemListDialogFragment.newInstance(30)
+            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
     }
 
     private fun showAddPlaceFragment() {
-        AddPlaceFragment.newInstance().show((requireActivity() as MainActivity).supportFragmentManager, "add_place_tag")
+        AddPlaceFragment.newInstance()
+            .show((requireActivity() as MainActivity).supportFragmentManager, "add_place_tag")
     }
 }

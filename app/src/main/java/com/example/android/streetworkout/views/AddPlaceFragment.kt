@@ -57,7 +57,8 @@ class AddPlaceFragment : DialogFragment() {
                 PlaceObject(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                     "https://picsum.photos/30${(0..9).random()}/200"
-                ))
+                )
+            )
         }
     }
 
@@ -65,7 +66,10 @@ class AddPlaceFragment : DialogFragment() {
         super.onStart()
         val dialog = dialog
         if (dialog != null) {
-            dialog.window ?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }

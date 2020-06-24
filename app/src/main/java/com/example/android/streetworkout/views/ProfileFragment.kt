@@ -13,11 +13,16 @@ class ProfileFragment : Fragment() {
 
     private lateinit var profileViewModel: ProfileViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
-        val binding: FragmentProfileBinding = FragmentProfileBinding.inflate(inflater, container, false)
+        val binding: FragmentProfileBinding =
+            FragmentProfileBinding.inflate(inflater, container, false)
 
         binding.viewmodel = profileViewModel
 
