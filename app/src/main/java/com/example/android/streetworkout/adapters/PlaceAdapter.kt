@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
+import com.example.android.streetworkout.databinding.PlaceItemBinding
 import com.squareup.picasso.Picasso
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
@@ -15,7 +16,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     private var items = emptyList<PlaceObject>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = PlaceHolder(LayoutInflater.from(parent.context).inflate(R.layout.place_item, parent, false))
+            = PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount() = items.size
 
@@ -28,29 +29,31 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         notifyDataSetChanged()
     }
 
-    inner class PlaceHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class PlaceHolder(private val binding: PlaceItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private val placeDescription = itemView.findViewById<TextView>(R.id.place_description_text)
-        private val placeImage = itemView.findViewById<ImageView>(R.id.place_image)
+        init {
+            binding.setItemClickListener {
+                binding.place?.let { place ->
+                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onPlaceClicked(place)
+                }
+            }
+            binding.setLikeClickListener {
+                binding.place?.let { place ->
+                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onLikeClicked(place)
+                }
+            }
+        }
 
         fun bind(item: PlaceObject) {
-            placeDescription.text = item.description
-
-            Picasso
-                .get()
-                .load(item.imagePath)
-                .placeholder(R.drawable.place)
-                .error(R.drawable.place)
-                .fit()
-                .into(placeImage)
-
-            itemView.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) callback.onItemClicked(items[adapterPosition])
+            binding.apply {
+                place = item
+                executePendingBindings()
             }
         }
     }
 
     interface Callback {
-        fun onItemClicked(item: PlaceObject)
+        fun onPlaceClicked(item: PlaceObject)
+        fun onLikeClicked(item: PlaceObject)
     }
 }

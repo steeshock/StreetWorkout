@@ -18,4 +18,10 @@ object InjectorUtils {
     ): CustomPlacesViewModelFactory {
         return CustomPlacesViewModelFactory(getRepository(context))
     }
+
+    fun provideAddPlaceViewModelFactory(
+        context: Context
+    ): CustomAddPlaceViewModelFactory {
+        return CustomAddPlaceViewModelFactory(getRepository(context))
+    }
 }
