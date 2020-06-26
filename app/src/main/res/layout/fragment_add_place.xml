@@ -6,6 +6,14 @@
     <data class="FragmentAddPlaceBinding">
 
         <variable
+            name="doneClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="backClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
             name="viewmodel"
             type="com.example.android.streetworkout.viewmodels.AddPlaceViewModel" />
     </data>
@@ -24,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
+                android:onClick="@{backClickListener}"
                 android:src="@drawable/ic_round_close_36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
+                android:onClick="@{doneClickListener}"
                 android:src="@drawable/ic_round_done_36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
