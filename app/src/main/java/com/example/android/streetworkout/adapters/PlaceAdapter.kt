@@ -15,8 +15,8 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     private var items = emptyList<PlaceObject>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount() = items.size
 
@@ -29,7 +29,8 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         notifyDataSetChanged()
     }
 
-    inner class PlaceHolder(private val binding: PlaceItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PlaceHolder(private val binding: PlaceItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.setItemClickListener {

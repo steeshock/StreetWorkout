@@ -2,7 +2,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/mainBackGroundColor">
+
     <data class="FragmentAddPlaceBinding">
+
+        <variable
+            name="doneClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="backClickListener"
+            type="android.view.View.OnClickListener" />
+
         <variable
             name="viewmodel"
             type="com.example.android.streetworkout.viewmodels.AddPlaceViewModel" />
@@ -14,49 +24,51 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/back_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
-            android:src="@drawable/ic_round_close_36dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/back_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:onClick="@{backClickListener}"
+                android:src="@drawable/ic_round_close_36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
-            android:text="@string/add_place_title"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/done_image_button"
-            app:layout_constraintStart_toEndOf="@+id/back_image_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:text="@string/add_place_title"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/done_image_button"
+                app:layout_constraintStart_toEndOf="@+id/back_image_button"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/done_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
-            android:src="@drawable/ic_round_done_36dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/done_image_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:onClick="@{doneClickListener}"
+                android:src="@drawable/ic_round_done_36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_add_image"/>
+            android:src="@drawable/ic_add_image" />
 
         <EditText
             android:id="@+id/place_title"
@@ -64,8 +76,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/list_item_spacing"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/hint_place_name" />
+            android:hint="@string/hint_place_name"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/place_description"
@@ -73,8 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/list_item_spacing"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/hint_place_description" />
+            android:hint="@string/hint_place_description"
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 </layout>

@@ -15,7 +15,7 @@ class Repository(private val placesDao: PlacesDao) {
         placesDao.insertPlace(place)
     }
 
-    fun getAllPlaces() : MutableList<PlaceObject> = placesDao.getPlaces()
+    fun getAllPlaces(): MutableList<PlaceObject> = placesDao.getPlaces()
 
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
@@ -23,9 +23,10 @@ class Repository(private val placesDao: PlacesDao) {
 
     companion object {
 
-        @Volatile private var instance: Repository? = null
+        @Volatile
+        private var instance: Repository? = null
 
-        fun getInstance(placesDao:PlacesDao) =
+        fun getInstance(placesDao: PlacesDao) =
             instance ?: synchronized(this) {
                 instance ?: Repository(placesDao).also { instance = it }
             }
