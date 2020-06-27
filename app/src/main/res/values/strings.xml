@@ -8,7 +8,10 @@
     <string name="action_map">Переход на карту</string>
     <string name="places_title">Места тренировок</string>
 
-    <string name="add_place_title">Добавить место</string>
+    <!--Add new place fragment-->
+    <string name="add_place_title">Новое место</string>
     <string name="hint_place_name">Название места</string>
+    <string name="hint_place_address">Адрес места</string>
+    <string name="hint_place_position">Координаты широта/долгота</string>
     <string name="hint_place_description">Краткое описание</string>
 </resources>

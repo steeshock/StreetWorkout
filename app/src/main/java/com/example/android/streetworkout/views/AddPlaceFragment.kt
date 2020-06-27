@@ -40,14 +40,19 @@ class AddPlaceFragment : DialogFragment() {
 
         fragmentAddPlaceBinding.setBackClickListener { dialog?.onBackPressed() }
 
-        fragmentAddPlaceBinding.setDoneClickListener {
-            addPlaceViewModel.insert(
-                PlaceObject(
-                    "https://picsum.photos/30${(0..9).random()}/200",
-                    description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                )
+        fragmentAddPlaceBinding.setDoneClickListener { addNewPlace()}
+    }
+
+    private fun addNewPlace() {
+        addPlaceViewModel.insert(
+            PlaceObject(
+                "https://picsum.photos/30${(0..9).random()}/200",
+                title = fragmentAddPlaceBinding.placeTitle.text.toString(),
+                description = fragmentAddPlaceBinding.placeDescription.text.toString(),
+                position = fragmentAddPlaceBinding.placePosition.text.toString(),
+                address = fragmentAddPlaceBinding.placeAddress.text.toString()
             )
-        }
+        )
     }
 
     override fun onStart() {

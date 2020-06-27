@@ -59,7 +59,7 @@ class PlacesFragment : BaseFragment() {
                 }
 
                 override fun onLikeClicked(item: PlaceObject) {
-                    Toast.makeText(view.context, "${item.Id} Liked!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(view.context, item.address, Toast.LENGTH_SHORT).show()
                 }
             })
 
