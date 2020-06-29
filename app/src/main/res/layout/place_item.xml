@@ -59,7 +59,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/icon_margin"
                     android:onClick="@{likeClickListener}"
-                    android:src="@drawable/ic_heart_24dp" />
+                    android:src="@drawable/ic_heart_36dp" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/icon_margin"
                     android:layout_marginBottom="@dimen/icon_margin"
-                    android:src="@drawable/ic_share_24dp" />
+                    android:src="@drawable/ic_share_36dp" />
 
             </LinearLayout>
 

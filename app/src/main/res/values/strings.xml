@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">StreetWorkout</string>
     <string name="title_places">Места</string>
-    <string name="title_training">Тренировки</string>
+    <string name="title_map">Карта</string>
     <string name="title_favorites">Избранное</string>
     <string name="title_profile">Профиль</string>
     <string name="action_search">Поиск мест…</string>
     <string name="action_map">Переход на карту</string>
     <string name="places_title">Места тренировок</string>
 
-    <!--Add new place fragment-->
+    <!--Add new place_mock fragment-->
     <string name="add_place_title">Новое место</string>
     <string name="hint_place_name">Название места</string>
     <string name="hint_place_address">Адрес места</string>

@@ -11,8 +11,8 @@ fun loadImageFromUrl(imageView: ImageView, urlImage: String?) {
         Picasso
             .get()
             .load(urlImage)
-            .placeholder(R.drawable.place)
-            .error(R.drawable.place)
+            .placeholder(R.drawable.place_mock)
+            .error(R.drawable.place_mock)
             .fit()
             .into(imageView)
     }

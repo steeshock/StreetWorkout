@@ -2,11 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data class="FragmentTrainingBinding">
+    <data class="FragmentMapBinding">
 
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.viewmodels.TrainingViewModel" />
+            type="com.example.android.streetworkout.viewmodels.MapViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:background="@color/mainBackGroundColor"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/title_training"
+            app:title="@string/title_map"
             app:titleTextColor="@android:color/black">
         </androidx.appcompat.widget.Toolbar>
 

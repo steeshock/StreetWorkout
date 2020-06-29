@@ -16,10 +16,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_training"
-        android:name="com.example.android.streetworkout.views.TraningFragment"
-        android:label="@string/title_training"
-        tools:layout="@layout/fragment_training" />
+        android:id="@+id/navigation_map"
+        android:name="com.example.android.streetworkout.views.MapFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_favorites"

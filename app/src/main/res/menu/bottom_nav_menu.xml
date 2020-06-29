@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/navigation_places"
-        android:icon="@drawable/ic_places_24dp"
+        android:icon="@drawable/selector_home"
         android:title="@string/title_places" />
 
     <item
-        android:id="@+id/navigation_training"
-        android:icon="@drawable/ic_traning_24dp"
-        android:title="@string/title_training" />
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/selector_map"
+        android:title="@string/title_map" />
 
     <item
         android:id="@+id/navigation_favorites"
@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_profile_24dp"
+        android:icon="@drawable/selector_profile"
         android:title="@string/title_profile" />
 
 </menu>
