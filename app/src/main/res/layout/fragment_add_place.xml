@@ -18,75 +18,100 @@
             type="com.example.android.streetworkout.viewmodels.AddPlaceViewModel" />
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/back_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/list_item_spacing"
+                    android:onClick="@{backClickListener}"
+                    android:src="@drawable/ic_close_36dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/list_item_spacing"
+                    android:text="@string/add_place_title"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/done_image_button"
+                    app:layout_constraintStart_toEndOf="@+id/back_image_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/done_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/list_item_spacing"
+                    android:onClick="@{doneClickListener}"
+                    android:src="@drawable/ic_done_36dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
-                android:id="@+id/back_image_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                android:onClick="@{backClickListener}"
-                android:src="@drawable/ic_round_close_36dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_gravity="center"
+                android:src="@drawable/ic_add_image" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/place_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
-                android:text="@string/add_place_title"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/done_image_button"
-                app:layout_constraintStart_toEndOf="@+id/back_image_button"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:ems="10"
+                android:hint="@string/hint_place_name"
+                android:inputType="textPersonName" />
 
-            <ImageView
-                android:id="@+id/done_image_button"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/place_address"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
-                android:onClick="@{doneClickListener}"
-                android:src="@drawable/ic_round_done_36dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:ems="10"
+                android:hint="@string/hint_place_address"
+                android:inputType="textPersonName" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_add_image" />
+            <EditText
+                android:id="@+id/place_position"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_position"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/place_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
-            android:ems="10"
-            android:hint="@string/hint_place_name"
-            android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/place_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_description"
+                android:gravity="start|top"
+                android:inputType="textMultiLine" />
 
-        <EditText
-            android:id="@+id/place_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
-            android:ems="10"
-            android:hint="@string/hint_place_description"
-            android:inputType="textPersonName" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </layout>

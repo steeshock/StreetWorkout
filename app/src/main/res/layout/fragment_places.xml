@@ -14,15 +14,29 @@
         android:layout_height="match_parent"
         android:background="@color/mainBackGroundColor">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/mainBackGroundColor"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/places_title"
-            app:titleTextColor="@android:color/black">
-        </androidx.appcompat.widget.Toolbar>
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/mainBackGroundColor"
+                app:title="@string/places_title"
+                app:titleTextColor="@android:color/black">
+
+            </androidx.appcompat.widget.Toolbar>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/placesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/mainBackGroundColor" />
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -36,11 +50,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@android:drawable/ic_input_add" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/placesRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mainBackGroundColor"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
