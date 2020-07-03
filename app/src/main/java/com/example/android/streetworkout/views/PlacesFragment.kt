@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android.streetworkout.FragmentDirections
 import com.example.android.streetworkout.common.BaseFragment
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
@@ -120,8 +119,6 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun showAddPlaceFragment(it: View) {
-        val direction =
-            FragmentDirections.actionPlacesFragmentToAddPlaceFragment()
-        it.findNavController().navigate(direction)
+        it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
     }
 }
