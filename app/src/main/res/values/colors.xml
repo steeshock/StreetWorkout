@@ -7,4 +7,6 @@
     <color name="navigationMainColor">#455A64</color>
     <color name="mainBackGroundColor">#F2F2F2</color>
     <color name="separatorColor">#E4E4E4</color>
+
+    <color name="grayIconColor">#878080</color>
 </resources>
