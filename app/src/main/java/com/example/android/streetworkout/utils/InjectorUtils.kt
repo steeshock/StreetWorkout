@@ -19,6 +19,12 @@ object InjectorUtils {
         return CustomPlacesViewModelFactory(getRepository(context))
     }
 
+    fun provideMapViewModelFactory(
+        context: Context
+    ): CustomMapViewModelFactory {
+        return CustomMapViewModelFactory(getRepository(context))
+    }
+
     fun provideAddPlaceViewModelFactory(
         context: Context
     ): CustomAddPlaceViewModelFactory {

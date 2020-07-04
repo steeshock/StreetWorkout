@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProviders
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.common.BaseFragment
 import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.databinding.FragmentMapBinding
+import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.MapViewModel
+import com.example.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,10 +21,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : BaseFragment(), OnMapReadyCallback {
+    private val mapViewModel: MapViewModel by viewModels {
+        InjectorUtils.provideMapViewModelFactory(requireActivity())
+    }
 
     private lateinit var mMap: GoogleMap
-
-    private lateinit var mapViewModel: MapViewModel
 
     private var toolbar: Toolbar? = null
     private lateinit var fragmentMapBinding: FragmentMapBinding
@@ -35,8 +39,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-
-        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
         fragmentMapBinding.viewmodel = mapViewModel
 
@@ -78,18 +80,26 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 true
             }
             R.id.action_map -> {
+                showAllPlaces()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
+    private fun showAllPlaces() {
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+    }
+
+    fun convertStringToLatLng(position: String): LatLng {
+        val (lat, lng) = position.split(",").map { it.toDouble() }
+        return LatLng(lat, lng)
     }
 }
