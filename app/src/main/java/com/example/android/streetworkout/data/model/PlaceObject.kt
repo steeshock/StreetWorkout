@@ -16,9 +16,8 @@ data class PlaceObject(
     @ColumnInfo(name = "description")
     val description: String = "",
 
-    //ToDo later change to Google position
     @ColumnInfo(name = "position")
-    val position: String = "",
+    val position: String = "54.513845, 36.261215",
 
     @ColumnInfo(name = "address")
     val address: String = "",
