@@ -22,7 +22,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_profile"
             app:titleTextColor="@android:color/black">
+
         </androidx.appcompat.widget.Toolbar>
+
+        <include
+            layout="@layout/v_content_not_ready"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="56dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

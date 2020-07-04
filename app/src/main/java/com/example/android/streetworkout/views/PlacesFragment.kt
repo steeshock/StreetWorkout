@@ -1,14 +1,13 @@
 package com.example.android.streetworkout.views
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.streetworkout.common.BaseFragment
 import com.example.android.streetworkout.R
@@ -19,7 +18,6 @@ import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.activity_main.*
 
 class PlacesFragment : BaseFragment() {
 
@@ -68,8 +66,7 @@ class PlacesFragment : BaseFragment() {
         })
 
         fab.setOnClickListener {
-
-            showAddPlaceFragment()
+            showAddPlaceFragment(it)
         }
 
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
@@ -121,8 +118,7 @@ class PlacesFragment : BaseFragment() {
             .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
     }
 
-    private fun showAddPlaceFragment() {
-        AddPlaceFragment.newInstance()
-            .show((requireActivity() as MainActivity).supportFragmentManager, "add_place_tag")
+    private fun showAddPlaceFragment(it: View) {
+        it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
     }
 }
