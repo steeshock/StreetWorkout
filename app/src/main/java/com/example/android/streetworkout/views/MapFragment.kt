@@ -92,4 +92,9 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
+    fun convertStringToLatLng(position: String) : LatLng{
+        val (lat, lng) = position.split(",").map { it.toDouble() }
+        return LatLng(lat, lng)
+    }
 }

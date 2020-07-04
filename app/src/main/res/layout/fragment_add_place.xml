@@ -5,12 +5,12 @@
 
     <data class="FragmentAddPlaceBinding">
 
-        <variable
-            name="doneClickListener"
-            type="android.view.View.OnClickListener" />
+        <import
+            alias="V"
+            type="android.view.View" />
 
         <variable
-            name="backClickListener"
+            name="getMyPositionClickListener"
             type="android.view.View.OnClickListener" />
 
         <variable
@@ -37,9 +37,9 @@
                     android:layout_height="wrap_content"
                     android:background="@color/mainBackGroundColor"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:menu="@menu/add_place_menu"
                     app:navigationIcon="@drawable/ic_arrow_back_24dp"
                     app:title="@string/add_place_title"
-                    app:menu="@menu/add_place_menu"
                     app:titleTextColor="@android:color/black" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -84,9 +84,25 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
                 android:ems="10"
-                android:hint="@string/hint_place_description"
                 android:gravity="start|top"
+                android:hint="@string/hint_place_description"
                 android:inputType="textMultiLine" />
+
+            <Button
+                android:id="@+id/myPositionBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{getMyPositionClickListener}"
+                android:text="@string/get_my_position_btn"
+                android:backgroundTint="@android:color/transparent"
+                android:layout_margin="@dimen/list_item_spacing" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
     </ScrollView>
