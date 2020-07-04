@@ -6,12 +6,17 @@
     <string name="title_profile">Профиль</string>
     <string name="action_search">Поиск мест…</string>
     <string name="action_map">Переход на карту</string>
+    <string name="action_add_place">Добавить место</string>
     <string name="places_title">Места тренировок</string>
 
-    <!--Add new place_mock fragment-->
+    <!--Page not ready fragment-->
+    <string name="page_not_ready_title">Раздел находится в разработке</string>
+
+    <!--Add new place fragment-->
     <string name="add_place_title">Новое место</string>
     <string name="hint_place_name">Название места</string>
     <string name="hint_place_address">Адрес места</string>
     <string name="hint_place_position">Координаты широта/долгота</string>
     <string name="hint_place_description">Краткое описание</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

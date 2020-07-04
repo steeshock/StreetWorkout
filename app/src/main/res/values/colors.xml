@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#455A64</color>
+    <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#000000</color>
 
     <color name="navigationMainColor">#455A64</color>
     <color name="mainBackGroundColor">#F2F2F2</color>
     <color name="separatorColor">#E4E4E4</color>
+
+    <color name="grayIconColor">#878080</color>
 </resources>

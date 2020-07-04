@@ -4,16 +4,22 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.common.BaseFragment
 import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.databinding.FragmentMapBinding
-import com.example.android.streetworkout.databinding.FragmentPlacesBinding
 import com.example.android.streetworkout.viewmodels.MapViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MapFragment : BaseFragment() {
+class MapFragment : BaseFragment(), OnMapReadyCallback {
+
+    private lateinit var mMap: GoogleMap
 
     private lateinit var mapViewModel: MapViewModel
 
@@ -28,14 +34,16 @@ class MapFragment : BaseFragment() {
 
         fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
 
-        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
-        fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
+        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
         fragmentMapBinding.viewmodel = mapViewModel
 
         toolbar = fragmentMapBinding.toolbar
         (container?.context as MainActivity).setSupportActionBar(toolbar)
+
+        mapFragment?.getMapAsync(this)
 
         return fragmentMapBinding.root
     }
@@ -45,7 +53,7 @@ class MapFragment : BaseFragment() {
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
-        var searchView = myActionMenuItem.actionView as SearchView
+        val searchView = myActionMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (!searchView.isIconified) {
@@ -74,5 +82,14 @@ class MapFragment : BaseFragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // Add a marker in Sydney and move the camera
+        val sydney = LatLng(-34.0, 151.0)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 }

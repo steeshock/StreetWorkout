@@ -5,14 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.example.android.streetworkout.R
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.AddPlaceViewModel
 
 
-class AddPlaceFragment : DialogFragment() {
+class AddPlaceFragment : Fragment() {
 
     private val addPlaceViewModel: AddPlaceViewModel by viewModels {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
@@ -20,27 +23,31 @@ class AddPlaceFragment : DialogFragment() {
 
     private lateinit var fragmentAddPlaceBinding: FragmentAddPlaceBinding
 
-    companion object {
-        fun newInstance() = AddPlaceFragment()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         fragmentAddPlaceBinding = FragmentAddPlaceBinding.inflate(inflater, container, false)
         fragmentAddPlaceBinding.viewmodel = addPlaceViewModel
         fragmentAddPlaceBinding.lifecycleOwner = this
+
+        fragmentAddPlaceBinding.toolbar.setNavigationOnClickListener { view ->
+            view.findNavController().navigateUp()
+        }
+
+        fragmentAddPlaceBinding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_done -> {
+                    addNewPlace()
+                    true
+                }
+                else -> false
+            }
+        }
+
         return fragmentAddPlaceBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        fragmentAddPlaceBinding.setBackClickListener { dialog?.onBackPressed() }
-
-        fragmentAddPlaceBinding.setDoneClickListener { addNewPlace()}
     }
 
     private fun addNewPlace() {
@@ -53,17 +60,5 @@ class AddPlaceFragment : DialogFragment() {
                 address = fragmentAddPlaceBinding.placeAddress.text.toString()
             )
         )
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            dialog.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        }
     }
 }
