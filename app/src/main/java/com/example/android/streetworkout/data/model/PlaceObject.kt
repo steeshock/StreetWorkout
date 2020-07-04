@@ -16,8 +16,11 @@ data class PlaceObject(
     @ColumnInfo(name = "description")
     val description: String = "",
 
-    @ColumnInfo(name = "position")
-    val position: String = "54.513845, 36.261215",
+    @ColumnInfo(name = "latitude")
+    val latitude: Double = 54.513845,
+
+    @ColumnInfo(name = "longitude")
+    val longitude: Double = 36.261215,
 
     @ColumnInfo(name = "address")
     val address: String = "",

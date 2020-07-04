@@ -28,6 +28,7 @@ import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.AddPlaceViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
 
 
@@ -266,12 +267,16 @@ class AddPlaceFragment : Fragment() {
     }
 
     private fun addNewPlace() {
+        
+        val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
+
         addPlaceViewModel.insert(
             PlaceObject(
                 "https://picsum.photos/30${(0..9).random()}/200",
                 title = fragmentAddPlaceBinding.placeTitle.text.toString(),
                 description = fragmentAddPlaceBinding.placeDescription.text.toString(),
-                position = fragmentAddPlaceBinding.placePosition.text.toString(),
+                latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
+                longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
                 address = fragmentAddPlaceBinding.placeAddress.text.toString()
             )
         )

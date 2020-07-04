@@ -5,20 +5,20 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProviders
 import com.example.android.streetworkout.R
 import com.example.android.streetworkout.common.BaseFragment
 import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.databinding.FragmentMapBinding
 import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.MapViewModel
-import com.example.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+
 
 class MapFragment : BaseFragment(), OnMapReadyCallback {
     private val mapViewModel: MapViewModel by viewModels {
@@ -88,18 +88,30 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun showAllPlaces() {
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        if (mapViewModel.allPlacesLive.value?.isNotEmpty()!!)
+        {
+            lateinit var pin: LatLng
+            lateinit var bounds: LatLngBounds
+            val pinsPositions = mutableListOf<LatLng>()
+            val builder = LatLngBounds.Builder()
+
+            for (place in mapViewModel.allPlacesLive.value!!) {
+                pin = LatLng(place.latitude, place.longitude)
+                mMap.addMarker(MarkerOptions().position(pin).title(place.title))
+                pinsPositions.add(pin)
+            }
+
+            for (position in pinsPositions){
+                builder.include(position)
+            }
+
+            bounds = builder.build()
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-    }
-
-    fun convertStringToLatLng(position: String): LatLng {
-        val (lat, lng) = position.split(",").map { it.toDouble() }
-        return LatLng(lat, lng)
     }
 }
