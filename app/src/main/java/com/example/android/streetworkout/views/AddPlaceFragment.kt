@@ -272,7 +272,6 @@ class AddPlaceFragment : Fragment() {
 
         addPlaceViewModel.insert(
             PlaceObject(
-                "https://picsum.photos/30${(0..9).random()}/200",
                 title = fragmentAddPlaceBinding.placeTitle.text.toString(),
                 description = fragmentAddPlaceBinding.placeDescription.text.toString(),
                 latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
