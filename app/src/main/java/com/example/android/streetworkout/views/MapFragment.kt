@@ -50,6 +50,12 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         return fragmentMapBinding.root
     }
 
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        showAllPlaces()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_menu, menu)
 
@@ -80,7 +86,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 true
             }
             R.id.action_map -> {
-                showAllPlaces()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -109,9 +114,5 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
         }
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
     }
 }
