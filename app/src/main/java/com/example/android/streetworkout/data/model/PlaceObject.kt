@@ -8,22 +8,22 @@ import androidx.room.PrimaryKey
 data class PlaceObject(
 
     @ColumnInfo(name = "imagePath")
-    val imagePath: String = "https://picsum.photos/30${(0..9).random()}/200",
+    var imagePath: String = "https://picsum.photos/30${(0..9).random()}/200",
 
     @ColumnInfo(name = "title")
-    val title: String = "Случайное место",
+    var title: String,
 
     @ColumnInfo(name = "description")
-    val description: String = "Улица Пушкина, дом Колотушкина Квартира Петрова, спросить Вольнова",
+    var description: String,
 
     @ColumnInfo(name = "latitude")
-    val latitude: Double = 54.513845,
+    var latitude: Double,
 
     @ColumnInfo(name = "longitude")
-    val longitude: Double = 36.261215,
+    var longitude: Double,
 
     @ColumnInfo(name = "address")
-    val address: String = "Неизвестный адрес",
+    var address: String,
 
     @ColumnInfo(name = "isFavorite")
     val isFavorite: Boolean = false
@@ -32,4 +32,13 @@ data class PlaceObject(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = (0..100).random()
+
+    init {
+        if (imagePath.isEmpty()) imagePath = "https://picsum.photos/30${(0..9).random()}/200"
+        if (title.isEmpty()) title = "Случайное место"
+        if (description.isEmpty()) description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
+        if (latitude == 0.0) latitude = 54.513845
+        if (longitude == 0.0) longitude = 36.261215
+        if (address.isEmpty()) address = "Улица Пушкина, дом Колотушкина Квартира Петрова, спросить Вольнова"
+    }
 }
