@@ -17,15 +17,9 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         repository.clearPlacesTable()
     }
 
-    fun updateProjects() {
+    fun updatePlaces() {
         viewModelScope.launch(Dispatchers.IO) {
-
-            val response = ApiUtils.getApiService()?.getPlaces()?.body()
-
-            response?.let {
-                repository.clearPlacesTable()
-                repository.insertAllPlaces(it)
-            }
+            repository.updatePlaces()
         }
     }
 }

@@ -129,7 +129,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onRefresh() {
         fragmentPlacesBinding.refresher.isRefreshing = true
         Handler().postDelayed({
-            placesViewModel.updateProjects()
+            placesViewModel.updatePlaces()
             fragmentPlacesBinding.refresher.isRefreshing = false
         }, 2000)
     }
