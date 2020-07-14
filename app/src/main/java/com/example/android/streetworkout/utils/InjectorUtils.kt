@@ -9,7 +9,8 @@ object InjectorUtils {
 
     private fun getRepository(context: Context): Repository {
         return Repository.getInstance(
-            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao()
+            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao(),
+            ApiUtils.getInstance()
         )
     }
 
