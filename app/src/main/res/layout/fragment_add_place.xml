@@ -90,19 +90,20 @@
 
             <Button
                 android:id="@+id/myPositionBtn"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{getMyPositionClickListener}"
-                android:text="@string/get_my_position_btn"
+                android:layout_margin="@dimen/list_item_spacing"
                 android:backgroundTint="@android:color/transparent"
-                android:layout_margin="@dimen/list_item_spacing" />
+                android:onClick="@{getMyPositionClickListener}"
+                android:text="@string/get_my_position_btn" />
 
             <ProgressBar
                 android:id="@+id/progress_bar"
-                android:layout_gravity="center"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
