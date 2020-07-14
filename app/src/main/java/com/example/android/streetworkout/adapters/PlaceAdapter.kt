@@ -53,6 +53,11 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
     }
 
+    fun sortItems() {
+        this.items = items.sortedBy {placeObject ->  placeObject.title}
+        notifyDataSetChanged()
+    }
+
     interface Callback {
         fun onPlaceClicked(item: PlaceObject)
         fun onLikeClicked(item: PlaceObject)
