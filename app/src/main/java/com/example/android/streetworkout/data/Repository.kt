@@ -15,6 +15,10 @@ class Repository(private val placesDao: PlacesDao) {
         placesDao.insertPlace(place)
     }
 
+    fun insertAllPlaces(places: List<PlaceObject>) {
+        placesDao.insertAllPlaces(places)
+    }
+
     fun getAllPlaces(): MutableList<PlaceObject> = placesDao.getPlaces()
 
     fun clearPlacesTable() {

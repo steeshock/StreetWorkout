@@ -13,6 +13,9 @@ interface PlacesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlace(place: PlaceObject)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllPlaces(places: List<PlaceObject>)
+
     @Query("select * from places_table")
     fun getPlaces(): MutableList<PlaceObject>
 
