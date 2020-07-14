@@ -8,7 +8,4 @@ import retrofit2.http.GET
 interface StreetWorkoutAPI {
     @GET("steeshock/SimpleAPI/places/")
     suspend fun getPlaces(): Response<List<PlaceObject>>
-
-    @GET("steeshock/SimpleAPI/posts/")
-    suspend fun getPosts(): Response<List<Post>>
 }

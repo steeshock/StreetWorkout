@@ -13,17 +13,19 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     val allPlacesLive: LiveData<List<PlaceObject>> = repository.allPlaces
 
-    fun insert(place: PlaceObject) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertPlace(place)
-    }
-
     fun clearPlacesTable() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearPlacesTable()
     }
 
     fun updateProjects() {
         viewModelScope.launch(Dispatchers.IO) {
-            var response = ApiUtils.getApiService()?.getPosts()
+
+            val response = ApiUtils.getApiService()?.getPlaces()?.body()
+
+            response?.let {
+                repository.clearPlacesTable()
+                repository.insertAllPlaces(it)
+            }
         }
     }
 }

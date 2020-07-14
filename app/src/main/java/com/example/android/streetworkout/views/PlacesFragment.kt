@@ -127,16 +127,9 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-
-        //ToDo make update from API
-
         fragmentPlacesBinding.refresher.isRefreshing = true
-
         Handler().postDelayed({
-            //(fragmentPlacesBinding.placesRecycler.adapter as PlaceAdapter).sortItems()
-
             placesViewModel.updateProjects()
-
             fragmentPlacesBinding.refresher.isRefreshing = false
         }, 2000)
     }

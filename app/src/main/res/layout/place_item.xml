@@ -77,13 +77,13 @@
                 android:background="@color/separatorColor" />
 
             <TextView
-                android:id="@+id/place_description_text"
+                android:id="@+id/place_title_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="@{place.description}"
+                android:text="@{place.title}"
                 android:textAlignment="inherit"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
