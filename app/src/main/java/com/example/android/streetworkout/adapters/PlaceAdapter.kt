@@ -54,7 +54,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     fun sortItems() {
-        this.items = items.sortedBy {placeObject ->  placeObject.title}
+        this.items = items.sortedBy {placeObject ->  placeObject.timestamp}
         notifyDataSetChanged()
     }
 

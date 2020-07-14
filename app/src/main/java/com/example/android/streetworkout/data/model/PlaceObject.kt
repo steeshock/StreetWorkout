@@ -26,7 +26,10 @@ data class PlaceObject(
     var address: String,
 
     @ColumnInfo(name = "isFavorite")
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+
+    @ColumnInfo(name = "timestamp")
+    val timestamp: Long = System.currentTimeMillis()
 
 ) {
     @PrimaryKey(autoGenerate = true)
