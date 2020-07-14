@@ -1,6 +1,7 @@
 package com.example.android.streetworkout.views
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -9,17 +10,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.android.streetworkout.common.BaseFragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.android.streetworkout.R
+import com.example.android.streetworkout.adapters.PlaceAdapter
+import com.example.android.streetworkout.common.BaseFragment
+import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.data.model.PlaceObject
 import com.example.android.streetworkout.databinding.FragmentPlacesBinding
-import com.example.android.streetworkout.adapters.PlaceAdapter
-import com.example.android.streetworkout.common.MainActivity
 import com.example.android.streetworkout.utils.InjectorUtils
 import com.example.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class PlacesFragment : BaseFragment() {
+class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private val placesViewModel: PlacesViewModel by viewModels {
         InjectorUtils.providePlacesViewModelFactory(requireActivity())
@@ -36,6 +38,8 @@ class PlacesFragment : BaseFragment() {
     ): View? {
 
         fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
+
+        fragmentPlacesBinding.refresher.setOnRefreshListener(this)
 
         fragmentPlacesBinding.lifecycleOwner = this
 
@@ -81,7 +85,7 @@ class PlacesFragment : BaseFragment() {
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
-        var searchView = myActionMenuItem.actionView as SearchView
+        val searchView = myActionMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (!searchView.isIconified) {
@@ -120,5 +124,17 @@ class PlacesFragment : BaseFragment() {
 
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
+    }
+
+    override fun onRefresh() {
+
+        //ToDo make update from API
+
+        fragmentPlacesBinding.refresher.isRefreshing = true
+
+        Handler().postDelayed({
+            (fragmentPlacesBinding.placesRecycler.adapter as PlaceAdapter).sortItems()
+            fragmentPlacesBinding.refresher.isRefreshing = false
+        }, 2000)
     }
 }

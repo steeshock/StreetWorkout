@@ -2,6 +2,7 @@ package com.example.android.streetworkout.utils
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.android.streetworkout.R
 import com.squareup.picasso.Picasso
 
@@ -17,3 +18,19 @@ fun loadImageFromUrl(imageView: ImageView, urlImage: String?) {
             .into(imageView)
     }
 }
+//
+//@BindingAdapter(*["bind:refreshState", "bind:onRefresh"])
+//fun configureSwipeRefreshLayout(
+//    layout: SwipeRefreshLayout,
+//    isLoading: Boolean,
+//    listener: SwipeRefreshLayout.OnRefreshListener?
+//) {
+//    layout.setOnRefreshListener(listener)
+//    layout.post { layout.isRefreshing = isLoading }
+//}
+//
+//@BindingAdapter("bind:refreshState", "bind:onRefresh")
+//fun configureSwipeRefreshLayout(layout: SwipeRefreshLayout?, isLoading: Boolean, listener: SwipeRefreshLayout.OnRefreshListener?) {
+//    layout?.setOnRefreshListener(listener)
+//    layout?.post { layout.isRefreshing = isLoading }
+//}
