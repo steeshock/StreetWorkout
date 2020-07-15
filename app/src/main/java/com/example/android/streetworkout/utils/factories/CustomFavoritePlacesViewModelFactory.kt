@@ -1,4 +1,4 @@
-package com.example.android.streetworkout.utils
+package com.example.android.streetworkout.utils.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

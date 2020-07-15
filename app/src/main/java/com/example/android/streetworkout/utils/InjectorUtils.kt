@@ -1,9 +1,12 @@
 package com.example.android.streetworkout.utils
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import com.example.android.streetworkout.data.Repository
 import com.example.android.streetworkout.data.database.PlacesDatabase
+import com.example.android.streetworkout.utils.factories.CustomAddPlaceViewModelFactory
+import com.example.android.streetworkout.utils.factories.CustomFavoritePlacesViewModelFactory
+import com.example.android.streetworkout.utils.factories.CustomMapViewModelFactory
+import com.example.android.streetworkout.utils.factories.CustomPlacesViewModelFactory
 
 object InjectorUtils {
 
@@ -17,24 +20,32 @@ object InjectorUtils {
     fun providePlacesViewModelFactory(
         context: Context
     ): CustomPlacesViewModelFactory {
-        return CustomPlacesViewModelFactory(getRepository(context))
+        return CustomPlacesViewModelFactory(
+            getRepository(context)
+        )
     }
 
     fun provideMapViewModelFactory(
         context: Context
     ): CustomMapViewModelFactory {
-        return CustomMapViewModelFactory(getRepository(context))
+        return CustomMapViewModelFactory(
+            getRepository(context)
+        )
     }
 
     fun provideFavoritePlacesViewModelFactory(
         context: Context
     ): CustomFavoritePlacesViewModelFactory {
-        return CustomFavoritePlacesViewModelFactory(getRepository(context))
+        return CustomFavoritePlacesViewModelFactory(
+            getRepository(context)
+        )
     }
 
     fun provideAddPlaceViewModelFactory(
         context: Context
     ): CustomAddPlaceViewModelFactory {
-        return CustomAddPlaceViewModelFactory(getRepository(context))
+        return CustomAddPlaceViewModelFactory(
+            getRepository(context)
+        )
     }
 }
