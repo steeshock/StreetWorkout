@@ -11,6 +11,7 @@ class Repository(
 ) {
 
     val allPlaces: LiveData<List<PlaceObject>> = placesDao.getPlacesLive()
+    val allFavoritePlaces: LiveData<List<PlaceObject>> = placesDao.getFavoritePlacesLive()
 
     fun insertPlace(place: PlaceObject) {
         placesDao.insertPlace(place)
@@ -19,15 +20,17 @@ class Repository(
     suspend fun updatePlaces() {
         val response = placesAPI.getPlaces().body()
         response?.let {
-            placesDao.clearPlacesTable()
+            placesDao.removeAllPlacesExceptFavorites(false)
             placesDao.insertAllPlaces(it)
         }
     }
 
-    fun getAllPlaces(): MutableList<PlaceObject> = placesDao.getPlaces()
-
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    fun removeAllPlacesExceptFavorites(boolean: Boolean) {
+        placesDao.removeAllPlacesExceptFavorites(boolean)
     }
 
     companion object {

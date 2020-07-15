@@ -1,11 +1,9 @@
 package com.example.android.streetworkout.data.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.android.streetworkout.data.model.PlaceObject
+
 
 @Dao
 interface PlacesDao {
@@ -13,7 +11,7 @@ interface PlacesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlace(place: PlaceObject)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllPlaces(places: List<PlaceObject>)
 
     @Query("select * from places_table")
@@ -22,6 +20,12 @@ interface PlacesDao {
     @Query("select * from places_table")
     fun getPlacesLive(): LiveData<List<PlaceObject>>
 
+    @Query("select * from places_table where isFavorite")
+    fun getFavoritePlacesLive(): LiveData<List<PlaceObject>>
+
     @Query("delete from places_table")
     fun clearPlacesTable()
+
+    @Query("delete from places_table where isFavorite = :boolean")
+    fun removeAllPlacesExceptFavorites(boolean: Boolean)
 }

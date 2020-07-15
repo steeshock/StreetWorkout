@@ -26,6 +26,12 @@ object InjectorUtils {
         return CustomMapViewModelFactory(getRepository(context))
     }
 
+    fun provideFavoritePlacesViewModelFactory(
+        context: Context
+    ): CustomFavoritePlacesViewModelFactory {
+        return CustomFavoritePlacesViewModelFactory(getRepository(context))
+    }
+
     fun provideAddPlaceViewModelFactory(
         context: Context
     ): CustomAddPlaceViewModelFactory {

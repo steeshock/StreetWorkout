@@ -27,7 +27,7 @@ data class PlaceObject(
     var address: String,
 
     @ColumnInfo(name = "isFavorite")
-    val isFavorite: Boolean = false,
+    var isFavorite: Boolean = false,
 
     @ColumnInfo(name = "timestamp")
     val timestamp: Long = System.currentTimeMillis()
@@ -46,5 +46,9 @@ data class PlaceObject(
         if (longitude == 0.0) longitude = 36.261215
         if (address.isEmpty()) address =
             "Улица Пушкина, дом Колотушкина Квартира Петрова, спросить Вольнова"
+    }
+
+    fun changeFavoriteState() {
+        this.isFavorite = !this.isFavorite
     }
 }
