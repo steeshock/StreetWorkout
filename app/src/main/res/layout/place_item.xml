@@ -59,7 +59,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/icon_margin"
                     android:onClick="@{likeClickListener}"
-                    android:src="@drawable/ic_heart_36dp" />
+                    android:src="@{place.isFavorite ? @drawable/ic_heart_red_36dp : @drawable/ic_heart_gray_36dp}"/>
 
                 <ImageView
                     android:layout_width="wrap_content"

@@ -61,7 +61,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
 
                 override fun onLikeClicked(item: PlaceObject) {
-                    Toast.makeText(view.context, item.address, Toast.LENGTH_SHORT).show()
+                    addPlaceToFavorites(item)
                 }
             })
 
@@ -78,6 +78,11 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
             LinearLayoutManager(fragmentPlacesBinding.root.context)
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun addPlaceToFavorites(place: PlaceObject) {
+        place.changeFavoriteState()
+        placesViewModel.insertPlace(place)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -110,7 +115,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
                 true
             }
             R.id.action_map -> {
-                placesViewModel.clearPlacesTable()
+                placesViewModel.removeAllPlacesExceptFavorites(false)
                 true
             }
             else -> super.onOptionsItemSelected(item)

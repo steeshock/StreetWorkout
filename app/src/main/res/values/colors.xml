@@ -9,4 +9,5 @@
     <color name="separatorColor">#E4E4E4</color>
 
     <color name="grayIconColor">#878080</color>
+    <color name="redIconColor">#FF3347</color>
 </resources>

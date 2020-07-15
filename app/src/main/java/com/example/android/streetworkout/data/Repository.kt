@@ -19,15 +19,17 @@ class Repository(
     suspend fun updatePlaces() {
         val response = placesAPI.getPlaces().body()
         response?.let {
-            placesDao.clearPlacesTable()
+            placesDao.removeAllPlacesExceptFavorites(false)
             placesDao.insertAllPlaces(it)
         }
     }
 
-    fun getAllPlaces(): MutableList<PlaceObject> = placesDao.getPlaces()
-
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    fun removeAllPlacesExceptFavorites(boolean: Boolean) {
+        placesDao.removeAllPlacesExceptFavorites(boolean)
     }
 
     companion object {
