@@ -20,6 +20,9 @@ interface PlacesDao {
     @Query("select * from places_table")
     fun getPlacesLive(): LiveData<List<PlaceObject>>
 
+    @Query("select * from places_table where isFavorite")
+    fun getFavoritePlacesLive(): LiveData<List<PlaceObject>>
+
     @Query("delete from places_table")
     fun clearPlacesTable()
 

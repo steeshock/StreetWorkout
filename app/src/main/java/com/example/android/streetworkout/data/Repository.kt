@@ -11,6 +11,7 @@ class Repository(
 ) {
 
     val allPlaces: LiveData<List<PlaceObject>> = placesDao.getPlacesLive()
+    val allFavoritePlaces: LiveData<List<PlaceObject>> = placesDao.getFavoritePlacesLive()
 
     fun insertPlace(place: PlaceObject) {
         placesDao.insertPlace(place)

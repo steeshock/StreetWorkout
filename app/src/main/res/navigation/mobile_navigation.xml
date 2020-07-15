@@ -27,9 +27,9 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.android.streetworkout.views.FavoritesFragment"
+        android:name="com.example.android.streetworkout.views.FavoritePlacesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_favorites" />
+        tools:layout="@layout/fragment_favorite_places" />
 
     <fragment
         android:id="@+id/navigation_profile"
