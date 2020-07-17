@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.example.android.streetworkout"
+        applicationId "com.steeshock.android.streetworkout"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1

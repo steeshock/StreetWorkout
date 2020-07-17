@@ -15,7 +15,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.android.streetworkout.viewmodels.AddPlaceViewModel" />
+            type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
     </data>
 
     <ScrollView

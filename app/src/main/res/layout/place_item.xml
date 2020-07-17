@@ -15,7 +15,7 @@
 
         <variable
             name="place"
-            type="com.example.android.streetworkout.data.model.PlaceObject" />
+            type="com.steeshock.android.streetworkout.data.model.PlaceObject" />
     </data>
 
     <androidx.cardview.widget.CardView

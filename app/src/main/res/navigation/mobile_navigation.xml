@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_places"
-        android:name="com.example.android.streetworkout.views.PlacesFragment"
+        android:name="com.steeshock.android.streetworkout.views.PlacesFragment"
         android:label="@string/title_places"
         tools:layout="@layout/fragment_places" >
         <action
@@ -21,25 +21,25 @@
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.android.streetworkout.views.MapFragment"
+        android:name="com.steeshock.android.streetworkout.views.MapFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.example.android.streetworkout.views.FavoritePlacesFragment"
+        android:name="com.steeshock.android.streetworkout.views.FavoritePlacesFragment"
         android:label="@string/title_favorites"
         tools:layout="@layout/fragment_favorite_places" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.android.streetworkout.views.ProfileFragment"
+        android:name="com.steeshock.android.streetworkout.views.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_add_place"
-        android:name="com.example.android.streetworkout.views.AddPlaceFragment"
+        android:name="com.steeshock.android.streetworkout.views.AddPlaceFragment"
         android:label="Добавить место"
         tools:layout="@layout/fragment_add_place" />
 </navigation>
