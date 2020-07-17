@@ -20,8 +20,7 @@ class Repository(
     suspend fun updatePlaces() {
         val response = placesAPI.getPlaces().body()
         response?.let {
-            placesDao.removeAllPlacesExceptFavorites(false)
-            placesDao.insertAllPlaces(it)
+            placesDao.updatePlaces(it)
         }
     }
 

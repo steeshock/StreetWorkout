@@ -8,6 +8,12 @@ import com.example.android.streetworkout.data.model.PlaceObject
 @Dao
 interface PlacesDao {
 
+    @Transaction
+    fun updatePlaces(places: List<PlaceObject>) {
+        removeAllPlacesExceptFavorites(false)
+        insertAllPlaces(places)
+    }
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlace(place: PlaceObject)
 
