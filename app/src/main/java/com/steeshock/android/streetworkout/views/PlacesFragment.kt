@@ -19,14 +19,17 @@ import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.steeshock.android.streetworkout.data.model.State
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
+@ExperimentalCoroutinesApi
+class PlacesFragment : BaseFragment(){
 
     private val placesViewModel: PlacesViewModel by viewModels {
         InjectorUtils.providePlacesViewModelFactory(requireActivity())
     }
 
-    private var toolbar: Toolbar? = null
+    private lateinit var placesAdapter: PlaceAdapter
     private lateinit var fab: FloatingActionButton
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
@@ -38,12 +41,9 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
         fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
 
-        fragmentPlacesBinding.refresher.setOnRefreshListener(this)
-
         fragmentPlacesBinding.lifecycleOwner = this
 
-        toolbar = fragmentPlacesBinding.toolbar
-        (container?.context as MainActivity).setSupportActionBar(toolbar)
+        (container?.context as MainActivity).setSupportActionBar(fragmentPlacesBinding.toolbar)
 
         fab = fragmentPlacesBinding.fab
 
@@ -52,7 +52,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val placesAdapter =
+        placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
                 override fun onPlaceClicked(item: Place) {
@@ -64,9 +64,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
                 }
             })
 
-        placesViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
-            places?.let { placesAdapter.setPlaces(it) }
-        })
+        initPlaces()
 
         fab.setOnClickListener {
             showAddPlaceFragment(it)
@@ -77,6 +75,43 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
             LinearLayoutManager(fragmentPlacesBinding.root.context)
 
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun initPlaces() {
+        placesViewModel.placesLiveData.observe(
+            viewLifecycleOwner,
+            Observer { state ->
+                when (state) {
+                    is State.Loading -> showLoading(true)
+                    is State.Success -> {
+                        if (state.data.isNotEmpty()) {
+                            placesAdapter.setPlaces(state.data.toMutableList())
+                            showLoading(false)
+                        }
+                    }
+                    is State.Error -> {
+                        //showToast(state.message)
+                        showLoading(false)
+                    }
+                }
+            }
+        )
+
+        fragmentPlacesBinding.refresher.setOnRefreshListener {
+            getPlaces()
+        }
+
+        if (placesViewModel.placesLiveData.value !is State.Success) {
+            getPlaces()
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        fragmentPlacesBinding.refresher.isRefreshing = isLoading
+    }
+
+    private fun getPlaces() {
+        placesViewModel.getPlaces()
     }
 
     private fun addPlaceToFavorites(place: Place) {
@@ -128,13 +163,5 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
-    }
-
-    override fun onRefresh() {
-        fragmentPlacesBinding.refresher.isRefreshing = true
-        Handler().postDelayed({
-            placesViewModel.updatePlaces()
-            fragmentPlacesBinding.refresher.isRefreshing = false
-        }, 2000)
     }
 }

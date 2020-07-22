@@ -15,7 +15,9 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class FavoritePlacesFragment : BaseFragment() {
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels {

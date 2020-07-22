@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.model.Place
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+@ExperimentalCoroutinesApi
 class FavoritePlacesViewModel(private val repository: Repository) : ViewModel() {
 
     val allFavoritePlacesLive: LiveData<List<Place>> = repository.allFavoritePlaces
