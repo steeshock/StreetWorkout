@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.streetworkout">
+    package="com.steeshock.android.streetworkout">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -31,7 +31,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".common.MainActivity"
+            android:name="com.steeshock.android.streetworkout.common.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
         android:exported attribute to "false" stops other apps from starting this
         service, even when using an explicit intent. -->
         <service
-            android:name=".services.FetchAddressIntentService"
+            android:name="com.steeshock.android.streetworkout.services.FetchAddressIntentService"
             android:exported="false"/>
     </application>
 
