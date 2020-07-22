@@ -1,19 +1,19 @@
-package com.steeshock.android.streetworkout.data
+package com.steeshock.android.streetworkout.data.repository
 
 import androidx.lifecycle.LiveData
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 
 class Repository(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
 ) {
 
-    val allPlaces: LiveData<List<PlaceObject>> = placesDao.getPlacesLive()
-    val allFavoritePlaces: LiveData<List<PlaceObject>> = placesDao.getFavoritePlacesLive()
+    val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
+    val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
-    fun insertPlace(place: PlaceObject) {
+    fun insertPlace(place: Place) {
         placesDao.insertPlace(place)
     }
 
@@ -38,8 +38,14 @@ class Repository(
         private var instance: Repository? = null
 
         fun getInstance(placesDao: PlacesDao, placesAPI: PlacesAPI) =
-            instance ?: synchronized(this) {
-                instance ?: Repository(placesDao, placesAPI).also { instance = it }
+            instance
+                ?: synchronized(this) {
+                instance
+                    ?: Repository(
+                        placesDao,
+                        placesAPI
+                    )
+                        .also { instance = it }
             }
     }
 }

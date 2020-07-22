@@ -1,7 +1,7 @@
 package com.steeshock.android.streetworkout.utils
 
 import android.content.Context
-import com.steeshock.android.streetworkout.data.Repository
+import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.database.PlacesDatabase
 import com.steeshock.android.streetworkout.utils.factories.CustomAddPlaceViewModelFactory
 import com.steeshock.android.streetworkout.utils.factories.CustomFavoritePlacesViewModelFactory

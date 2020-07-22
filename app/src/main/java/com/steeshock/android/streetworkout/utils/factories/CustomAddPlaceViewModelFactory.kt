@@ -2,7 +2,7 @@ package com.steeshock.android.streetworkout.utils.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.steeshock.android.streetworkout.data.Repository
+import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 
 class CustomAddPlaceViewModelFactory(private val repository: Repository) :

@@ -14,7 +14,7 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
@@ -55,11 +55,11 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         val placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: PlaceObject) {
+                override fun onPlaceClicked(item: Place) {
                     showBottomSheet()
                 }
 
-                override fun onLikeClicked(item: PlaceObject) {
+                override fun onLikeClicked(item: Place) {
                     addPlaceToFavorites(item)
                 }
             })
@@ -79,7 +79,7 @@ class PlacesFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun addPlaceToFavorites(place: PlaceObject) {
+    private fun addPlaceToFavorites(place: Place) {
         place.changeFavoriteState()
         placesViewModel.insertPlace(place)
     }

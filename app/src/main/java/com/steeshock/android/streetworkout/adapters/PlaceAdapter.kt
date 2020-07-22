@@ -3,12 +3,12 @@ package com.steeshock.android.streetworkout.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
-    private var items = emptyList<PlaceObject>()
+    private var items = emptyList<Place>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -19,7 +19,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         holder.bind(items[position])
     }
 
-    internal fun setPlaces(places: List<PlaceObject>) {
+    internal fun setPlaces(places: List<Place>) {
         this.items = places
         notifyDataSetChanged()
     }
@@ -40,7 +40,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             }
         }
 
-        fun bind(item: PlaceObject) {
+        fun bind(item: Place) {
             binding.apply {
                 place = item
                 executePendingBindings()
@@ -54,7 +54,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     interface Callback {
-        fun onPlaceClicked(item: PlaceObject)
-        fun onLikeClicked(item: PlaceObject)
+        fun onPlaceClicked(item: Place)
+        fun onLikeClicked(item: Place)
     }
 }

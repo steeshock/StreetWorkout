@@ -2,36 +2,37 @@ package com.steeshock.android.streetworkout.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface PlacesDao {
 
     @Transaction
-    fun updatePlaces(places: List<PlaceObject>) {
+    fun updatePlaces(places: List<Place>) {
         removeAllPlacesExceptFavorites(false)
         insertAllPlaces(places)
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlace(place: PlaceObject)
+    fun insertPlace(place: Place)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAllPlaces(places: List<PlaceObject>)
+    fun insertAllPlaces(places: List<Place>)
 
-    @Query("select * from places_table")
-    fun getPlaces(): MutableList<PlaceObject>
+    @Query("SELECT * FROM ${Place.TABLE_NAME}")
+    fun getPlaces(): Flow<List<Place>>
 
-    @Query("select * from places_table")
-    fun getPlacesLive(): LiveData<List<PlaceObject>>
+    @Query("SELECT * FROM ${Place.TABLE_NAME}")
+    fun getPlacesLive(): LiveData<List<Place>>
 
-    @Query("select * from places_table where isFavorite")
-    fun getFavoritePlacesLive(): LiveData<List<PlaceObject>>
+    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE isFavorite")
+    fun getFavoritePlacesLive(): LiveData<List<Place>>
 
-    @Query("delete from places_table")
+    @Query("DELETE FROM ${Place.TABLE_NAME}")
     fun clearPlacesTable()
 
-    @Query("delete from places_table where isFavorite = :boolean")
+    @Query("DELETE FROM ${Place.TABLE_NAME} WHERE isFavorite = :boolean")
     fun removeAllPlacesExceptFavorites(boolean: Boolean)
 }

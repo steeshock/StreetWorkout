@@ -3,20 +3,20 @@ package com.steeshock.android.streetworkout.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.steeshock.android.streetworkout.data.Repository
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.repository.Repository
+import com.steeshock.android.streetworkout.data.model.Place
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
-    val allPlacesLive: LiveData<List<PlaceObject>> = repository.allPlaces
+    val allPlacesLive: LiveData<List<Place>> = repository.allPlaces
 
     fun clearPlacesTable() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearPlacesTable()
     }
 
-    fun insertPlace(place: PlaceObject) = viewModelScope.launch(Dispatchers.IO) {
+    fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)
     }
 
