@@ -22,7 +22,7 @@ import androidx.navigation.findNavController
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
@@ -276,7 +276,7 @@ class AddPlaceFragment : Fragment() {
         val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
 
         addPlaceViewModel.insert(
-            PlaceObject(
+            Place(
                 title = fragmentAddPlaceBinding.placeTitle.text.toString(),
                 description = fragmentAddPlaceBinding.placeDescription.text.toString(),
                 latitude = if (position.size > 1) position[0].toDouble() else 54.513845,

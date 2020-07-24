@@ -11,11 +11,13 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class FavoritePlacesFragment : BaseFragment() {
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels {
@@ -48,11 +50,11 @@ class FavoritePlacesFragment : BaseFragment() {
         val placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: PlaceObject) {
+                override fun onPlaceClicked(item: Place) {
                     showBottomSheet()
                 }
 
-                override fun onLikeClicked(item: PlaceObject) {
+                override fun onLikeClicked(item: Place) {
                     removePlaceFromFavorites(item)
                 }
             })
@@ -68,7 +70,7 @@ class FavoritePlacesFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun removePlaceFromFavorites(place: PlaceObject) {
+    private fun removePlaceFromFavorites(place: Place) {
         place.changeFavoriteState()
         favoritePlacesViewModel.insertPlace(place)
     }

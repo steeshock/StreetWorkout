@@ -3,9 +3,10 @@ package com.steeshock.android.streetworkout.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.steeshock.android.streetworkout.data.model.Place.Companion.TABLE_NAME
 
-@Entity(tableName = "places_table")
-data class PlaceObject(
+@Entity(tableName = TABLE_NAME)
+data class Place(
 
     @ColumnInfo(name = "imagePath")
     var imagePath: String = "https://picsum.photos/30${(0..9).random()}/200",
@@ -49,5 +50,9 @@ data class PlaceObject(
 
     fun changeFavoriteState() {
         this.isFavorite = !this.isFavorite
+    }
+
+    companion object {
+        const val TABLE_NAME = "places_table"
     }
 }

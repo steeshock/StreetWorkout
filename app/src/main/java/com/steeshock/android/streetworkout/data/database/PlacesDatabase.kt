@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.model.Place
 
 
 @Database(
-    entities = [PlaceObject::class],
+    entities = [Place::class],
     version = 1,
     exportSchema = false
 )

@@ -2,10 +2,12 @@ package com.steeshock.android.streetworkout.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.steeshock.android.streetworkout.data.Repository
-import com.steeshock.android.streetworkout.data.model.PlaceObject
+import com.steeshock.android.streetworkout.data.repository.Repository
+import com.steeshock.android.streetworkout.data.model.Place
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class MapViewModel(private val repository: Repository) : ViewModel() {
 
-    val allPlacesLive: LiveData<List<PlaceObject>> = repository.allPlaces
+    val allPlacesLive: LiveData<List<Place>> = repository.allPlaces
 }

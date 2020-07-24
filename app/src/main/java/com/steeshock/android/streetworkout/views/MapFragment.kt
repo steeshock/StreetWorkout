@@ -5,6 +5,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
@@ -18,8 +19,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.steeshock.android.streetworkout.data.model.Place
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
+@ExperimentalCoroutinesApi
 class MapFragment : BaseFragment(), OnMapReadyCallback {
     private val mapViewModel: MapViewModel by viewModels {
         InjectorUtils.provideMapViewModelFactory(requireActivity())
@@ -53,7 +57,10 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        showAllPlaces()
+
+        mapViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
+            places?.let { showAllPlaces(it) }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -92,15 +99,15 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showAllPlaces() {
-        if (mapViewModel.allPlacesLive.value?.isNotEmpty()!!)
+    private fun showAllPlaces(places: List<Place>) {
+        if (places.isNotEmpty())
         {
             lateinit var pin: LatLng
             lateinit var bounds: LatLngBounds
             val pinsPositions = mutableListOf<LatLng>()
             val builder = LatLngBounds.Builder()
 
-            for (place in mapViewModel.allPlacesLive.value!!) {
+            for (place in places) {
                 pin = LatLng(place.latitude, place.longitude)
                 mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)
