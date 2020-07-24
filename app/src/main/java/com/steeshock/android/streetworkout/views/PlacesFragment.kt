@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
@@ -71,7 +72,7 @@ class PlacesFragment : BaseFragment(){
             CategoryAdapter(object :
                 CategoryAdapter.Callback {
                 override fun onClicked(item: Category) {
-                    //
+                    Toast.makeText(requireActivity(), item.name, Toast.LENGTH_SHORT).show()
                 }
             })
 
