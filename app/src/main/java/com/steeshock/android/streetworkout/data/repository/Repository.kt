@@ -30,6 +30,7 @@ class Repository(
             override fun fetchFromLocal(): Flow<List<Place>> = placesDao.getPlaces()
 
             override suspend fun fetchFromRemote(): Response<List<Place>> = placesAPI.getPlaces()
+
         }.asFlow().flowOn(Dispatchers.IO)
     }
 
@@ -42,6 +43,7 @@ class Repository(
             override fun fetchFromLocal(): Flow<List<Category>> = placesDao.getCategories()
 
             override suspend fun fetchFromRemote(): Response<List<Category>> = placesAPI.getCategories()
+
         }.asFlow().flowOn(Dispatchers.IO)
     }
 
@@ -58,6 +60,14 @@ class Repository(
 
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    fun clearCategoriesTable() {
+        placesDao.clearCategoriesTable()
+    }
+
+    fun clearDatabase() {
+        placesDao.clearDatabase()
     }
 
     fun removeAllPlacesExceptFavorites(boolean: Boolean) {

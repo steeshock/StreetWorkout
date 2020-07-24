@@ -41,8 +41,8 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun clearPlacesTable() = viewModelScope.launch(Dispatchers.IO) {
-        repository.clearPlacesTable()
+    fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
+        repository.clearDatabase()
     }
 
     fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {

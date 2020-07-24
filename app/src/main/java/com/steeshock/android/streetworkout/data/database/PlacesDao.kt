@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 interface PlacesDao {
 
     @Transaction
-    fun updatePlaces(places: List<Place>) {
-        removeAllPlacesExceptFavorites(false)
-        insertAllPlaces(places)
+    fun clearDatabase() {
+        clearPlacesTable()
+        clearCategoriesTable()
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -39,6 +39,9 @@ interface PlacesDao {
 
     @Query("DELETE FROM ${Place.TABLE_NAME}")
     fun clearPlacesTable()
+
+    @Query("DELETE FROM ${Category.TABLE_NAME}")
+    fun clearCategoriesTable()
 
     @Query("DELETE FROM ${Place.TABLE_NAME} WHERE isFavorite = :boolean")
     fun removeAllPlacesExceptFavorites(boolean: Boolean)

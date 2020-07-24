@@ -3,43 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="category"
             type="com.steeshock.android.streetworkout.data.model.Category" />
+
+        <variable
+            name="itemClickListener"
+            type="android.view.View.OnClickListener" />
     </data>
 
-    <FrameLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_card_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin"
+        android:backgroundTint="@color/grayIconColor"
+        android:elevation="2dp"
+        android:onClick="@{itemClickListener}"
+        android:padding="0dp"
+        app:cardCornerRadius="20dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/category_card_view"
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/category_text_view"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:elevation="2dp"
-            android:padding="0dp"
-            app:cardCornerRadius="15dp"
-            app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="true"
-            tools:ignore="RtlCompat">
+            android:gravity="center"
+            android:text="@{category.name}"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/category_text_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/grayIconColor"
-                android:gravity="center"
-                android:text="@{category.name}"
-                android:textAlignment="center"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"/>
-
-        </androidx.cardview.widget.CardView>
-
-    </FrameLayout>
+    </androidx.cardview.widget.CardView>
 </layout>
 

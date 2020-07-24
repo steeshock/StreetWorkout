@@ -19,6 +19,8 @@ import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.steeshock.android.streetworkout.adapters.CategoryAdapter
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.State
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -30,6 +32,7 @@ class PlacesFragment : BaseFragment(){
     }
 
     private lateinit var placesAdapter: PlaceAdapter
+    private lateinit var categoriesAdapter: CategoryAdapter
     private lateinit var fab: FloatingActionButton
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
@@ -64,7 +67,13 @@ class PlacesFragment : BaseFragment(){
                 }
             })
 
-        initData()
+        categoriesAdapter =
+            CategoryAdapter(object :
+                CategoryAdapter.Callback {
+                override fun onClicked(item: Category) {
+                    //
+                }
+            })
 
         fab.setOnClickListener {
             showAddPlaceFragment(it)
@@ -73,6 +82,12 @@ class PlacesFragment : BaseFragment(){
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentPlacesBinding.placesRecycler.layoutManager =
             LinearLayoutManager(fragmentPlacesBinding.root.context)
+
+        fragmentPlacesBinding.categoriesRecycler.adapter = categoriesAdapter
+        fragmentPlacesBinding.categoriesRecycler.layoutManager =
+            LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
+
+        initData()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -90,7 +105,24 @@ class PlacesFragment : BaseFragment(){
                         }
                     }
                     is State.Error -> {
-                        //showToast(state.message)
+                        showLoading(false)
+                    }
+                }
+            }
+        )
+
+        placesViewModel.categoriesLiveData.observe(
+            viewLifecycleOwner,
+            Observer { state ->
+                when (state) {
+                    is State.Loading -> showLoading(true)
+                    is State.Success -> {
+                        if (state.data.isNotEmpty()) {
+                            categoriesAdapter.setCategories(state.data.toMutableList())
+                            showLoading(false)
+                        }
+                    }
+                    is State.Error -> {
                         showLoading(false)
                     }
                 }
@@ -155,7 +187,7 @@ class PlacesFragment : BaseFragment(){
                 true
             }
             R.id.action_map -> {
-                placesViewModel.removeAllPlacesExceptFavorites(false)
+                placesViewModel.clearDatabase()
                 true
             }
             else -> super.onOptionsItemSelected(item)
