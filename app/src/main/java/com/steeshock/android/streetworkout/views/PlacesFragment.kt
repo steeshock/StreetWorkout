@@ -64,7 +64,7 @@ class PlacesFragment : BaseFragment(){
                 }
             })
 
-        initPlaces()
+        initData()
 
         fab.setOnClickListener {
             showAddPlaceFragment(it)
@@ -77,7 +77,7 @@ class PlacesFragment : BaseFragment(){
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initPlaces() {
+    private fun initData() {
         placesViewModel.placesLiveData.observe(
             viewLifecycleOwner,
             Observer { state ->
@@ -99,10 +99,12 @@ class PlacesFragment : BaseFragment(){
 
         fragmentPlacesBinding.refresher.setOnRefreshListener {
             getPlaces()
+            getCategories()
         }
 
         if (placesViewModel.placesLiveData.value !is State.Success) {
             getPlaces()
+            getCategories()
         }
     }
 
@@ -112,6 +114,10 @@ class PlacesFragment : BaseFragment(){
 
     private fun getPlaces() {
         placesViewModel.getPlaces()
+    }
+
+    private fun getCategories() {
+        placesViewModel.getCategories()
     }
 
     private fun addPlaceToFavorites(place: Place) {

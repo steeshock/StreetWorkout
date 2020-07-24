@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="category"
+            type="com.steeshock.android.streetworkout.data.model.Category" />
+    </data>
+
+    <FrameLayout
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/category_card_view"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:padding="0dp"
+            app:cardCornerRadius="15dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true"
+            tools:ignore="RtlCompat">
+
+            <TextView
+                android:id="@+id/category_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grayIconColor"
+                android:gravity="center"
+                android:text="@{category.name}"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"/>
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+</layout>
+
