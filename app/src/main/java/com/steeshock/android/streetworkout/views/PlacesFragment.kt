@@ -72,7 +72,7 @@ class PlacesFragment : BaseFragment(){
             CategoryAdapter(object :
                 CategoryAdapter.Callback {
                 override fun onClicked(item: Category) {
-                    Toast.makeText(requireActivity(), item.name, Toast.LENGTH_SHORT).show()
+                    filterByCategory(item)
                 }
             })
 
@@ -156,7 +156,14 @@ class PlacesFragment : BaseFragment(){
 
     private fun addPlaceToFavorites(place: Place) {
         place.changeFavoriteState()
-        placesViewModel.insertPlace(place)
+        placesViewModel.updatePlace(place)
+    }
+
+
+    private fun filterByCategory(category: Category) {
+        //ToDo Filter items
+        category.changeSelectedState()
+        placesViewModel.updateCategory(category)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -49,6 +49,18 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         repository.insertPlace(place)
     }
 
+    fun insertCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertCategory(category)
+    }
+
+    fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateCategory(category)
+    }
+
+    fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updatePlace(place)
+    }
+
     fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         repository.removeAllPlacesExceptFavorites(boolean)
     }

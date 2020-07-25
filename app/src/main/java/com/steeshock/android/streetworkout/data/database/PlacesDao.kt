@@ -19,6 +19,9 @@ interface PlacesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlace(place: Place)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCategory(category: Category)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllPlaces(places: List<Place>)
 
@@ -45,4 +48,10 @@ interface PlacesDao {
 
     @Query("DELETE FROM ${Place.TABLE_NAME} WHERE isFavorite = :boolean")
     fun removeAllPlacesExceptFavorites(boolean: Boolean)
+
+    @Update
+    fun updateCategory(category: Category)
+
+    @Update
+    fun updatePlace(place: Place)
 }

@@ -51,6 +51,18 @@ class Repository(
         placesDao.insertPlace(place)
     }
 
+    fun insertCategory(category: Category) {
+        placesDao.insertCategory(category)
+    }
+
+    fun updateCategory(category: Category) {
+        placesDao.updateCategory(category)
+    }
+
+    fun updatePlace(place: Place) {
+        placesDao.updatePlace(place)
+    }
+
 //    suspend fun updatePlaces() {
 //        val response = placesAPI.getPlaces().body()
 //        response?.let {
