@@ -29,6 +29,7 @@ import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
+import com.steeshock.android.streetworkout.data.model.Category
 
 
 class AddPlaceFragment : Fragment() {
@@ -281,7 +282,8 @@ class AddPlaceFragment : Fragment() {
                 description = fragmentAddPlaceBinding.placeDescription.text.toString(),
                 latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
                 longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
-                address = fragmentAddPlaceBinding.placeAddress.text.toString()
+                address = fragmentAddPlaceBinding.placeAddress.text.toString(),
+                categories = listOf(Category("Дворовые"), Category("Паркур"))
             )
         )
     }

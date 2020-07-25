@@ -45,6 +45,10 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
         }
     }
 
+    fun getSelectedCategories(): List<Category> {
+        return items.filter { it.isSelected }
+    }
+
     interface Callback {
         fun onClicked(item: Category)
     }

@@ -37,6 +37,8 @@ class PlacesFragment : BaseFragment(){
     private lateinit var fab: FloatingActionButton
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
+    private var filterList: MutableList<Category> = mutableListOf()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -94,6 +96,8 @@ class PlacesFragment : BaseFragment(){
     }
 
     private fun initData() {
+
+        filterList = categoriesAdapter.getSelectedCategories() as MutableList<Category>
         
         placesViewModel.placesLiveData.observe(
             viewLifecycleOwner,
@@ -161,7 +165,10 @@ class PlacesFragment : BaseFragment(){
 
 
     private fun filterByCategory(category: Category) {
-        //ToDo Filter items
+
+        if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
+        placesAdapter.filterItems(filterList)
+
         category.changeSelectedState()
         placesViewModel.updateCategory(category)
     }
