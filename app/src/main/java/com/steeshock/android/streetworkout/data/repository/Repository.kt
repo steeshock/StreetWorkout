@@ -21,11 +21,14 @@ class Repository(
     val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
-    fun getAllPlaces(): Flow<State<List<Place>>> {
+    fun getAllPlaces(forceUpdate: Boolean  = false): Flow<State<List<Place>>> {
         return object : NetworkBoundRepository<List<Place>, List<Place>>() {
 
-            override suspend fun saveRemoteData(response: List<Place>) =
+            override suspend fun saveRemoteData(response: List<Place>) {
+                if (forceUpdate)
+                    placesDao.clearPlacesTable()
                 placesDao.insertAllPlaces(response)
+            }
 
             override fun fetchFromLocal(): Flow<List<Place>> = placesDao.getPlaces()
 
@@ -34,11 +37,14 @@ class Repository(
         }.asFlow().flowOn(Dispatchers.IO)
     }
 
-    fun getAllCategories(): Flow<State<List<Category>>> {
+    fun getAllCategories(forceUpdate: Boolean  = false): Flow<State<List<Category>>> {
         return object : NetworkBoundRepository<List<Category>, List<Category>>() {
 
-            override suspend fun saveRemoteData(response: List<Category>) =
+            override suspend fun saveRemoteData(response: List<Category>) {
+                if (forceUpdate)
+                    placesDao.clearCategoriesTable()
                 placesDao.insertAllCategories(response)
+            }
 
             override fun fetchFromLocal(): Flow<List<Category>> = placesDao.getCategories()
 
@@ -62,13 +68,6 @@ class Repository(
     fun updatePlace(place: Place) {
         placesDao.updatePlace(place)
     }
-
-//    suspend fun updatePlaces() {
-//        val response = placesAPI.getPlaces().body()
-//        response?.let {
-//            placesDao.updatePlaces(it)
-//        }
-//    }
 
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()

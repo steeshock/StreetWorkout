@@ -25,17 +25,17 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
     val categoriesLiveData: LiveData<State<List<Category>>>
         get() = _categoriesLiveData
 
-    fun getPlaces() {
+    fun getPlaces(forceUpdate: Boolean  = false) {
         viewModelScope.launch {
-            repository.getAllPlaces().collect {
+            repository.getAllPlaces(forceUpdate).collect {
                 _placesLiveData.value = it
             }
         }
     }
 
-    fun getCategories() {
+    fun getCategories(forceUpdate: Boolean  = false) {
         viewModelScope.launch {
-            repository.getAllCategories().collect {
+            repository.getAllCategories(forceUpdate).collect {
                 _categoriesLiveData.value = it
             }
         }

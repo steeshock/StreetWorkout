@@ -91,13 +91,12 @@ class PlacesFragment : BaseFragment(){
             LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         initData()
+        filterData()
 
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initData() {
-
-        filterList = categoriesAdapter.getSelectedCategories() as MutableList<Category>
         
         placesViewModel.placesLiveData.observe(
             viewLifecycleOwner,
@@ -146,16 +145,21 @@ class PlacesFragment : BaseFragment(){
         }
     }
 
+
+    private fun filterData() {
+        filterList = categoriesAdapter.getSelectedCategories() as MutableList<Category>
+    }
+
     private fun showLoading(isLoading: Boolean) {
         fragmentPlacesBinding.refresher.isRefreshing = isLoading
     }
 
-    private fun getPlaces() {
-        placesViewModel.getPlaces()
+    private fun getPlaces(forceUpdate: Boolean  = false) {
+        placesViewModel.getPlaces(forceUpdate)
     }
 
-    private fun getCategories() {
-        placesViewModel.getCategories()
+    private fun getCategories(forceUpdate: Boolean  = false) {
+        placesViewModel.getCategories(forceUpdate)
     }
 
     private fun addPlaceToFavorites(place: Place) {
