@@ -45,8 +45,8 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
         }
     }
 
-    fun getSelectedCategories(): List<Category> {
-        return items.filter { it.isSelected }
+    fun getSelectedCategories(): MutableList<Category> {
+        return items.filter { it.isSelected }.toMutableList()
     }
 
     interface Callback {

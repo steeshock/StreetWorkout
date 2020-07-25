@@ -91,7 +91,6 @@ class PlacesFragment : BaseFragment(){
             LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         initData()
-        filterData()
 
         super.onViewCreated(view, savedInstanceState)
     }
@@ -106,6 +105,7 @@ class PlacesFragment : BaseFragment(){
                     is State.Success -> {
                         if (state.data.isNotEmpty()) {
                             placesAdapter.setPlaces(state.data.toMutableList())
+                            filterData()
                             showLoading(false)
                         }
                     }
@@ -124,6 +124,7 @@ class PlacesFragment : BaseFragment(){
                     is State.Success -> {
                         if (state.data.isNotEmpty()) {
                             categoriesAdapter.setCategories(state.data.toMutableList())
+                            updateFilterList()
                             showLoading(false)
                         }
                     }
@@ -143,11 +144,6 @@ class PlacesFragment : BaseFragment(){
             getPlaces()
             getCategories()
         }
-    }
-
-
-    private fun filterData() {
-        filterList = categoriesAdapter.getSelectedCategories() as MutableList<Category>
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -171,10 +167,20 @@ class PlacesFragment : BaseFragment(){
     private fun filterByCategory(category: Category) {
 
         if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
-        placesAdapter.filterItems(filterList)
+        filterData()
 
         category.changeSelectedState()
         placesViewModel.updateCategory(category)
+
+    }
+
+
+    private fun updateFilterList() {
+        filterList = categoriesAdapter.getSelectedCategories()
+    }
+
+    private fun filterData() {
+        placesAdapter.filterItems(filterList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
