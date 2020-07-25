@@ -94,6 +94,7 @@ class PlacesFragment : BaseFragment(){
     }
 
     private fun initData() {
+        
         placesViewModel.placesLiveData.observe(
             viewLifecycleOwner,
             Observer { state ->
@@ -188,7 +189,7 @@ class PlacesFragment : BaseFragment(){
                 true
             }
             R.id.action_map -> {
-                placesViewModel.clearDatabase()
+                placesViewModel.removeAllPlacesExceptFavorites(false)
                 true
             }
             else -> super.onOptionsItemSelected(item)

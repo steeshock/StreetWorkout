@@ -24,7 +24,6 @@ class FavoritePlacesFragment : BaseFragment() {
         InjectorUtils.provideFavoritePlacesViewModelFactory(requireActivity())
     }
 
-    private var toolbar: Toolbar? = null
     private lateinit var fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding
 
     override fun onCreateView(
@@ -39,8 +38,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
         fragmentFavoritePlacesBinding.lifecycleOwner = this
 
-        toolbar = fragmentFavoritePlacesBinding.toolbar
-        (container?.context as MainActivity).setSupportActionBar(toolbar)
+        (container?.context as MainActivity).setSupportActionBar(fragmentFavoritePlacesBinding.toolbar)
 
         return fragmentFavoritePlacesBinding.root
     }
