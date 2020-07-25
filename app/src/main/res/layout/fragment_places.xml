@@ -38,11 +38,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/mainBackGroundColor" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/separatorColor" />
-
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/refresher"
                 android:layout_width="match_parent"
