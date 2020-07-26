@@ -23,7 +23,8 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     internal fun setPlaces(places: List<Place>) {
         this.items = places
-        this.tempItems = places
+        this.tempItems = places.toList()
+        for(item in tempItems) item.categories?.forEach { it.isSelected = true }
         notifyDataSetChanged()
     }
 
@@ -52,14 +53,13 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     fun filterItems(filterList: MutableList<Category>) {
-        val tempList: List<Category> = filterList.toList()
-        for(item in tempList) item.isSelected = false
 
         if (filterList.isNullOrEmpty())
             this.items = tempItems
         else {
-            this.items = tempItems.filter { it.categories!!.containsAll(tempList)}
+            this.items = tempItems.filter { it.categories!!.containsAll(filterList)}
         }
+
         notifyDataSetChanged()
     }
 
