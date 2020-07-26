@@ -14,6 +14,10 @@
             type="android.view.View.OnClickListener" />
 
         <variable
+            name="addCategoryClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
             name="viewmodel"
             type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
     </data>
@@ -55,7 +59,10 @@
                 android:id="@+id/place_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginEnd="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/list_item_spacing_half"
+                android:layout_marginBottom="@dimen/list_item_spacing_half"
                 android:ems="10"
                 android:hint="@string/hint_place_name"
                 android:inputType="textPersonName" />
@@ -64,7 +71,10 @@
                 android:id="@+id/place_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginEnd="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/list_item_spacing_half"
+                android:layout_marginBottom="@dimen/list_item_spacing_half"
                 android:ems="10"
                 android:hint="@string/hint_place_address"
                 android:inputType="textPersonName" />
@@ -73,7 +83,10 @@
                 android:id="@+id/place_position"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginEnd="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/list_item_spacing_half"
+                android:layout_marginBottom="@dimen/list_item_spacing_half"
                 android:ems="10"
                 android:hint="@string/hint_place_position"
                 android:inputType="textPersonName" />
@@ -82,18 +95,57 @@
                 android:id="@+id/place_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginEnd="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/list_item_spacing_half"
+                android:layout_marginBottom="@dimen/list_item_spacing_half"
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="@string/hint_place_description"
                 android:inputType="textMultiLine" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/place_categories"
+                    android:focusable="false"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_marginTop="@dimen/list_item_spacing_half"
+                    android:layout_marginBottom="@dimen/list_item_spacing_half"
+                    android:layout_weight="1"
+                    android:hint="@string/hint_place_categories"
+                    android:inputType="textPersonName" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_marginEnd="@dimen/list_item_spacing"
+                    android:layout_marginTop="@dimen/list_item_spacing_half"
+                    android:layout_marginBottom="@dimen/list_item_spacing_half"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:onClick="@{addCategoryClickListener}"
+                    android:src="@drawable/ic_add_circle_36dp">
+
+                </ImageButton>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/myPositionBtn"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_marginEnd="@dimen/list_item_spacing"
+                android:layout_marginTop="@dimen/list_item_spacing"
+                android:layout_marginBottom="@dimen/list_item_spacing_half"
                 android:backgroundTint="@android:color/transparent"
                 android:onClick="@{getMyPositionClickListener}"
                 android:text="@string/get_my_position_btn" />

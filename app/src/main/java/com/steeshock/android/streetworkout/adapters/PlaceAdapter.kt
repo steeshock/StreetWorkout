@@ -52,9 +52,6 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     fun filterItems(filterList: MutableList<Category>) {
-
-        //Убрать костыли
-
         val tempList: List<Category> = filterList.toList()
         for(item in tempList) item.isSelected = false
 

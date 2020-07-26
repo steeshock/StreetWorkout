@@ -20,6 +20,7 @@ class Repository(
 
     val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
+    val allCategories: LiveData<List<Category>> = placesDao.getCategoriesLive()
 
     fun getAllPlaces(forceUpdate: Boolean  = false): Flow<State<List<Place>>> {
         return object : NetworkBoundRepository<List<Place>, List<Place>>() {

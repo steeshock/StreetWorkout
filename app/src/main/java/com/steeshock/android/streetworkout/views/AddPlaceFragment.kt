@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
@@ -30,8 +31,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.steeshock.android.streetworkout.data.model.Category
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
+@ExperimentalCoroutinesApi
 class AddPlaceFragment : Fragment() {
 
     private val TAG = "LocationTag"
@@ -51,6 +54,8 @@ class AddPlaceFragment : Fragment() {
     private val addPlaceViewModel: AddPlaceViewModel by viewModels {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
     }
+    private var allCategories = emptyList<Category>()
+    private var selectedCategories: MutableSet<Category> = mutableSetOf()
 
     private lateinit var fragmentAddPlaceBinding: FragmentAddPlaceBinding
 
@@ -72,6 +77,10 @@ class AddPlaceFragment : Fragment() {
             getMyPosition()
         }
 
+        fragmentAddPlaceBinding.setAddCategoryClickListener {
+            addRandomCategory()
+        }
+
         fragmentAddPlaceBinding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_done -> {
@@ -86,6 +95,25 @@ class AddPlaceFragment : Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return fragmentAddPlaceBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner, Observer { categories ->
+            categories?.let { allCategories = it }
+        })
+
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun addRandomCategory() {
+        val newCategory = Category(allCategories[(allCategories.indices).random()].name, false)
+
+        if (!selectedCategories.contains(newCategory)) {
+            val newValue = fragmentAddPlaceBinding.placeCategories.text.append(newCategory.name, "; ")
+            selectedCategories.add(newCategory)
+            fragmentAddPlaceBinding.placeCategories.text = newValue
+        }
     }
 
     private fun getMyPosition() {
@@ -283,7 +311,7 @@ class AddPlaceFragment : Fragment() {
                 latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
                 longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
                 address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-                categories = listOf(Category("Дворовые"), Category("Паркур"))
+                categories = selectedCategories.toMutableList()
             )
         )
     }
