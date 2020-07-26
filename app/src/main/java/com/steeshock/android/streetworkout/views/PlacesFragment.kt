@@ -96,7 +96,7 @@ class PlacesFragment : BaseFragment(){
     }
 
     private fun initData() {
-        
+
         placesViewModel.placesLiveData.observe(
             viewLifecycleOwner,
             Observer { state ->
@@ -142,6 +142,9 @@ class PlacesFragment : BaseFragment(){
 
         if (placesViewModel.placesLiveData.value !is State.Success) {
             getPlaces()
+        }
+
+        if (placesViewModel.categoriesLiveData.value !is State.Success) {
             getCategories()
         }
     }
@@ -166,7 +169,9 @@ class PlacesFragment : BaseFragment(){
 
     private fun filterByCategory(category: Category) {
 
-        if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
+        val newCategory = category.copy(isSelected = true)
+        
+        if (filterList.contains(newCategory)) filterList.remove(newCategory) else filterList.add(newCategory)
         filterData()
 
         category.changeSelectedState()
