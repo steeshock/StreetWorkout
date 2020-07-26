@@ -4,14 +4,18 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
+import com.steeshock.android.streetworkout.utils.Converters
 
 
 @Database(
-    entities = [Place::class],
+    entities = [Place::class, Category::class],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class PlacesDatabase : RoomDatabase() {
 
     abstract fun getPlacesDao(): PlacesDao

@@ -3,12 +3,14 @@ package com.steeshock.android.streetworkout.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
     private var items = emptyList<Place>()
+    private var tempItems = emptyList<Place>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -21,6 +23,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     internal fun setPlaces(places: List<Place>) {
         this.items = places
+        this.tempItems = places
         notifyDataSetChanged()
     }
 
@@ -48,8 +51,15 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
     }
 
-    fun sortItems() {
-        this.items = items.sortedBy {placeObject ->  placeObject.timestamp}
+    fun filterItems(filterList: MutableList<Category>) {
+        val tempList: List<Category> = filterList.toList()
+        for(item in tempList) item.isSelected = false
+
+        if (filterList.isNullOrEmpty())
+            this.items = tempItems
+        else {
+            this.items = tempItems.filter { it.categories!!.containsAll(tempList)}
+        }
         notifyDataSetChanged()
     }
 

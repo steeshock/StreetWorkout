@@ -19,14 +19,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/mainBackGroundColor"
+            android:elevation="8dp"
             app:layout_constraintTop_toTopOf="parent"
             app:title="@string/title_map"
             app:titleTextColor="@android:color/black">
+
         </androidx.appcompat.widget.Toolbar>
 
         <fragment
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

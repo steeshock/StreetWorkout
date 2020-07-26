@@ -17,9 +17,10 @@
     <string name="hint_place_name">Название места</string>
     <string name="hint_place_address">Адрес места</string>
     <string name="hint_place_position">Координаты широта/долгота</string>
+    <string name="hint_place_categories">Нажмите справа для выбора</string>
     <string name="hint_place_description">Краткое описание</string>
     <string name="title_activity_maps">Map</string>
-    <string name="get_my_position_btn">Определить мою геопозицию</string>
+    <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>

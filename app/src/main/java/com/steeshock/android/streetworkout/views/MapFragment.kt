@@ -31,7 +31,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private var toolbar: Toolbar? = null
     private lateinit var fragmentMapBinding: FragmentMapBinding
 
     override fun onCreateView(
@@ -46,8 +45,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
         fragmentMapBinding.viewmodel = mapViewModel
 
-        toolbar = fragmentMapBinding.toolbar
-        (container?.context as MainActivity).setSupportActionBar(toolbar)
+        (container?.context as MainActivity).setSupportActionBar(fragmentMapBinding.toolbar)
 
         mapFragment?.getMapAsync(this)
 
@@ -100,8 +98,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun showAllPlaces(places: List<Place>) {
-        if (places.isNotEmpty())
-        {
+        if (places.isNotEmpty()) {
             lateinit var pin: LatLng
             lateinit var bounds: LatLngBounds
             val pinsPositions = mutableListOf<LatLng>()
@@ -113,7 +110,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 pinsPositions.add(pin)
             }
 
-            for (position in pinsPositions){
+            for (position in pinsPositions) {
                 builder.include(position)
             }
 

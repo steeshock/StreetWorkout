@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.data.repository
 import androidx.lifecycle.LiveData
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.model.State
 import kotlinx.coroutines.Dispatchers
@@ -19,16 +20,37 @@ class Repository(
 
     val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
+    val allCategories: LiveData<List<Category>> = placesDao.getCategoriesLive()
 
-    fun getAllPlaces(): Flow<State<List<Place>>> {
+    fun getAllPlaces(forceUpdate: Boolean  = false): Flow<State<List<Place>>> {
         return object : NetworkBoundRepository<List<Place>, List<Place>>() {
 
-            override suspend fun saveRemoteData(response: List<Place>) =
+            override suspend fun saveRemoteData(response: List<Place>) {
+                if (forceUpdate)
+                    placesDao.clearPlacesTable()
                 placesDao.insertAllPlaces(response)
+            }
 
             override fun fetchFromLocal(): Flow<List<Place>> = placesDao.getPlaces()
 
             override suspend fun fetchFromRemote(): Response<List<Place>> = placesAPI.getPlaces()
+
+        }.asFlow().flowOn(Dispatchers.IO)
+    }
+
+    fun getAllCategories(forceUpdate: Boolean  = false): Flow<State<List<Category>>> {
+        return object : NetworkBoundRepository<List<Category>, List<Category>>() {
+
+            override suspend fun saveRemoteData(response: List<Category>) {
+                if (forceUpdate)
+                    placesDao.clearCategoriesTable()
+                placesDao.insertAllCategories(response)
+            }
+
+            override fun fetchFromLocal(): Flow<List<Category>> = placesDao.getCategories()
+
+            override suspend fun fetchFromRemote(): Response<List<Category>> = placesAPI.getCategories()
+
         }.asFlow().flowOn(Dispatchers.IO)
     }
 
@@ -36,15 +58,28 @@ class Repository(
         placesDao.insertPlace(place)
     }
 
-    suspend fun updatePlaces() {
-        val response = placesAPI.getPlaces().body()
-        response?.let {
-            placesDao.updatePlaces(it)
-        }
+    fun insertCategory(category: Category) {
+        placesDao.insertCategory(category)
+    }
+
+    fun updateCategory(category: Category) {
+        placesDao.updateCategory(category)
+    }
+
+    fun updatePlace(place: Place) {
+        placesDao.updatePlace(place)
     }
 
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    fun clearCategoriesTable() {
+        placesDao.clearCategoriesTable()
+    }
+
+    fun clearDatabase() {
+        placesDao.clearDatabase()
     }
 
     fun removeAllPlacesExceptFavorites(boolean: Boolean) {
