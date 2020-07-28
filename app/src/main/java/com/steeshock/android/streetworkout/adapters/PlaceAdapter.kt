@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
+import java.util.*
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
     private var items = emptyList<Place>()
-    private var tempItems = emptyList<Place>()
+    private var allItems = emptyList<Place>()
+    private var filteredItems = emptyList<Place>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -22,9 +24,11 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     internal fun setPlaces(places: List<Place>) {
-        this.items = places
-        this.tempItems = places.toList()
-        for(item in tempItems) item.categories?.forEach { it.isSelected = true }
+        items = places
+        allItems = places.toList()
+        filteredItems = places.toList()
+        
+        for(item in allItems) item.categories?.forEach { it.isSelected = true }
         notifyDataSetChanged()
     }
 
@@ -52,12 +56,25 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
     }
 
-    fun filterItems(filterList: MutableList<Category>) {
+    fun filterItemsByFilterList(filterList: MutableList<Category>) {
 
-        if (filterList.isNullOrEmpty())
-            this.items = tempItems
+        items = if (filterList.isNullOrEmpty())
+            allItems
         else {
-            this.items = tempItems.filter { it.categories!!.containsAll(filterList)}
+            allItems.filter { it.categories!!.containsAll(filterList)}
+        }
+
+        filteredItems = items
+
+        notifyDataSetChanged()
+    }
+
+    fun filterItemsBySearchString(searchString: String?) {
+
+        items = if (searchString.isNullOrEmpty())
+            filteredItems
+        else {
+            filteredItems.filter { it.title.toLowerCase(Locale.ROOT).contains(searchString)}
         }
 
         notifyDataSetChanged()
