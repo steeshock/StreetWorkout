@@ -1,16 +1,12 @@
 package com.steeshock.android.streetworkout.views
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
@@ -105,7 +101,7 @@ class PlacesFragment : BaseFragment(){
                     is State.Success -> {
                         if (state.data.isNotEmpty()) {
                             placesAdapter.setPlaces(state.data.toMutableList())
-                            filterData()
+                            filterDataByFilterList()
                             showLoading(false)
                         }
                     }
@@ -170,9 +166,9 @@ class PlacesFragment : BaseFragment(){
     private fun filterByCategory(category: Category) {
 
         val newCategory = category.copy(isSelected = true)
-        
+
         if (filterList.contains(newCategory)) filterList.remove(newCategory) else filterList.add(newCategory)
-        filterData()
+        filterDataByFilterList()
 
         category.changeSelectedState()
         placesViewModel.updateCategory(category)
@@ -184,8 +180,12 @@ class PlacesFragment : BaseFragment(){
         filterList = categoriesAdapter.getSelectedCategories()
     }
 
-    private fun filterData() {
-        placesAdapter.filterItems(filterList)
+    private fun filterDataByFilterList() {
+        placesAdapter.filterItemsByFilterList(filterList)
+    }
+
+    private fun filterDataBySearchString(searchString: String?) {
+        placesAdapter.filterItemsBySearchString(searchString)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -204,7 +204,7 @@ class PlacesFragment : BaseFragment(){
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                //Здесь слушаем именение текста
+                filterDataBySearchString(s)
                 return false
             }
         })

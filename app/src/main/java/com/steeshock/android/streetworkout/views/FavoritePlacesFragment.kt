@@ -24,6 +24,7 @@ class FavoritePlacesFragment : BaseFragment() {
         InjectorUtils.provideFavoritePlacesViewModelFactory(requireActivity())
     }
 
+    private lateinit var placesAdapter: PlaceAdapter
     private lateinit var fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding
 
     override fun onCreateView(
@@ -45,7 +46,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val placesAdapter =
+        placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
                 override fun onPlaceClicked(item: Place) {
@@ -83,7 +84,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
-        var searchView = myActionMenuItem.actionView as SearchView
+        val searchView = myActionMenuItem.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (!searchView.isIconified) {
@@ -94,6 +95,7 @@ class FavoritePlacesFragment : BaseFragment() {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
+                filterDataBySearchString(s)
                 return false
             }
         })
@@ -113,4 +115,7 @@ class FavoritePlacesFragment : BaseFragment() {
         }
     }
 
+    private fun filterDataBySearchString(searchString: String?) {
+        placesAdapter.filterItemsBySearchString(searchString)
+    }
 }
