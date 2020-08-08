@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class FavoritePlacesViewModel(private val repository: Repository) : ViewModel() {
 
     val allFavoritePlacesLive: LiveData<List<Place>> = repository.allFavoritePlaces

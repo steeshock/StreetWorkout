@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
     val allCategoriesLive: LiveData<List<Category>> = repository.allCategories

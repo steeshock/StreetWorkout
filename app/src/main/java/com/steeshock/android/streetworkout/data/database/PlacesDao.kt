@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.rxjava3.core.Flowable
 
 
 @Dao
@@ -27,12 +27,6 @@ interface PlacesDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllCategories(category: List<Category>)
-
-    @Query("SELECT * FROM ${Place.TABLE_NAME}")
-    fun getPlaces(): Flow<List<Place>>
-
-    @Query("SELECT * FROM ${Category.TABLE_NAME}")
-    fun getCategories(): Flow<List<Category>>
 
     @Query("SELECT * FROM ${Place.TABLE_NAME}")
     fun getPlacesLive(): LiveData<List<Place>>

@@ -30,7 +30,6 @@ class PlacesFragment : BaseFragment(){
 
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter
-    private lateinit var fab: FloatingActionButton
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
     private var filterList: MutableList<Category> = mutableListOf()
@@ -47,9 +46,33 @@ class PlacesFragment : BaseFragment(){
 
         (container?.context as MainActivity).setSupportActionBar(fragmentPlacesBinding.toolbar)
 
-        fab = fragmentPlacesBinding.fab
-
         return fragmentPlacesBinding.root
+    }
+
+    private fun initData() {
+        with(placesViewModel) {
+            updatePlaces()
+            updateCategories()
+
+            placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                placesAdapter.setPlaces(it)
+                filterDataByFilterList()
+            })
+
+            categoriesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                categoriesAdapter.setCategories(it)
+                updateFilterList()
+                filterDataByFilterList()
+            })
+
+            isLoading.observe(viewLifecycleOwner, Observer {
+                fragmentPlacesBinding.refresher.isRefreshing = it
+            })
+        }
+
+        fragmentPlacesBinding.refresher.setOnRefreshListener {
+            placesViewModel.updatePlaces()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,7 +97,7 @@ class PlacesFragment : BaseFragment(){
                 }
             })
 
-        fab.setOnClickListener {
+        fragmentPlacesBinding.fab.setOnClickListener {
             showAddPlaceFragment(it)
         }
 
@@ -89,72 +112,6 @@ class PlacesFragment : BaseFragment(){
         initData()
 
         super.onViewCreated(view, savedInstanceState)
-    }
-
-    private fun initData() {
-
-        placesViewModel.placesLiveData.observe(
-            viewLifecycleOwner,
-            Observer { state ->
-                when (state) {
-                    is State.Loading -> showLoading(true)
-                    is State.Success -> {
-                        if (state.data.isNotEmpty()) {
-                            placesAdapter.setPlaces(state.data.toMutableList())
-                            filterDataByFilterList()
-                            showLoading(false)
-                        }
-                    }
-                    is State.Error -> {
-                        showLoading(false)
-                    }
-                }
-            }
-        )
-
-        placesViewModel.categoriesLiveData.observe(
-            viewLifecycleOwner,
-            Observer { state ->
-                when (state) {
-                    is State.Loading -> showLoading(true)
-                    is State.Success -> {
-                        if (state.data.isNotEmpty()) {
-                            categoriesAdapter.setCategories(state.data.toMutableList())
-                            updateFilterList()
-                            showLoading(false)
-                        }
-                    }
-                    is State.Error -> {
-                        showLoading(false)
-                    }
-                }
-            }
-        )
-
-        fragmentPlacesBinding.refresher.setOnRefreshListener {
-            getPlaces()
-            getCategories()
-        }
-
-        if (placesViewModel.placesLiveData.value !is State.Success) {
-            getPlaces()
-        }
-
-        if (placesViewModel.categoriesLiveData.value !is State.Success) {
-            getCategories()
-        }
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        fragmentPlacesBinding.refresher.isRefreshing = isLoading
-    }
-
-    private fun getPlaces(forceUpdate: Boolean  = false) {
-        placesViewModel.getPlaces(forceUpdate)
-    }
-
-    private fun getCategories(forceUpdate: Boolean  = false) {
-        placesViewModel.getCategories(forceUpdate)
     }
 
     private fun addPlaceToFavorites(place: Place) {
