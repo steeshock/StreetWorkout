@@ -1,18 +1,13 @@
 package com.steeshock.android.streetworkout.data.repository
 
 import androidx.lifecycle.LiveData
+import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.data.model.State
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
-@ExperimentalCoroutinesApi
 class Repository(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
@@ -22,36 +17,46 @@ class Repository(
     val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
     val allCategories: LiveData<List<Category>> = placesDao.getCategoriesLive()
 
-    fun getAllPlaces(forceUpdate: Boolean  = false): Flow<State<List<Place>>> {
-        return object : NetworkBoundRepository<List<Place>, List<Place>>() {
-
-            override suspend fun saveRemoteData(response: List<Place>) {
-                if (forceUpdate)
-                    placesDao.clearPlacesTable()
-                placesDao.insertAllPlaces(response)
+    fun updatePlaces(
+        compositeDisposable: io.reactivex.rxjava3.disposables.CompositeDisposable,
+        onResponse: APIResponse<List<Place>>
+    ): io.reactivex.rxjava3.disposables.Disposable {
+        return placesAPI.getPlaces()
+            .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                onResponse.onSuccess(it)
+            }, {
+                onResponse.onError(it)
+            }).also {
+                compositeDisposable.add(it)
             }
 
-            override fun fetchFromLocal(): Flow<List<Place>> = placesDao.getPlaces()
-
-            override suspend fun fetchFromRemote(): Response<List<Place>> = placesAPI.getPlaces()
-
-        }.asFlow().flowOn(Dispatchers.IO)
     }
 
-    fun getAllCategories(forceUpdate: Boolean  = false): Flow<State<List<Category>>> {
-        return object : NetworkBoundRepository<List<Category>, List<Category>>() {
-
-            override suspend fun saveRemoteData(response: List<Category>) {
-                if (forceUpdate)
-                    placesDao.clearCategoriesTable()
-                placesDao.insertAllCategories(response)
+    fun updateCategories(
+        compositeDisposable: io.reactivex.rxjava3.disposables.CompositeDisposable,
+        onResponse: APIResponse<List<Category>>
+    ): io.reactivex.rxjava3.disposables.Disposable {
+        return placesAPI.getCategories()
+            .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                onResponse.onSuccess(it)
+            }, {
+                onResponse.onError(it)
+            }).also {
+                compositeDisposable.add(it)
             }
 
-            override fun fetchFromLocal(): Flow<List<Category>> = placesDao.getCategories()
+    }
 
-            override suspend fun fetchFromRemote(): Response<List<Category>> = placesAPI.getCategories()
+    fun insertAllPlaces(places: List<Place>) {
+        placesDao.insertAllPlaces(places)
+    }
 
-        }.asFlow().flowOn(Dispatchers.IO)
+    fun insertAllCategories(categories: List<Category>) {
+        placesDao.insertAllCategories(categories)
     }
 
     fun insertPlace(place: Place) {

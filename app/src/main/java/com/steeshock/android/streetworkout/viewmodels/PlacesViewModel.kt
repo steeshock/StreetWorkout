@@ -4,41 +4,67 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.model.State
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
-    private val _placesLiveData = MutableLiveData<State<List<Place>>>()
-    private val _categoriesLiveData = MutableLiveData<State<List<Category>>>()
+    val isLoading = MutableLiveData(false)
+    private val compositeDisposable = CompositeDisposable()
 
-    val placesLiveData: LiveData<State<List<Place>>>
-        get() = _placesLiveData
+    val placesLiveData = repository.allPlaces
+    val categoriesLiveData = repository.allCategories
 
-    val categoriesLiveData: LiveData<State<List<Category>>>
-        get() = _categoriesLiveData
-
-    fun getPlaces(forceUpdate: Boolean  = false) {
-        viewModelScope.launch {
-            repository.getAllPlaces(forceUpdate).collect {
-                _placesLiveData.value = it
+    fun updatePlaces() {
+        setLoading(true)
+        repository.updatePlaces(compositeDisposable, object :
+            APIResponse<List<Place>> {
+            override fun onSuccess(result: List<Place>?) {
+                setLoading(false)
+                result?.let { insertPlaces(it) }
             }
-        }
+
+            override fun onError(t: Throwable) {
+                setLoading(false)
+                t.printStackTrace()
+            }
+        })
     }
 
-    fun getCategories(forceUpdate: Boolean  = false) {
-        viewModelScope.launch {
-            repository.getAllCategories(forceUpdate).collect {
-                _categoriesLiveData.value = it
+    fun updateCategories() {
+        setLoading(true)
+        repository.updateCategories(compositeDisposable, object :
+            APIResponse<List<Category>> {
+            override fun onSuccess(result: List<Category>?) {
+                setLoading(false)
+                result?.let { insertCategories(it) }
             }
-        }
+
+            override fun onError(t: Throwable) {
+                setLoading(false)
+                t.printStackTrace()
+            }
+        })
+    }
+
+    fun insertPlaces(places: List<Place>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertAllPlaces(places)
+    }
+
+    fun insertCategories(categories: List<Category>) = viewModelScope.launch(Dispatchers.IO) {
+        repository.insertAllCategories(categories)
+    }
+
+    fun setLoading(isVisible: Boolean) {
+        this.isLoading.value = isVisible
     }
 
     fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
