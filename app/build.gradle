@@ -46,6 +46,15 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.2.0')
+
+    // Firebase Realtime Database (Java)
+    implementation 'com.google.firebase:firebase-database'
+
+    // Firebase Realtime Database (Kotlin)
+    implementation 'com.google.firebase:firebase-database-ktx'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "com.google.android.material:material:$materialVersion"
