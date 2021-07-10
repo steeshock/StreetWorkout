@@ -6,15 +6,18 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = Category.TABLE_NAME)
 data class Category(
+
     @PrimaryKey
+    @ColumnInfo(name = "category_id")
+    var category_id: Int,
+
     @ColumnInfo(name = "name")
-    var name: String = "",
+    var category_name: String = "",
 
     @ColumnInfo(name = "isSelected")
     var isSelected: Boolean = false
 
 ) {
-
     fun changeSelectedState() {
         this.isSelected = !this.isSelected
     }

@@ -10,17 +10,17 @@ class Converters {
     private var gson = Gson()
 
     @TypeConverter
-    fun fromString(data: String?): List<Category>? {
+    fun categoryListToString(someObjects: List<Int>?): String? {
+        return gson.toJson(someObjects)
+    }
+
+    @TypeConverter
+    fun fromString(data: String?): List<Int>? {
 
         if (data == null){
             return Collections.emptyList()
         }
-        val listType = object : TypeToken<ArrayList<Category>>() {}.type
+        val listType = object : TypeToken<ArrayList<Int>>() {}.type
         return gson.fromJson(data, listType)
-    }
-
-    @TypeConverter
-    fun categoryListToString(someObjects: List<Category>?): String? {
-        return gson.toJson(someObjects)
     }
 }

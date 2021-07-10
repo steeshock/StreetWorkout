@@ -49,31 +49,6 @@ class PlacesFragment : BaseFragment(){
         return fragmentPlacesBinding.root
     }
 
-    private fun initData() {
-        with(placesViewModel) {
-
-            placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                placesAdapter.setPlaces(it)
-                filterDataByFilterList()
-            })
-
-            categoriesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                categoriesAdapter.setCategories(it)
-                updateFilterList()
-                filterDataByFilterList()
-            })
-
-            isLoading.observe(viewLifecycleOwner, Observer {
-                fragmentPlacesBinding.refresher.isRefreshing = it
-            })
-
-            fragmentPlacesBinding.refresher.setOnRefreshListener {
-                updatePlaces()
-                updateCategories()
-            }
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         placesAdapter =
@@ -113,24 +88,46 @@ class PlacesFragment : BaseFragment(){
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun initData() {
+        with(placesViewModel) {
+
+            placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                placesAdapter.setPlaces(it)
+                filterDataByFilterList()
+            })
+
+            categoriesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                categoriesAdapter.setCategories(it)
+                updateFilterList()
+                filterDataByFilterList()
+            })
+
+            isLoading.observe(viewLifecycleOwner, Observer {
+                fragmentPlacesBinding.refresher.isRefreshing = it
+            })
+
+            fragmentPlacesBinding.refresher.setOnRefreshListener {
+                updatePlaces()
+                updateCategories()
+            }
+        }
+    }
+
     private fun addPlaceToFavorites(place: Place) {
         place.changeFavoriteState()
         placesViewModel.updatePlace(place)
     }
 
-
     private fun filterByCategory(category: Category) {
 
-        val newCategory = category.copy(isSelected = true)
+        category.changeSelectedState()
 
-        if (filterList.contains(newCategory)) filterList.remove(newCategory) else filterList.add(newCategory)
+        if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
         filterDataByFilterList()
 
-        category.changeSelectedState()
         placesViewModel.updateCategory(category)
 
     }
-
 
     private fun updateFilterList() {
         filterList = categoriesAdapter.getSelectedCategories()

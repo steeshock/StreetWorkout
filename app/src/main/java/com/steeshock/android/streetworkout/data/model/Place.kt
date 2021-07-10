@@ -32,16 +32,16 @@ data class Place(
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,
 
-    @ColumnInfo(name = "timestamp")
-    val timestamp: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "created")
+    val created: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "categories")
-    var categories: List<Category>?
+    var categories: List<Int>?
 
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: Int = (0..100).random()
+    var id: Int? = null
 
     init {
         if (imagePath.isEmpty()) imagePath = "https://picsum.photos/30${(0..9).random()}/200"
