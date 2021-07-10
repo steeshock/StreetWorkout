@@ -122,10 +122,10 @@ class AddPlaceFragment : Fragment() {
         if (!checkPermissions()) {
             requestPermissions()
         } else {
-            if (lastLocation != null) {
-                startIntentService()
-                return
-            }
+//            if (lastLocation != null) {
+//                startIntentService()
+//                return
+//            }
 
             // If we have not yet retrieved the user location, we process the user's request by setting
             // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
