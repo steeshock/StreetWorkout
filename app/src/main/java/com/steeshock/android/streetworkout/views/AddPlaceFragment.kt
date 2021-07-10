@@ -30,6 +30,8 @@ import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.model.Category
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -136,6 +138,27 @@ class AddPlaceFragment : Fragment() {
     }
 
     /**
+     * Creates an intent, adds location data to it as an extra, and starts the intent service for
+     * fetching an address.
+     */
+    private fun startIntentService() {
+        // Create an intent for passing to the intent service responsible for fetching the address.
+        val intent: Intent =
+            Intent(requireActivity(), FetchAddressIntentService::class.java).apply {
+                // Pass the result receiver as an extra to the service.
+                putExtra(Constants.RECEIVER, resultReceiver)
+
+                // Pass the location data as an extra to the service.
+                putExtra(Constants.LOCATION_DATA_EXTRA, lastLocation)
+            }
+
+        // Start the service. If the service isn't already running, it is instantiated and started
+        // (creating a process for it if needed); if it is running then it remains running. The
+        // service kills itself automatically once all intents are processed.
+        requireActivity().startService(intent)
+    }
+
+    /**
      * Receiver for data sent from FetchAddressIntentService.
      */
     private inner class AddressResultReceiver internal constructor(
@@ -175,28 +198,6 @@ class AddPlaceFragment : Fragment() {
             fragmentAddPlaceBinding.progressBar.visibility = ProgressBar.GONE
             fragmentAddPlaceBinding.myPositionBtn.isEnabled = true
         }
-    }
-
-
-    /**
-     * Creates an intent, adds location data to it as an extra, and starts the intent service for
-     * fetching an address.
-     */
-    private fun startIntentService() {
-        // Create an intent for passing to the intent service responsible for fetching the address.
-        val intent: Intent =
-            Intent(requireActivity(), FetchAddressIntentService::class.java).apply {
-                // Pass the result receiver as an extra to the service.
-                putExtra(Constants.RECEIVER, resultReceiver)
-
-                // Pass the location data as an extra to the service.
-                putExtra(Constants.LOCATION_DATA_EXTRA, lastLocation)
-            }
-
-        // Start the service. If the service isn't already running, it is instantiated and started
-        // (creating a process for it if needed); if it is running then it remains running. The
-        // service kills itself automatically once all intents are processed.
-        requireActivity().startService(intent)
     }
 
     @SuppressLint("MissingPermission")
@@ -304,15 +305,20 @@ class AddPlaceFragment : Fragment() {
 
         val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
 
-        addPlaceViewModel.insert(
-            Place(
-                title = fragmentAddPlaceBinding.placeTitle.text.toString(),
-                description = fragmentAddPlaceBinding.placeDescription.text.toString(),
-                latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
-                longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
-                address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-                categories = selectedCategories.toMutableList()
-            )
+        val newPlace = Place(
+            title = fragmentAddPlaceBinding.placeTitle.text.toString(),
+            description = fragmentAddPlaceBinding.placeDescription.text.toString(),
+            latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
+            longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
+            address = fragmentAddPlaceBinding.placeAddress.text.toString(),
+            categories = selectedCategories.toMutableList()
         )
+
+        addPlaceViewModel.insert(newPlace)
+
+        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+        val myRef = database.getReference("places")
+
+        myRef.setValue(newPlace)
     }
 }
