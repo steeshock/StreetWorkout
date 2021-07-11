@@ -9,7 +9,7 @@ data class Category(
 
     @PrimaryKey
     @ColumnInfo(name = "category_id")
-    var category_id: Int,
+    var category_id: Int?,
 
     @ColumnInfo(name = "name")
     var category_name: String = "",

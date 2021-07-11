@@ -90,4 +90,8 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
     fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         repository.removeAllPlacesExceptFavorites(boolean)
     }
+
+    fun removeAllPlaces() = viewModelScope.launch(Dispatchers.IO) {
+        repository.clearPlacesTable()
+    }
 }

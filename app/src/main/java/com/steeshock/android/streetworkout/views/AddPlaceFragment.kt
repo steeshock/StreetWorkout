@@ -57,7 +57,7 @@ class AddPlaceFragment : Fragment() {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
     }
     private var allCategories = emptyList<Category>()
-    private var selectedCategories: MutableList<Int> = mutableListOf()
+    private var selectedCategories: ArrayList<Int> = arrayListOf()
 
     private lateinit var fragmentAddPlaceBinding: FragmentAddPlaceBinding
 
@@ -313,7 +313,7 @@ class AddPlaceFragment : Fragment() {
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
             address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = selectedCategories
+            categories = selectedCategories,
         )
 
         addPlaceViewModel.insert(newPlace)
