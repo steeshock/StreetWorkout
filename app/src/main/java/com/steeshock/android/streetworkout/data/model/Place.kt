@@ -11,6 +11,10 @@ import java.io.Serializable
 @Entity(tableName = TABLE_NAME)
 data class Place(
 
+    @PrimaryKey
+    @ColumnInfo(name = "place_id")
+    var place_id: Int? = null,
+
     @ColumnInfo(name = "imagePath")
     var imagePath: String = "https://picsum.photos/30${(0..9).random()}/200",
 
@@ -29,19 +33,15 @@ data class Place(
     @ColumnInfo(name = "address")
     var address: String,
 
-    @ColumnInfo(name = "isFavorite")
-    var isFavorite: Boolean = false,
-
-    @ColumnInfo(name = "timestamp")
-    val timestamp: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "created")
+    val created: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "categories")
-    var categories: List<Category>?
+    var categories: ArrayList<Int>?
 
 ) {
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var id: Int = (0..100).random()
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean? = null
 
     init {
         if (imagePath.isEmpty()) imagePath = "https://picsum.photos/30${(0..9).random()}/200"
@@ -52,11 +52,15 @@ data class Place(
         if (longitude == 0.0) longitude = 36.261215
         if (address.isEmpty()) address =
             "Улица Пушкина, дом Колотушкина Квартира Петрова, спросить Вольнова"
-        if (categories.isNullOrEmpty()) categories = listOf()
+        if (categories.isNullOrEmpty()) categories = arrayListOf()
     }
 
     fun changeFavoriteState() {
-        this.isFavorite = !this.isFavorite
+        if (this.isFavorite == null){
+            this.isFavorite = true;
+        } else {
+            this.isFavorite = !this.isFavorite!!
+        }
     }
 
     companion object {

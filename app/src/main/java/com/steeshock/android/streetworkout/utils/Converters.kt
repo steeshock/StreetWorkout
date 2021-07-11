@@ -5,22 +5,24 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.steeshock.android.streetworkout.data.model.Category
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Converters {
     private var gson = Gson()
 
     @TypeConverter
-    fun fromString(data: String?): List<Category>? {
-
-        if (data == null){
-            return Collections.emptyList()
-        }
-        val listType = object : TypeToken<ArrayList<Category>>() {}.type
-        return gson.fromJson(data, listType)
+    fun categoryListToString(someObjects: ArrayList<Int>?): String? {
+        var j = gson.toJson(someObjects)
+        return gson.toJson(someObjects)
     }
 
     @TypeConverter
-    fun categoryListToString(someObjects: List<Category>?): String? {
-        return gson.toJson(someObjects)
+    fun fromString(data: String?): ArrayList<Int>? {
+
+        if (data == null){
+            return arrayListOf()
+        }
+        val listType = object : TypeToken<ArrayList<Int>>() {}.type
+        return gson.fromJson(data, listType)
     }
 }

@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:gravity="center"
-            android:text="@{category.name}"
+            android:text="@{category.category_name}"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="14sp" />

@@ -27,8 +27,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         items = places
         allItems = places.toList()
         filteredItems = places.toList()
-        
-        for(item in allItems) item.categories?.forEach { it.isSelected = true }
+
         notifyDataSetChanged()
     }
 
@@ -61,7 +60,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         items = if (filterList.isNullOrEmpty())
             allItems
         else {
-            allItems.filter { it.categories!!.containsAll(filterList)}
+            allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
         }
 
         filteredItems = items

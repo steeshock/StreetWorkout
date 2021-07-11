@@ -22,7 +22,7 @@ interface PlacesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCategory(category: Category)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPlaces(places: List<Place>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

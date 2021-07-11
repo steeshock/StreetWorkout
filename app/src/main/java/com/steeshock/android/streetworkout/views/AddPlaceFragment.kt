@@ -57,7 +57,7 @@ class AddPlaceFragment : Fragment() {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
     }
     private var allCategories = emptyList<Category>()
-    private var selectedCategories: MutableSet<Category> = mutableSetOf()
+    private var selectedCategories: ArrayList<Int> = arrayListOf()
 
     private lateinit var fragmentAddPlaceBinding: FragmentAddPlaceBinding
 
@@ -109,11 +109,13 @@ class AddPlaceFragment : Fragment() {
     }
 
     private fun addRandomCategory() {
-        val newCategory = Category(allCategories[(allCategories.indices).random()].name, false)
 
-        if (!selectedCategories.contains(newCategory)) {
-            val newValue = fragmentAddPlaceBinding.placeCategories.text.append(newCategory.name, "; ")
-            selectedCategories.add(newCategory)
+        val newRandomCategoryId = (1..10).random()
+        val selectedCategory = allCategories.find { i -> i.category_id == newRandomCategoryId }?.category_name
+
+        if (!selectedCategories.contains(newRandomCategoryId)) {
+            val newValue = fragmentAddPlaceBinding.placeCategories.text.append(selectedCategory, "; ")
+            selectedCategories.add(newRandomCategoryId)
             fragmentAddPlaceBinding.placeCategories.text = newValue
         }
     }
@@ -311,7 +313,7 @@ class AddPlaceFragment : Fragment() {
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
             address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = selectedCategories.toMutableList()
+            categories = selectedCategories,
         )
 
         addPlaceViewModel.insert(newPlace)
