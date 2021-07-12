@@ -1,18 +1,18 @@
 package com.steeshock.android.streetworkout.viewmodels
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.data.model.State
+import com.steeshock.android.streetworkout.data.repository.Repository
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class PlacesViewModel(private val repository: Repository) : ViewModel() {
@@ -22,6 +22,42 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     val placesLiveData = repository.allPlaces
     val categoriesLiveData = repository.allCategories
+
+    fun updatePlacesFromFirebase() {
+
+        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        database.getReference("places").get().addOnSuccessListener {
+
+            for (place in it.children) {
+                place.getValue<Place>()?.let { p -> insertPlace(p) }
+            }
+
+            setLoading(false)
+
+        }.addOnFailureListener{
+            setLoading(false)
+        }
+
+    }
+
+    fun updateCategoriesFromFirebase() {
+
+        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        database.getReference("categories").get().addOnSuccessListener {
+
+            for (category in it.children) {
+                category.getValue<Category>()?.let { c -> insertCategory(c) }
+            }
+
+            setLoading(false)
+
+        }.addOnFailureListener{
+            setLoading(false)
+        }
+
+    }
 
     fun updatePlaces() {
         setLoading(true)
