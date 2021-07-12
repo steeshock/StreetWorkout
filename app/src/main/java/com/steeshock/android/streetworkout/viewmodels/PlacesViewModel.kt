@@ -29,18 +29,16 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
         database.getReference("places").get().addOnSuccessListener {
 
-            // ToDo убрать!
-            val isEmptyDatabase = placesLiveData.value?.isEmpty()
+            for (child in it.children) {
 
-            for (place in it.children) {
+                val place = child.getValue<Place>()
 
-                if (isEmptyDatabase == true){
-                    place.getValue<Place>()?.let { p -> insertPlace(p) }
+                if (placesLiveData.value?.find { p -> p.place_id == place?.place_id } == null){
+                    place?.let { i -> insertPlace(i) }
                 }
                 else {
-                    place.getValue<Place>()?.let { p -> updatePlacePartly(p) }
+                    place?.let { i -> updatePlacePartly(i) }
                 }
-
             }
 
             setLoading(false)
