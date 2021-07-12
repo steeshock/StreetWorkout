@@ -75,6 +75,10 @@ class Repository(
         placesDao.updatePlace(place)
     }
 
+    fun updatePlacePartly(place: Place) {
+        placesDao.updatePlacePartly(place.title, place.place_id)
+    }
+
     fun clearPlacesTable() {
         placesDao.clearPlacesTable()
     }

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import io.reactivex.rxjava3.core.Flowable
 
 
 @Dao
@@ -16,7 +15,7 @@ interface PlacesDao {
         clearCategoriesTable()
     }
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlace(place: Place)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -46,9 +45,13 @@ interface PlacesDao {
     @Query("DELETE FROM ${Place.TABLE_NAME} WHERE isFavorite = :boolean")
     fun removeAllPlacesExceptFavorites(boolean: Boolean)
 
+    @Query("UPDATE ${Place.TABLE_NAME} SET title = :title WHERE place_id = :place_id")
+    fun updatePlacePartly(title: String?, place_id: Int?)
+
     @Update
     fun updateCategory(category: Category)
 
     @Update
     fun updatePlace(place: Place)
+
 }

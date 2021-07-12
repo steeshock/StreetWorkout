@@ -29,8 +29,18 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
         database.getReference("places").get().addOnSuccessListener {
 
+            // ToDo убрать!
+            val isEmptyDatabase = placesLiveData.value?.isEmpty()
+
             for (place in it.children) {
-                place.getValue<Place>()?.let { p -> insertPlace(p) }
+
+                if (isEmptyDatabase == true){
+                    place.getValue<Place>()?.let { p -> insertPlace(p) }
+                }
+                else {
+                    place.getValue<Place>()?.let { p -> updatePlacePartly(p) }
+                }
+
             }
 
             setLoading(false)
@@ -121,6 +131,10 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.updatePlace(place)
+    }
+
+    fun updatePlacePartly(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updatePlacePartly(place)
     }
 
     fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {
