@@ -16,10 +16,10 @@ interface PlacesDao {
         clearCategoriesTable()
     }
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertPlace(place: Place)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertCategory(category: Category)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
