@@ -19,25 +19,25 @@ data class Place(
     var imagePath: String = "https://picsum.photos/30${(0..9).random()}/200",
 
     @ColumnInfo(name = "title")
-    var title: String,
+    var title: String = "",
 
     @ColumnInfo(name = "description")
-    var description: String,
+    var description: String = "",
 
     @ColumnInfo(name = "latitude")
-    var latitude: Double,
+    var latitude: Double = 54.513845,
 
     @ColumnInfo(name = "longitude")
-    var longitude: Double,
+    var longitude: Double = 36.261215,
 
     @ColumnInfo(name = "address")
-    var address: String,
+    var address: String = "",
 
     @ColumnInfo(name = "created")
     val created: Long = System.currentTimeMillis(),
 
     @ColumnInfo(name = "categories")
-    var categories: ArrayList<Int>?
+    var categories: ArrayList<Int>? = null
 
 ) {
     @ColumnInfo(name = "isFavorite")

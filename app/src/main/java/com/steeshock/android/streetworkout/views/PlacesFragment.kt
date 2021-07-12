@@ -1,6 +1,7 @@
 package com.steeshock.android.streetworkout.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
@@ -16,6 +17,8 @@ import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.State
@@ -107,8 +110,11 @@ class PlacesFragment : BaseFragment(){
             })
 
             fragmentPlacesBinding.refresher.setOnRefreshListener {
-                updatePlaces()
-                updateCategories()
+                //updatePlaces()
+                //updateCategories()
+
+                updatePlacesFromFirebase()
+                updateCategoriesFromFirebase()
             }
         }
     }

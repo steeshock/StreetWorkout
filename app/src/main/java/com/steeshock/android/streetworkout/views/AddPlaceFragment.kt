@@ -318,8 +318,13 @@ class AddPlaceFragment : Fragment() {
 
         addPlaceViewModel.insert(newPlace)
 
+        addNewPlaceOnFirebase(newPlace)
+    }
+
+    private fun addNewPlaceOnFirebase(newPlace: Place) {
+
         val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-        val myRef = database.getReference("places")
+        val myRef = database.getReference("new_place_${(1..1000000).random()}")
 
         myRef.setValue(newPlace)
     }
