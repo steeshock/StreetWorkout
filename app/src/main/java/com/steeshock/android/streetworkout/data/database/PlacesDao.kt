@@ -45,8 +45,8 @@ interface PlacesDao {
     @Query("DELETE FROM ${Place.TABLE_NAME} WHERE isFavorite = :boolean")
     fun removeAllPlacesExceptFavorites(boolean: Boolean)
 
-    @Query("UPDATE ${Place.TABLE_NAME} SET title = :title WHERE place_id = :place_id")
-    fun updatePlacePartly(title: String?, place_id: Int?)
+    @Query("UPDATE ${Place.TABLE_NAME} SET title = :title, address = :address, description = :description, latitude = :latitude, longitude = :longitude WHERE place_id = :place_id")
+    fun updatePlacePartly(title: String?, address: String?, description: String?, latitude: Double?, longitude: Double?,  place_id: Int?)
 
     @Query("UPDATE ${Category.TABLE_NAME} SET category_name = :category_name WHERE category_id = :category_id")
     fun updateCategoryPartly(category_name: String?, category_id: Int?)

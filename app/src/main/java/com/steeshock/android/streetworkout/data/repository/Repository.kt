@@ -76,7 +76,7 @@ class Repository(
     }
 
     fun updatePlacePartly(place: Place) {
-        placesDao.updatePlacePartly(place.title, place.place_id)
+        placesDao.updatePlacePartly(place.title, place.address, place.description, place.latitude, place.longitude, place.place_id)
     }
 
     fun updateCategoryPartly(category: Category) {
