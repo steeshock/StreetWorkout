@@ -12,7 +12,6 @@ class Converters {
 
     @TypeConverter
     fun categoryListToString(someObjects: ArrayList<Int>?): String? {
-        var j = gson.toJson(someObjects)
         return gson.toJson(someObjects)
     }
 
@@ -22,7 +21,27 @@ class Converters {
         if (data == null){
             return arrayListOf()
         }
+//
+//        val forceDataArray = stringToValues(data)
+//
+//        var modifiedData: String? = null;
+//        if (forceDataArray.size == 1){
+//            modifiedData = "[$data]"
+//        }
+//
         val listType = object : TypeToken<ArrayList<Int>>() {}.type
+//
+//        return if (modifiedData?.isEmpty() == false){
+//            gson.fromJson(modifiedData, listType)
+//        } else {
+//            gson.fromJson(data, listType)
+//        }
+
         return gson.fromJson(data, listType)
     }
+
+    private fun stringToValues(s : String) = s.trim { i -> i == '[' || i == ']'}
+        .splitToSequence(',')
+        .filter { it.isNotEmpty() }
+        .toMutableList()
 }
