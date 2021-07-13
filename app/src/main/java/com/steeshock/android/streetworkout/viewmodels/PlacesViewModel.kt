@@ -55,8 +55,16 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
         database.getReference("categories").get().addOnSuccessListener {
 
-            for (category in it.children) {
-                category.getValue<Category>()?.let { c -> insertCategory(c) }
+            for (child in it.children) {
+
+                val category = child.getValue<Category>()
+
+                if (categoriesLiveData.value?.find { p -> p.category_id == category?.category_id } == null){
+                    category?.let { i -> insertCategory(i) }
+                }
+                else {
+                    category?.let { i -> updateCategoryPartly(i) }
+                }
             }
 
             setLoading(false)
@@ -133,6 +141,10 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     fun updatePlacePartly(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.updatePlacePartly(place)
+    }
+
+    fun updateCategoryPartly(category: Category) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateCategoryPartly(category)
     }
 
     fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {

@@ -11,7 +11,7 @@ data class Category(
     @ColumnInfo(name = "category_id")
     var category_id: Int? = null,
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "category_name")
     var category_name: String = "",
 
     @ColumnInfo(name = "isSelected")
