@@ -38,14 +38,12 @@
             android:orientation="vertical"
             android:paddingBottom="8dp">
 
-            <ImageView
-                android:id="@+id/place_image"
-                android:layout_width="wrap_content"
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/image_slider"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="fitXY"
-                bind:imageUrl="@{place.imagePath}">
-
-            </ImageView>
+                app:iss_error_image="@drawable/place_mock"
+                app:iss_placeholder="@drawable/place_mock"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -77,13 +75,13 @@
                 android:background="@color/separatorColor" />
 
             <TextView
-                android:id="@+id/place_title_text"
+                android:id="@+id/place_description_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:ellipsize="end"
                 android:maxLines="3"
-                android:text="@{place.title}"
+                android:text="@{place.description}"
                 android:textAlignment="inherit"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
