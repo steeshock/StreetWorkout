@@ -3,6 +3,9 @@ package com.steeshock.android.streetworkout.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
@@ -50,9 +53,38 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         fun bind(item: Place) {
             binding.apply {
                 place = item
+                setupImagesSlider(this)
                 executePendingBindings()
             }
         }
+    }
+
+    private fun setupImagesSlider(binding: PlaceItemBinding) {
+
+        val imageList = ArrayList<SlideModel>()
+
+        for ((index, image) in binding.place?.images!!.withIndex()){
+
+            if (index == 0){
+                imageList.add(SlideModel(image, binding.place?.title, ScaleTypes.FIT))
+            }
+            else{
+                imageList.add(SlideModel(image, null, ScaleTypes.FIT))
+            }
+        }
+
+        binding.imageSlider.setImageList(imageList)
+        binding.imageSlider.stopSliding()
+        binding.imageSlider.setItemClickListener(object : ItemClickListener {
+            override fun onItemSelected(position: Int) {
+
+                // ToDo Здесь можно заложить логику на нажатие на конкретное изображение
+                binding.place?.let { place ->
+                    callback.onPlaceClicked(place)
+                }
+            }
+        })
+
     }
 
     fun filterItemsByFilterList(filterList: MutableList<Category>) {

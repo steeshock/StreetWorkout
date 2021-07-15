@@ -7,7 +7,7 @@ import com.steeshock.android.streetworkout.data.model.Category
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Converters {
+class ArrayIntConverter {
     private var gson = Gson()
 
     @TypeConverter
