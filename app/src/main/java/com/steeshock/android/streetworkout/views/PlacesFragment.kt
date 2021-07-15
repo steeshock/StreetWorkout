@@ -36,6 +36,7 @@ class PlacesFragment : BaseFragment(){
     private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
 
     private var filterList: MutableList<Category> = mutableListOf()
+    private var lastSearchString: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -110,9 +111,6 @@ class PlacesFragment : BaseFragment(){
             })
 
             fragmentPlacesBinding.refresher.setOnRefreshListener {
-                //updatePlaces()
-                //updateCategories()
-
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
@@ -141,9 +139,14 @@ class PlacesFragment : BaseFragment(){
 
     private fun filterDataByFilterList() {
         placesAdapter.filterItemsByFilterList(filterList)
+
+        if (!lastSearchString.isNullOrEmpty()){
+            filterDataBySearchString(lastSearchString)
+        }
     }
 
     private fun filterDataBySearchString(searchString: String?) {
+        lastSearchString = searchString
         placesAdapter.filterItemsBySearchString(searchString)
     }
 
