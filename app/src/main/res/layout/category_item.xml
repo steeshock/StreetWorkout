@@ -16,15 +16,15 @@
         android:id="@+id/category_card_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/card_margin_half"
-        android:layout_marginTop="@dimen/card_margin"
-        android:layout_marginEnd="@dimen/card_margin_half"
-        android:layout_marginBottom="@dimen/card_margin"
+        android:layout_marginStart="@dimen/chips_margin_half"
+        android:layout_marginTop="@dimen/chips_margin"
+        android:layout_marginEnd="@dimen/chips_margin_half"
+        android:layout_marginBottom="@dimen/chips_margin"
         android:backgroundTint="@{category.isSelected ? @android:color/black : @color/chipsColor}"
         android:elevation="4dp"
         android:onClick="@{itemClickListener}"
         android:padding="0dp"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="@dimen/chips_corner_radius">
 
         <TextView
             android:id="@+id/category_text_view"
