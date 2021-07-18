@@ -181,7 +181,8 @@ class PlacesFragment : BaseFragment(){
             }
             R.id.action_map -> {
                 //placesViewModel.removeAllPlacesExceptFavorites(false)
-                placesViewModel.removeAllPlaces()
+                //placesViewModel.removeAllPlaces()
+                placesViewModel.clearDatabase()
                 true
             }
             else -> super.onOptionsItemSelected(item)

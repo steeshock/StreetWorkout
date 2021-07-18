@@ -15,11 +15,15 @@ data class Category(
     var category_name: String = "",
 
     @ColumnInfo(name = "isSelected")
-    var isSelected: Boolean = false
+    var isSelected: Boolean? = false
 
 ) {
     fun changeSelectedState() {
-        this.isSelected = !this.isSelected
+        if (this.isSelected == null){
+            this.isSelected = true;
+        } else {
+            this.isSelected = !this.isSelected!!
+        }
     }
 
     companion object {
