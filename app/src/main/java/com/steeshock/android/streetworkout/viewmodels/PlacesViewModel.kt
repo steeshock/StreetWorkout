@@ -33,12 +33,11 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
                 val place = child.getValue<Place>()
 
-                if (placesLiveData.value?.find { p -> p.place_id == place?.place_id } == null){
-                    place?.let { i -> insertPlace(i) }
-                }
-                else {
-                    place?.let { i -> updatePlacePartly(i) }
-                }
+                val isFavorite = placesLiveData.value?.find { p -> p.place_id == place?.place_id }?.isFavorite
+
+                place?.isFavorite = isFavorite
+
+                place?.let { i -> insertPlace(i) }
             }
 
             setLoading(false)
@@ -59,12 +58,11 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
                 val category = child.getValue<Category>()
 
-                if (categoriesLiveData.value?.find { p -> p.category_id == category?.category_id } == null){
-                    category?.let { i -> insertCategory(i) }
-                }
-                else {
-                    category?.let { i -> updateCategoryPartly(i) }
-                }
+                val isSelected = categoriesLiveData.value?.find { p -> p.category_id == category?.category_id }?.isSelected
+
+                category?.isSelected = isSelected
+
+                category?.let { i -> insertCategory(i) }
             }
 
             setLoading(false)
@@ -137,14 +135,6 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.updatePlace(place)
-    }
-
-    fun updatePlacePartly(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updatePlacePartly(place)
-    }
-
-    fun updateCategoryPartly(category: Category) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateCategoryPartly(category)
     }
 
     fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {
