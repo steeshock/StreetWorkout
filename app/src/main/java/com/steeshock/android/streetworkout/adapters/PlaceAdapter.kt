@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
+import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
@@ -71,6 +72,10 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             else{
                 imageList.add(SlideModel(image, null, ScaleTypes.FIT))
             }
+        }
+
+        if (imageList.isEmpty()){
+            imageList.add(SlideModel(R.drawable.place_mock, binding.place?.title, ScaleTypes.FIT))
         }
 
         binding.imageSlider.setImageList(imageList)
