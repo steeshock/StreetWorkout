@@ -6,6 +6,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
@@ -55,6 +56,11 @@ class FavoritePlacesFragment : BaseFragment() {
 
                 override fun onLikeClicked(item: Place) {
                     removePlaceFromFavorites(item)
+                }
+
+                override fun onPlaceLocationClicked(item: Place) {
+                    val navController = requireActivity().findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.action_navigation_favorites_to_navigation_map)
                 }
             })
 

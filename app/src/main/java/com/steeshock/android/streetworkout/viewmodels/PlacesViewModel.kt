@@ -1,6 +1,5 @@
 package com.steeshock.android.streetworkout.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,7 +44,6 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         }.addOnFailureListener{
             setLoading(false)
         }
-
     }
 
     fun updateCategoriesFromFirebase() {
@@ -70,7 +68,6 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         }.addOnFailureListener{
             setLoading(false)
         }
-
     }
 
     fun updatePlaces() {

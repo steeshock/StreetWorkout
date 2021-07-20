@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,6 +10,11 @@
 
         <variable
             name="likeClickListener"
+            type="android.view.View.OnClickListener" />
+
+
+        <variable
+            name="placeLocationClickListener"
             type="android.view.View.OnClickListener" />
 
         <variable
@@ -43,31 +47,49 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 app:iss_error_image="@drawable/place_mock"
-                app:iss_placeholder="@drawable/place_mock"/>
+                app:iss_placeholder="@drawable/place_mock" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/imageView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/icon_margin"
                     android:onClick="@{likeClickListener}"
-                    android:src="@{place.isFavorite ? @drawable/ic_heart_red_36dp : @drawable/ic_heart_gray_36dp}"/>
+                    android:src="@{place.isFavorite ? @drawable/ic_heart_red_36dp : @drawable/ic_heart_gray_36dp}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
+                    android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/icon_margin"
-                    android:layout_marginBottom="@dimen/icon_margin"
-                    android:src="@drawable/ic_share_36dp" />
+                    android:layout_margin="@dimen/icon_margin"
+                    android:src="@drawable/ic_share_36dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/icon_margin"
+                    android:onClick="@{placeLocationClickListener}"
+                    android:src="@drawable/ic_map_location_36dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -78,8 +100,8 @@
                 android:id="@+id/place_description_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
                 android:layout_marginHorizontal="12dp"
+                android:layout_marginVertical="8dp"
                 android:ellipsize="end"
                 android:maxLines="3"
                 android:text="@{place.address}"

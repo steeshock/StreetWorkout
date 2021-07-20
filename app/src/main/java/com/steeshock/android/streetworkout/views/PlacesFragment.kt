@@ -65,6 +65,11 @@ class PlacesFragment : BaseFragment(){
                 override fun onLikeClicked(item: Place) {
                     addPlaceToFavorites(item)
                 }
+
+                override fun onPlaceLocationClicked(item: Place) {
+                    val navController = requireActivity().findNavController(R.id.nav_host_fragment)
+                    navController.navigate(R.id.action_navigation_places_to_navigation_map)
+                }
             })
 
         categoriesAdapter =
