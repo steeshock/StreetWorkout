@@ -1,7 +1,6 @@
 package com.steeshock.android.streetworkout.views
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
@@ -16,12 +15,8 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.model.State
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -42,7 +37,7 @@ class PlacesFragment : BaseFragment(){
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
 
@@ -54,6 +49,7 @@ class PlacesFragment : BaseFragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         placesAdapter =
             PlaceAdapter(object :
@@ -67,8 +63,12 @@ class PlacesFragment : BaseFragment(){
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
-                    val navController = requireActivity().findNavController(R.id.nav_host_fragment)
-                    navController.navigate(R.id.action_navigation_places_to_navigation_map)
+                    val placeId = item.place_id
+
+                    if (placeId != null){
+                        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeId)
+                        view.findNavController().navigate(action)
+                    }
                 }
             })
 
@@ -93,8 +93,6 @@ class PlacesFragment : BaseFragment(){
             LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         initData()
-
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initData() {

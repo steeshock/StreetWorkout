@@ -3,7 +3,6 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -32,7 +31,7 @@ class FavoritePlacesFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentFavoritePlacesBinding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
 
@@ -46,6 +45,7 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         placesAdapter =
             PlaceAdapter(object :
@@ -59,8 +59,12 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
-                    val navController = requireActivity().findNavController(R.id.nav_host_fragment)
-                    navController.navigate(R.id.action_navigation_favorites_to_navigation_map)
+                    val placeId = item.place_id
+
+                    if (placeId != null){
+                        val action = FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(placeId)
+                        view.findNavController().navigate(action)
+                    }
                 }
             })
 
@@ -71,8 +75,6 @@ class FavoritePlacesFragment : BaseFragment() {
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentFavoritePlacesBinding.placesRecycler.layoutManager =
             LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
-
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun removePlaceFromFavorites(place: Place) {

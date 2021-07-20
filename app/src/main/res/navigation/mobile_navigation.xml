@@ -26,7 +26,11 @@
         android:id="@+id/navigation_map"
         android:name="com.steeshock.android.streetworkout.views.MapFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <argument
+            android:name="place_id"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_favorites"

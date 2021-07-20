@@ -3,9 +3,9 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
@@ -29,6 +29,8 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         InjectorUtils.provideMapViewModelFactory(requireActivity())
     }
 
+    //private val args: MapFragmentArgs by navArgs()
+
     private lateinit var mMap: GoogleMap
 
     private lateinit var fragmentMapBinding: FragmentMapBinding
@@ -37,7 +39,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
 
@@ -52,13 +54,28 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         return fragmentMapBinding.root
     }
 
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         mapViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
             places?.let { showAllPlaces(it) }
         })
+
+        val placeId = arguments?.get("place_id")
+
+        if (placeId != null && placeId != -1 && placeId is Int){
+            moveToPointLocation(placeId)
+        }
+    }
+
+    private fun moveToPointLocation(placeId: Int) {
+
+        val place = mapViewModel.allPlacesLive.value?.find { i -> i.place_id == placeId }
+
+        if (place != null){
+            val placeLocation = LatLng(place.latitude, place.longitude)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 10f))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
