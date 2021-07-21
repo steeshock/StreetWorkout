@@ -19,7 +19,9 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.R
@@ -65,7 +67,7 @@ class AddPlaceFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentAddPlaceBinding = FragmentAddPlaceBinding.inflate(inflater, container, false)
         fragmentAddPlaceBinding.viewmodel = addPlaceViewModel
@@ -75,7 +77,7 @@ class AddPlaceFragment : Fragment() {
             view.findNavController().navigateUp()
         }
 
-        fragmentAddPlaceBinding.setGetMyPositionClickListener {
+        fragmentAddPlaceBinding.setMyPositionClickListener {
             getMyPosition()
         }
 
@@ -83,14 +85,8 @@ class AddPlaceFragment : Fragment() {
             addRandomCategory()
         }
 
-        fragmentAddPlaceBinding.toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_done -> {
-                    addNewPlace()
-                    true
-                }
-                else -> false
-            }
+        fragmentAddPlaceBinding.setAddNewPlaceClickListener {
+            addNewPlace()
         }
 
         resultReceiver = AddressResultReceiver(Handler())
@@ -100,12 +96,11 @@ class AddPlaceFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner, Observer { categories ->
             categories?.let { allCategories = it }
         })
-
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun addRandomCategory() {
@@ -194,10 +189,12 @@ class AddPlaceFragment : Fragment() {
 
     private fun updateUIWidgets() {
         if (addressRequested) {
-            fragmentAddPlaceBinding.progressBar.visibility = ProgressBar.VISIBLE
+            fragmentAddPlaceBinding.progressBar.visibility = View.VISIBLE
+            fragmentAddPlaceBinding.myPositionBtn.visibility = View.GONE
             fragmentAddPlaceBinding.myPositionBtn.isEnabled = false
         } else {
-            fragmentAddPlaceBinding.progressBar.visibility = ProgressBar.GONE
+            fragmentAddPlaceBinding.progressBar.visibility = View.GONE
+            fragmentAddPlaceBinding.myPositionBtn.visibility = View.VISIBLE
             fragmentAddPlaceBinding.myPositionBtn.isEnabled = true
         }
     }

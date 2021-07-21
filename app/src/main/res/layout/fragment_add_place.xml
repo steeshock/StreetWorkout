@@ -10,11 +10,15 @@
             type="android.view.View" />
 
         <variable
-            name="getMyPositionClickListener"
+            name="myPositionClickListener"
             type="android.view.View.OnClickListener" />
 
         <variable
             name="addCategoryClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="addNewPlaceClickListener"
             type="android.view.View.OnClickListener" />
 
         <variable
@@ -29,6 +33,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,93 +46,107 @@
                     android:layout_height="wrap_content"
                     android:background="@color/mainBackGroundColor"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:menu="@menu/add_place_menu"
+
                     app:navigationIcon="@drawable/ic_arrow_back_24dp"
                     app:title="@string/add_place_title"
                     app:titleTextColor="@android:color/black" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/ic_add_image" />
-
+            <!--Название-->
             <EditText
                 android:id="@+id/place_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginEnd="@dimen/list_item_spacing"
-                android:layout_marginTop="@dimen/list_item_spacing_half"
-                android:layout_marginBottom="@dimen/list_item_spacing_half"
+                android:layout_margin="@dimen/list_item_spacing"
                 android:ems="10"
                 android:hint="@string/hint_place_name"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:maxLines="1" />
 
-            <EditText
-                android:id="@+id/place_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginEnd="@dimen/list_item_spacing"
-                android:layout_marginTop="@dimen/list_item_spacing_half"
-                android:layout_marginBottom="@dimen/list_item_spacing_half"
-                android:ems="10"
-                android:hint="@string/hint_place_address"
-                android:inputType="textPersonName" />
-
-            <EditText
-                android:id="@+id/place_position"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginEnd="@dimen/list_item_spacing"
-                android:layout_marginTop="@dimen/list_item_spacing_half"
-                android:layout_marginBottom="@dimen/list_item_spacing_half"
-                android:ems="10"
-                android:hint="@string/hint_place_position"
-                android:inputType="textPersonName" />
-
+            <!--Краткое описание-->
             <EditText
                 android:id="@+id/place_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginEnd="@dimen/list_item_spacing"
-                android:layout_marginTop="@dimen/list_item_spacing_half"
-                android:layout_marginBottom="@dimen/list_item_spacing_half"
+                android:layout_margin="@dimen/list_item_spacing"
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="@string/hint_place_description"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:maxLines="1" />
 
+            <!--Адрес-->
+            <EditText
+                android:id="@+id/place_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_address"
+                android:inputType="textPersonName"
+                android:maxLines="1" />
+
+            <!--Координаты-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/place_position"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_place_position"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+                <ImageButton
+                    android:id="@+id/myPositionBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:onClick="@{myPositionClickListener}"
+                    android:src="@drawable/ic_map_location_36dp" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:orientation="horizontal"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!--Категории-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/list_item_spacing"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/place_categories"
-                    android:focusable="false"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/list_item_spacing"
-                    android:layout_marginTop="@dimen/list_item_spacing_half"
-                    android:layout_marginBottom="@dimen/list_item_spacing_half"
                     android:layout_weight="1"
+                    android:focusable="false"
                     android:hint="@string/hint_place_categories"
                     android:inputType="textPersonName" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/list_item_spacing"
-                    android:layout_marginEnd="@dimen/list_item_spacing"
-                    android:layout_marginTop="@dimen/list_item_spacing_half"
-                    android:layout_marginBottom="@dimen/list_item_spacing_half"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:gravity="center"
                     android:onClick="@{addCategoryClickListener}"
@@ -137,26 +156,68 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/myPositionBtn"
-                style="?android:attr/borderlessButtonStyle"
+            <!--Фотографии-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginEnd="@dimen/list_item_spacing"
-                android:layout_marginTop="@dimen/list_item_spacing"
-                android:layout_marginBottom="@dimen/list_item_spacing_half"
-                android:backgroundTint="@android:color/transparent"
-                android:onClick="@{getMyPositionClickListener}"
-                android:text="@string/get_my_position_btn" />
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:orientation="horizontal">
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
+                <EditText
+                    android:id="@+id/place_images"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:focusable="false"
+                    android:hint="@string/hint_place_images"
+                    android:inputType="textPersonName" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:onClick="@{addCategoryClickListener}"
+                    android:src="@drawable/ic_add_image">
+
+                </ImageButton>
+
+            </LinearLayout>
+
+            <!--Кнопки Очистить/Отправить-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginEnd="35dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/clear_place_btn"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginEnd="35dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:onClick="@{addNewPlaceClickListener}"
+                    android:text="@string/add_place_btn"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
 </layout>
