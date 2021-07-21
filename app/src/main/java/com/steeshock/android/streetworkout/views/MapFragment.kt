@@ -3,7 +3,6 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.steeshock.android.streetworkout.R
@@ -18,7 +17,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -30,14 +31,17 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private lateinit var mMap: GoogleMap
+    private var markers : MutableList<CustomMarker> = mutableListOf()
 
     private lateinit var fragmentMapBinding: FragmentMapBinding
+
+    private var movedCameraToInitialPoint = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
 
@@ -52,16 +56,40 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         return fragmentMapBinding.root
     }
 
-
     override fun onMapReady(googleMap: GoogleMap) {
+
         mMap = googleMap
 
         mapViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
             places?.let { showAllPlaces(it) }
+
+            moveToPointLocation()
         })
     }
 
+    private fun moveToPointLocation() {
+
+        val placeId = arguments?.get("place_id")
+
+        if (!movedCameraToInitialPoint && placeId != null && placeId != -1 && placeId is Int){
+
+            val place = mapViewModel.allPlacesLive.value?.find { i -> i.place_id == placeId }
+
+            if (place != null){
+                
+                val placeLocation = LatLng(place.latitude, place.longitude)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 10f))
+
+                val selectedMarker = markers.find { i -> i.place_id == placeId }
+                selectedMarker?.mapMarker?.showInfoWindow()
+
+                movedCameraToInitialPoint = true;
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
         inflater.inflate(R.menu.activity_menu, menu)
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
@@ -98,7 +126,9 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun showAllPlaces(places: List<Place>) {
+
         if (places.isNotEmpty()) {
+
             lateinit var pin: LatLng
             lateinit var bounds: LatLngBounds
             val pinsPositions = mutableListOf<LatLng>()
@@ -106,8 +136,9 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
             for (place in places) {
                 pin = LatLng(place.latitude, place.longitude)
-                mMap.addMarker(MarkerOptions().position(pin).title(place.title))
+                val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)
+                place.place_id?.let { markers.add(CustomMarker(it, marker)) }
             }
 
             for (position in pinsPositions) {

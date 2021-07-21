@@ -17,19 +17,30 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_places_to_navigation_map"
+            app:destination="@id/navigation_map" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_map"
         android:name="com.steeshock.android.streetworkout.views.MapFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <argument
+            android:name="place_id"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_favorites"
         android:name="com.steeshock.android.streetworkout.views.FavoritePlacesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_favorite_places" />
+        tools:layout="@layout/fragment_favorite_places" >
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_map"
+            app:destination="@id/navigation_map" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"

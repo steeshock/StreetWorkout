@@ -3,9 +3,9 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
@@ -31,7 +31,7 @@ class FavoritePlacesFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         fragmentFavoritePlacesBinding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
 
@@ -45,6 +45,7 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         placesAdapter =
             PlaceAdapter(object :
@@ -56,6 +57,15 @@ class FavoritePlacesFragment : BaseFragment() {
                 override fun onLikeClicked(item: Place) {
                     removePlaceFromFavorites(item)
                 }
+
+                override fun onPlaceLocationClicked(item: Place) {
+                    val placeId = item.place_id
+
+                    if (placeId != null){
+                        val action = FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(placeId)
+                        view.findNavController().navigate(action)
+                    }
+                }
             })
 
         favoritePlacesViewModel.allFavoritePlacesLive.observe(viewLifecycleOwner, Observer { places ->
@@ -65,8 +75,6 @@ class FavoritePlacesFragment : BaseFragment() {
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentFavoritePlacesBinding.placesRecycler.layoutManager =
             LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
-
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun removePlaceFromFavorites(place: Place) {
