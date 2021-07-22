@@ -109,9 +109,11 @@ class AddPlaceFragment : Fragment() {
         val selectedCategory = allCategories.find { i -> i.category_id == newRandomCategoryId }?.category_name
 
         if (!selectedCategories.contains(newRandomCategoryId)) {
-            val newValue = fragmentAddPlaceBinding.placeCategories.text.append(selectedCategory, "; ")
-            selectedCategories.add(newRandomCategoryId)
-            fragmentAddPlaceBinding.placeCategories.text = newValue
+            if (selectedCategory != null){
+                val newValue = fragmentAddPlaceBinding.placeCategories.text.append(selectedCategory, "; ")
+                selectedCategories.add(newRandomCategoryId)
+                fragmentAddPlaceBinding.placeCategories.text = newValue
+            }
         }
     }
 
@@ -153,6 +155,10 @@ class AddPlaceFragment : Fragment() {
         // (creating a process for it if needed); if it is running then it remains running. The
         // service kills itself automatically once all intents are processed.
         requireActivity().startService(intent)
+    }
+
+    fun randomN(): Int {
+        return if ((0..1).random() == 1) 0 else 1
     }
 
     /**

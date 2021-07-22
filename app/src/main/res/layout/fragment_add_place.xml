@@ -71,6 +71,7 @@
                 android:layout_margin="@dimen/list_item_spacing"
                 android:ems="10"
                 android:hint="@string/hint_place_description"
+                android:inputType="textPersonName"
                 android:maxLines="1"
                 app:layout_constraintBottom_toTopOf="@+id/place_address"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -87,48 +88,54 @@
                 android:hint="@string/hint_place_address"
                 android:inputType="textPersonName"
                 android:maxLines="1"
-                app:layout_constraintBottom_toTopOf="@+id/place_position"
+                app:layout_constraintBottom_toTopOf="@+id/place_position_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/place_description" />
 
             <!--Координаты-->
-            <EditText
-                android:id="@+id/place_position"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/place_position_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                android:ems="10"
-                android:hint="@string/hint_place_position"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                app:layout_constraintBottom_toTopOf="@+id/place_categories"
-                app:layout_constraintEnd_toStartOf="@id/myPositionBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_address" />
-
-            <ImageButton
-                android:id="@+id/myPositionBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:background="@android:color/transparent"
-                android:onClick="@{myPositionClickListener}"
-                android:src="@drawable/ic_map_location_36dp"
-                app:layout_constraintBottom_toBottomOf="@+id/place_position"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/place_position" />
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
                 android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/place_position"
+                app:layout_constraintBottom_toTopOf="@+id/place_categories"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/place_position" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_address">
+
+                <EditText
+                    android:id="@+id/place_position"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/list_item_spacing"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_place_position"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+                <ImageButton
+                    android:id="@+id/myPositionBtn"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{myPositionClickListener}"
+                    android:src="@drawable/ic_map_location_36dp" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:orientation="horizontal"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <!--Категории-->
             <EditText
@@ -142,7 +149,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/place_images"
                 app:layout_constraintEnd_toStartOf="@id/categoryBtn"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_position" />
+                app:layout_constraintTop_toBottomOf="@+id/place_position_layout" />
 
             <ImageButton
                 android:id="@+id/categoryBtn"
