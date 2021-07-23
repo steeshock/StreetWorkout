@@ -13,6 +13,7 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
+import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,8 +25,10 @@ class FavoritePlacesFragment : BaseFragment() {
         InjectorUtils.provideFavoritePlacesViewModelFactory(requireActivity())
     }
 
+    private var _fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding? = null
+    private val fragmentFavoritePlacesBinding get() = _fragmentFavoritePlacesBinding!!
+
     private lateinit var placesAdapter: PlaceAdapter
-    private lateinit var fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +36,7 @@ class FavoritePlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        fragmentFavoritePlacesBinding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
+        _fragmentFavoritePlacesBinding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
 
         fragmentFavoritePlacesBinding.viewmodel = favoritePlacesViewModel
 
@@ -125,5 +128,11 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun filterDataBySearchString(searchString: String?) {
         placesAdapter.filterItemsBySearchString(searchString)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _fragmentFavoritePlacesBinding = null
     }
 }

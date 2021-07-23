@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
+import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -30,10 +31,11 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         InjectorUtils.provideMapViewModelFactory(requireActivity())
     }
 
+    private var _fragmentMapBinding: FragmentMapBinding? = null
+    private val fragmentMapBinding get() = _fragmentMapBinding!!
+
     private lateinit var mMap: GoogleMap
     private var markers : MutableList<CustomMarker> = mutableListOf()
-
-    private lateinit var fragmentMapBinding: FragmentMapBinding
 
     private var movedCameraToInitialPoint = false
 
@@ -43,7 +45,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View {
 
-        fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
+        _fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
@@ -149,5 +151,11 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _fragmentMapBinding = null
     }
 }

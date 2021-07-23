@@ -28,7 +28,9 @@ class PlacesFragment : BaseFragment(){
 
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter
-    private lateinit var fragmentPlacesBinding: FragmentPlacesBinding
+
+    private var _fragmentPlacesBinding: FragmentPlacesBinding? = null
+    private val fragmentPlacesBinding get() = _fragmentPlacesBinding!!
 
     private var filterList: MutableList<Category> = mutableListOf()
     private var lastSearchString: String? = null
@@ -39,11 +41,11 @@ class PlacesFragment : BaseFragment(){
         savedInstanceState: Bundle?
     ): View {
 
-        fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
+        _fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
 
         fragmentPlacesBinding.lifecycleOwner = this
 
-        (container?.context as MainActivity).setSupportActionBar(fragmentPlacesBinding.toolbar)
+        (container?.context as MainActivity).setSupportActionBar(_fragmentPlacesBinding?.toolbar)
 
         return fragmentPlacesBinding.root
     }
@@ -192,12 +194,18 @@ class PlacesFragment : BaseFragment(){
         }
     }
 
-    fun showBottomSheet() {
+    private fun showBottomSheet() {
         ItemListDialogFragment.newInstance(30)
             .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
     }
 
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _fragmentPlacesBinding = null
     }
 }
