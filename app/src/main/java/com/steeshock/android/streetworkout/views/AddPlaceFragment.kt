@@ -32,6 +32,7 @@ import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
+import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
@@ -59,10 +60,12 @@ class AddPlaceFragment : Fragment() {
     private val addPlaceViewModel: AddPlaceViewModel by viewModels {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
     }
+
+    private var _fragmentAddPlaceBinding: FragmentAddPlaceBinding? = null
+    private val fragmentAddPlaceBinding get() = _fragmentAddPlaceBinding!!
+
     private var allCategories = emptyList<Category>()
     private var selectedCategories: ArrayList<Int> = arrayListOf()
-
-    private lateinit var fragmentAddPlaceBinding: FragmentAddPlaceBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,7 +73,7 @@ class AddPlaceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        fragmentAddPlaceBinding = FragmentAddPlaceBinding.inflate(inflater, container, false)
+        _fragmentAddPlaceBinding = FragmentAddPlaceBinding.inflate(inflater, container, false)
         fragmentAddPlaceBinding.viewmodel = addPlaceViewModel
         fragmentAddPlaceBinding.lifecycleOwner = this
 
@@ -359,5 +362,11 @@ class AddPlaceFragment : Fragment() {
         val myRef = database.getReference("new_place_${(1..1000000).random()}")
 
         myRef.setValue(newPlace)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _fragmentAddPlaceBinding = null
     }
 }
