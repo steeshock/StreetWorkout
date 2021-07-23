@@ -17,10 +17,13 @@
     <string name="hint_place_name">Название места</string>
     <string name="hint_place_address">Адрес места</string>
     <string name="hint_place_position">Координаты широта/долгота</string>
-    <string name="hint_place_categories">Нажмите справа для выбора</string>
+    <string name="hint_place_categories">Выберите категории</string>
+    <string name="hint_place_images">Выберите фотографии</string>
     <string name="hint_place_description">Краткое описание</string>
     <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
+    <string name="add_place_btn">Отправить</string>
+    <string name="clear_place_btn">Очистить</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>
@@ -33,4 +36,8 @@
     <string name="service_not_available">Sorry, the service is not available</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="clear_fields_alert">Внимание!</string>
+    <string name="clear_fields_message">Все поля будут очищены. Продолжить?</string>
+    <string name="ok_item">OK</string>
+    <string name="cancel_item">Отмена</string>
 </resources>
