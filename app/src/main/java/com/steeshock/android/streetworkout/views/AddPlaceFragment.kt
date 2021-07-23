@@ -2,6 +2,8 @@ package com.steeshock.android.streetworkout.views
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -13,28 +15,27 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
-import com.steeshock.android.streetworkout.common.Constants
-import com.steeshock.android.streetworkout.services.FetchAddressIntentService
-import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
-import com.steeshock.android.streetworkout.utils.InjectorUtils
-import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.steeshock.android.streetworkout.R
+import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.data.model.Category
+import com.steeshock.android.streetworkout.data.model.Place
+import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
+import com.steeshock.android.streetworkout.services.FetchAddressIntentService
+import com.steeshock.android.streetworkout.utils.InjectorUtils
+import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
+import kotlinx.android.synthetic.main.fragment_add_place.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
@@ -89,6 +90,10 @@ class AddPlaceFragment : Fragment() {
             addNewPlace()
         }
 
+        fragmentAddPlaceBinding.setResetFieldsClickListener {
+            onCreateClearFieldsDialog().show()
+        }
+
         resultReceiver = AddressResultReceiver(Handler())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -103,6 +108,31 @@ class AddPlaceFragment : Fragment() {
         })
     }
 
+    private fun onCreateClearFieldsDialog(): Dialog {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
+        return builder
+            .setTitle(getString(R.string.clear_fields_alert))
+            .setMessage(getString(R.string.clear_fields_message))
+            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> resetFields() }
+            .setNegativeButton(getString(R.string.cancel_item), null)
+            .create()
+    }
+
+    private fun resetFields() {
+        
+        fragmentAddPlaceBinding.let {
+            it.placeTitle.text.clear()
+            it.placeDescription.text.clear()
+            it.placeAddress.text.clear()
+            it.placePosition.text.clear()
+            it.placeCategories.text.clear()
+            it.placeImages.text.clear()
+            it.progressBar.visibility = View.GONE
+            it.myPositionBtn.visibility = View.VISIBLE
+            it.myPositionBtn.isEnabled = true
+        }
+    }
+
     private fun addRandomCategory() {
 
         val newRandomCategoryId = (1..10).random()
@@ -110,7 +140,10 @@ class AddPlaceFragment : Fragment() {
 
         if (!selectedCategories.contains(newRandomCategoryId)) {
             if (selectedCategory != null){
-                val newValue = fragmentAddPlaceBinding.placeCategories.text.append(selectedCategory, "; ")
+                val newValue = fragmentAddPlaceBinding.placeCategories.text.append(
+                    selectedCategory,
+                    "; "
+                )
                 selectedCategories.add(newRandomCategoryId)
                 fragmentAddPlaceBinding.placeCategories.text = newValue
             }
@@ -121,10 +154,10 @@ class AddPlaceFragment : Fragment() {
         if (!checkPermissions()) {
             requestPermissions()
         } else {
-//            if (lastLocation != null) {
-//                startIntentService()
-//                return
-//            }
+            if (lastLocation != null) {
+                startIntentService()
+                return
+            }
 
             // If we have not yet retrieved the user location, we process the user's request by setting
             // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
@@ -155,10 +188,6 @@ class AddPlaceFragment : Fragment() {
         // (creating a process for it if needed); if it is running then it remains running. The
         // service kills itself automatically once all intents are processed.
         requireActivity().startService(intent)
-    }
-
-    fun randomN(): Int {
-        return if ((0..1).random() == 1) 0 else 1
     }
 
     /**

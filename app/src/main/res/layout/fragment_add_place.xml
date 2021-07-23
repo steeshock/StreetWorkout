@@ -22,6 +22,10 @@
             type="android.view.View.OnClickListener" />
 
         <variable
+            name="resetFieldsClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
             name="viewmodel"
             type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
     </data>
@@ -197,6 +201,7 @@
                 android:background="@color/colorPrimary"
                 android:minWidth="120dp"
                 android:text="@string/clear_place_btn"
+                android:onClick="@{resetFieldsClickListener}"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_clear"
