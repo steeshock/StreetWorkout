@@ -34,8 +34,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
         notifyDataSetChanged()
 
-        setupEmptyState()
-        setupAdditionalEmptyFavoritesState()
+        setupEmptyListState()
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -98,12 +97,11 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
                 }
             }
         })
-
     }
 
     fun filterItemsByCategory(filterList: MutableList<Category>) {
 
-        if (allItems.isNotEmpty() && filterList.isNotEmpty()) {
+        if (allItems.isNotEmpty()) {
 
             items = if (filterList.isNullOrEmpty())
                 allItems
@@ -115,7 +113,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
             notifyDataSetChanged()
 
-            setupEmptyState()
+            setupEmptyFilterResultsState()
         }
     }
 
@@ -129,19 +127,18 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
         notifyDataSetChanged()
 
-        setupEmptyState()
+        setupEmptyFilterResultsState()
 
-        if (searchString.isNullOrEmpty()) {
-            setupAdditionalEmptyFavoritesState()
-        }
+        if (searchString.isNullOrEmpty() && allItems.isEmpty())
+            setupEmptyListState()
     }
 
-    private fun setupEmptyState() {
-        callback.setEmptyState(items.isEmpty())
+    private fun setupEmptyListState() {
+        callback.setEmptyListState(items.isEmpty())
     }
 
-    private fun setupAdditionalEmptyFavoritesState() {
-        callback.setFavoritePlacesEmptyState(items.isEmpty())
+    private fun setupEmptyFilterResultsState() {
+        callback.setEmptyFilterResultsState(items.isEmpty())
     }
 
     interface Callback {
@@ -149,7 +146,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         fun onLikeClicked(item: Place)
         fun onPlaceLocationClicked(item: Place)
 
-        fun setEmptyState(isEmpty: Boolean)
-        fun setFavoritePlacesEmptyState(isEmpty: Boolean)
+        fun setEmptyListState(isEmpty: Boolean)
+        fun setEmptyFilterResultsState(isEmpty: Boolean)
     }
 }
