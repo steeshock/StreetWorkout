@@ -33,6 +33,8 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         filteredItems = places.toList()
 
         notifyDataSetChanged()
+
+        setupEmptyListState()
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -95,20 +97,24 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
                 }
             }
         })
-
     }
 
-    fun filterItemsByFilterList(filterList: MutableList<Category>) {
+    fun filterItemsByCategory(filterList: MutableList<Category>) {
 
-        items = if (filterList.isNullOrEmpty())
-            allItems
-        else {
-            allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
+        if (allItems.isNotEmpty()) {
+
+            items = if (filterList.isNullOrEmpty())
+                allItems
+            else {
+                allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
+            }
+
+            filteredItems = items
+
+            notifyDataSetChanged()
+
+            setupEmptyFilterResultsState()
         }
-
-        filteredItems = items
-
-        notifyDataSetChanged()
     }
 
     fun filterItemsBySearchString(searchString: String?) {
@@ -120,11 +126,27 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
 
         notifyDataSetChanged()
+
+        setupEmptyFilterResultsState()
+
+        if (searchString.isNullOrEmpty() && allItems.isEmpty())
+            setupEmptyListState()
+    }
+
+    private fun setupEmptyListState() {
+        callback.setEmptyListState(items.isEmpty())
+    }
+
+    private fun setupEmptyFilterResultsState() {
+        callback.setEmptyResultsState(items.isEmpty())
     }
 
     interface Callback {
         fun onPlaceClicked(item: Place)
         fun onLikeClicked(item: Place)
         fun onPlaceLocationClicked(item: Place)
+
+        fun setEmptyListState(isEmpty: Boolean)
+        fun setEmptyResultsState(isEmpty: Boolean)
     }
 }
