@@ -101,7 +101,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     fun filterItemsByCategory(filterList: MutableList<Category>) {
 
-        if (allItems.isNotEmpty() && filterList.isNotEmpty()) {
+        if (allItems.isNotEmpty()) {
 
             items = if (filterList.isNullOrEmpty())
                 allItems
@@ -128,6 +128,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         notifyDataSetChanged()
 
         setupEmptyFilterResultsState()
+
+        if (searchString.isNullOrEmpty() && allItems.isEmpty())
+            setupEmptyListState()
     }
 
     private fun setupEmptyListState() {

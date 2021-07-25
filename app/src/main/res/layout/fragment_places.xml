@@ -62,11 +62,16 @@
                     android:layout_height="match_parent" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <include
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/emptyFilterResultsView"
-                layout="@layout/v_empty_filter_results_state"
+                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+                <include
+                    layout="@layout/v_empty_filter_results_state"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </LinearLayout>
 

@@ -139,6 +139,7 @@ class PlacesFragment : BaseFragment(){
             isLoading.observe(viewLifecycleOwner, Observer {
                 fragmentPlacesBinding.refresher.isRefreshing = it
                 fragmentPlacesBinding.emptyListView.isRefreshing = it
+                fragmentPlacesBinding.emptyFilterResultsView.isRefreshing = it
             })
 
             fragmentPlacesBinding.refresher.setOnRefreshListener {
@@ -147,6 +148,11 @@ class PlacesFragment : BaseFragment(){
             }
 
             fragmentPlacesBinding.emptyListView.setOnRefreshListener {
+                updatePlacesFromFirebase()
+                updateCategoriesFromFirebase()
+            }
+
+            fragmentPlacesBinding.emptyFilterResultsView.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
@@ -193,6 +199,7 @@ class PlacesFragment : BaseFragment(){
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
         val searchView = myActionMenuItem.actionView as SearchView
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (!searchView.isIconified) {

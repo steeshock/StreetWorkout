@@ -121,6 +121,7 @@ class FavoritePlacesFragment : BaseFragment() {
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
         val searchView = myActionMenuItem.actionView as SearchView
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 if (!searchView.isIconified) {
