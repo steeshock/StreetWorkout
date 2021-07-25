@@ -17,7 +17,6 @@ import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
-import kotlinx.android.synthetic.main.v_empty_state.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -72,28 +71,27 @@ class FavoritePlacesFragment : BaseFragment() {
                     }
                 }
 
-                override fun setEmptyState(isEmpty: Boolean) {
+                override fun setEmptyListState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyFavoritesView.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptySearchView.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptySearchView.emptyStateText.setText(R.string.empty_favorites_state_message)
+                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.VISIBLE
                     }
                     else {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptySearchView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.GONE
                     }
                 }
 
-                override fun setFavoritePlacesEmptyState(isEmpty: Boolean) {
+                override fun setEmptyFilterResultsState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptySearchView.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyFavoritesView.visibility = View.VISIBLE
+                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.VISIBLE
                     }
                     else {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyFavoritesView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.GONE
                     }
                 }
             })

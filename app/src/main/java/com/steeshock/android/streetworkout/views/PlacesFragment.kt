@@ -73,18 +73,29 @@ class PlacesFragment : BaseFragment(){
                     }
                 }
 
-                override fun setEmptyState(isEmpty: Boolean) {
+                override fun setEmptyListState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentPlacesBinding.refresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyView.visibility = View.VISIBLE
+                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                        fragmentPlacesBinding.emptyListView.visibility = View.VISIBLE
                     }
                     else {
                         fragmentPlacesBinding.refresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyView.visibility = View.GONE
+                        fragmentPlacesBinding.emptyListView.visibility = View.GONE
                     }
                 }
 
-                override fun setFavoritePlacesEmptyState(isEmpty: Boolean) {}
+                override fun setEmptyFilterResultsState(isEmpty: Boolean) {
+                    if (isEmpty) {
+                        fragmentPlacesBinding.refresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyListView.visibility = View.GONE
+                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.VISIBLE
+                    }
+                    else {
+                        fragmentPlacesBinding.refresher.visibility = View.VISIBLE
+                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                    }
+                }
             })
 
         categoriesAdapter =
@@ -127,7 +138,7 @@ class PlacesFragment : BaseFragment(){
 
             isLoading.observe(viewLifecycleOwner, Observer {
                 fragmentPlacesBinding.refresher.isRefreshing = it
-                fragmentPlacesBinding.emptyView.isRefreshing = it
+                fragmentPlacesBinding.emptyListView.isRefreshing = it
             })
 
             fragmentPlacesBinding.refresher.setOnRefreshListener {
@@ -135,7 +146,7 @@ class PlacesFragment : BaseFragment(){
                 updateCategoriesFromFirebase()
             }
 
-            fragmentPlacesBinding.emptyView.setOnRefreshListener {
+            fragmentPlacesBinding.emptyListView.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }

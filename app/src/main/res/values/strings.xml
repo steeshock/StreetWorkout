@@ -11,12 +11,16 @@
     <string name="page_not_ready_title">Раздел находится в разработке</string>
     <string name="empty_favorites_list_state_message">"В списке избранного
 пока ничего нет"</string>
+    <string name="empty_places_list_state_message">"Список пуст
+Попробуйте изменить
+условия поиска
+или обновить страницу"</string>
     <string name="empty_state_message">"Ничего не найдено! :(
-Попробуйте уточнить
+Попробуйте изменить
 условия поиска
 или обновить страницу"</string>
     <string name="empty_favorites_state_message">"Ничего не найдено! :(
-Попробуйте уточнить
+Попробуйте изменить
 условия поиска"</string>
 
     <!--Add new place fragment-->

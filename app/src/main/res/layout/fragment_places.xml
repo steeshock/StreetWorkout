@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -52,15 +52,21 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/emptyView"
+                android:id="@+id/emptyListView"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <include
-                    layout="@layout/v_empty_state"
+                    layout="@layout/v_empty_places_list_state"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <include
+                android:id="@+id/emptyFilterResultsView"
+                layout="@layout/v_empty_filter_results_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
