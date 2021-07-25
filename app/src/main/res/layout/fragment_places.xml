@@ -39,7 +39,7 @@
                 android:background="@color/mainBackGroundColor" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/refresher"
+                android:id="@+id/placesRefresher"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -52,23 +52,25 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/emptyListView"
+                android:id="@+id/emptyListViewRefresher"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <include
-                    layout="@layout/v_empty_places_list_state"
+                    android:id="@+id/emptyListView"
+                    layout="@layout/v_empty_state"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/emptyFilterResultsView"
+                android:id="@+id/emptyResultsViewRefresher"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <include
-                    layout="@layout/v_empty_filter_results_state"
+                    android:id="@+id/emptyResultsView"
+                    layout="@layout/v_empty_state"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

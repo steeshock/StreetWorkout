@@ -39,14 +39,14 @@
 
             <include
                 android:id="@+id/emptyListView"
-                layout="@layout/v_empty_favorite_list_state"
+                layout="@layout/v_empty_state"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
             <include
-                android:id="@+id/emptyFilterResultsView"
-                layout="@layout/v_empty_filter_results_state"
+                android:id="@+id/emptyResultsView"
+                layout="@layout/v_empty_state"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone" />

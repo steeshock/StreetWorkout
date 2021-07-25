@@ -17,6 +17,10 @@ import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.data.model.Category
+import kotlinx.android.synthetic.main.fragment_favorite_places.view.*
+import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
+import kotlinx.android.synthetic.main.fragment_places.view.*
+import kotlinx.android.synthetic.main.v_empty_state.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -75,25 +79,25 @@ class PlacesFragment : BaseFragment(){
 
                 override fun setEmptyListState(isEmpty: Boolean) {
                     if (isEmpty) {
-                        fragmentPlacesBinding.refresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListView.visibility = View.VISIBLE
+                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.VISIBLE
                     }
                     else {
-                        fragmentPlacesBinding.refresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyListView.visibility = View.GONE
+                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
+                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
                     }
                 }
 
-                override fun setEmptyFilterResultsState(isEmpty: Boolean) {
+                override fun setEmptyResultsState(isEmpty: Boolean) {
                     if (isEmpty) {
-                        fragmentPlacesBinding.refresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListView.visibility = View.GONE
-                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.VISIBLE
+                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.VISIBLE
                     }
                     else {
-                        fragmentPlacesBinding.refresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
+                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
                     }
                 }
             })
@@ -119,6 +123,8 @@ class PlacesFragment : BaseFragment(){
         fragmentPlacesBinding.categoriesRecycler.layoutManager =
             LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
+        setupEmptyViews()
+
         initData()
     }
 
@@ -137,22 +143,22 @@ class PlacesFragment : BaseFragment(){
             })
 
             isLoading.observe(viewLifecycleOwner, Observer {
-                fragmentPlacesBinding.refresher.isRefreshing = it
-                fragmentPlacesBinding.emptyListView.isRefreshing = it
-                fragmentPlacesBinding.emptyFilterResultsView.isRefreshing = it
+                fragmentPlacesBinding.placesRefresher.isRefreshing = it
+                fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it
+                fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it
             })
 
-            fragmentPlacesBinding.refresher.setOnRefreshListener {
+            fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
 
-            fragmentPlacesBinding.emptyListView.setOnRefreshListener {
+            fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
 
-            fragmentPlacesBinding.emptyFilterResultsView.setOnRefreshListener {
+            fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
@@ -240,6 +246,14 @@ class PlacesFragment : BaseFragment(){
 
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
+    }
+
+    private fun setupEmptyViews() {
+        fragmentPlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
+        fragmentPlacesBinding.emptyListView.title.setText(R.string.empty_places_list_state_message)
+
+        fragmentPlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
+        fragmentPlacesBinding.emptyResultsView.title.setText(R.string.empty_state_message)
     }
 
     override fun onDestroyView() {

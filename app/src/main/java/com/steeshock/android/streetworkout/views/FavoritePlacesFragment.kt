@@ -17,6 +17,7 @@ import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
+import kotlinx.android.synthetic.main.v_empty_state.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -74,7 +75,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 override fun setEmptyListState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.GONE
                         fragmentFavoritePlacesBinding.emptyListView.visibility = View.VISIBLE
                     }
                     else {
@@ -83,15 +84,15 @@ class FavoritePlacesFragment : BaseFragment() {
                     }
                 }
 
-                override fun setEmptyFilterResultsState(isEmpty: Boolean) {
+                override fun setEmptyResultsState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
                         fragmentFavoritePlacesBinding.emptyListView.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.VISIBLE
+                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.VISIBLE
                     }
                     else {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyFilterResultsView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.GONE
                     }
                 }
             })
@@ -103,6 +104,8 @@ class FavoritePlacesFragment : BaseFragment() {
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentFavoritePlacesBinding.placesRecycler.layoutManager =
             LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
+
+        setupEmptyViews()
     }
 
     private fun removePlaceFromFavorites(place: Place) {
@@ -154,6 +157,14 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun filterDataBySearchString(searchString: String?) {
         placesAdapter.filterItemsBySearchString(searchString)
+    }
+
+    private fun setupEmptyViews() {
+        fragmentFavoritePlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
+        fragmentFavoritePlacesBinding.emptyListView.title.setText(R.string.empty_favorites_list_state_message)
+
+        fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
+        fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
     }
 
     override fun onDestroyView() {

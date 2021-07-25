@@ -138,7 +138,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     }
 
     private fun setupEmptyFilterResultsState() {
-        callback.setEmptyFilterResultsState(items.isEmpty())
+        callback.setEmptyResultsState(items.isEmpty())
     }
 
     interface Callback {
@@ -147,6 +147,6 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         fun onPlaceLocationClicked(item: Place)
 
         fun setEmptyListState(isEmpty: Boolean)
-        fun setEmptyFilterResultsState(isEmpty: Boolean)
+        fun setEmptyResultsState(isEmpty: Boolean)
     }
 }
