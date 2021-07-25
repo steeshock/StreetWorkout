@@ -8,9 +8,16 @@
     <string name="action_map">Переход на карту</string>
     <string name="action_add_place">Добавить место</string>
     <string name="places_title">Места тренировок</string>
-
-    <!--Page not ready fragment-->
     <string name="page_not_ready_title">Раздел находится в разработке</string>
+    <string name="empty_favorites_list_state_message">"В списке избранного
+пока ничего нет"</string>
+    <string name="empty_state_message">"Ничего не найдено! :(
+Попробуйте уточнить
+условия поиска
+или обновить страницу"</string>
+    <string name="empty_favorites_state_message">"Ничего не найдено! :(
+Попробуйте уточнить
+условия поиска"</string>
 
     <!--Add new place fragment-->
     <string name="add_place_title">Новое место</string>

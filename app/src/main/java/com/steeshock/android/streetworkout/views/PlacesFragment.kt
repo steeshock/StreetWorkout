@@ -72,6 +72,19 @@ class PlacesFragment : BaseFragment(){
                         view.findNavController().navigate(action)
                     }
                 }
+
+                override fun setEmptyState(isEmpty: Boolean) {
+                    if (isEmpty) {
+                        fragmentPlacesBinding.refresher.visibility = View.GONE
+                        fragmentPlacesBinding.emptyView.visibility = View.VISIBLE
+                    }
+                    else {
+                        fragmentPlacesBinding.refresher.visibility = View.VISIBLE
+                        fragmentPlacesBinding.emptyView.visibility = View.GONE
+                    }
+                }
+
+                override fun setFavoritePlacesEmptyState(isEmpty: Boolean) {}
             })
 
         categoriesAdapter =
@@ -86,6 +99,7 @@ class PlacesFragment : BaseFragment(){
             showAddPlaceFragment(it)
         }
 
+        fragmentPlacesBinding.placesRecycler.setHasFixedSize(true)
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentPlacesBinding.placesRecycler.layoutManager =
             LinearLayoutManager(fragmentPlacesBinding.root.context)
@@ -102,20 +116,26 @@ class PlacesFragment : BaseFragment(){
 
             placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 placesAdapter.setPlaces(it)
-                filterDataByFilterList()
+                filterData()
             })
 
             categoriesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                 categoriesAdapter.setCategories(it)
                 updateFilterList()
-                filterDataByFilterList()
+                filterData()
             })
 
             isLoading.observe(viewLifecycleOwner, Observer {
                 fragmentPlacesBinding.refresher.isRefreshing = it
+                fragmentPlacesBinding.emptyView.isRefreshing = it
             })
 
             fragmentPlacesBinding.refresher.setOnRefreshListener {
+                updatePlacesFromFirebase()
+                updateCategoriesFromFirebase()
+            }
+
+            fragmentPlacesBinding.emptyView.setOnRefreshListener {
                 updatePlacesFromFirebase()
                 updateCategoriesFromFirebase()
             }
@@ -132,18 +152,19 @@ class PlacesFragment : BaseFragment(){
         category.changeSelectedState()
 
         if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
-        filterDataByFilterList()
+
+        filterData()
 
         placesViewModel.updateCategory(category)
-
     }
 
     private fun updateFilterList() {
         filterList = categoriesAdapter.getSelectedCategories()
     }
 
-    private fun filterDataByFilterList() {
-        placesAdapter.filterItemsByFilterList(filterList)
+    private fun filterData() {
+        
+        placesAdapter.filterItemsByCategory(filterList)
 
         if (!lastSearchString.isNullOrEmpty()){
             filterDataBySearchString(lastSearchString)

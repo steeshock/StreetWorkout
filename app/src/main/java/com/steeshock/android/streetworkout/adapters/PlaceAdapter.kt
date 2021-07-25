@@ -33,6 +33,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         filteredItems = places.toList()
 
         notifyDataSetChanged()
+
+        setupEmptyState()
+        setupAdditionalEmptyFavoritesState()
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -98,17 +101,22 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     }
 
-    fun filterItemsByFilterList(filterList: MutableList<Category>) {
+    fun filterItemsByCategory(filterList: MutableList<Category>) {
 
-        items = if (filterList.isNullOrEmpty())
-            allItems
-        else {
-            allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
+        if (allItems.isNotEmpty() && filterList.isNotEmpty()) {
+
+            items = if (filterList.isNullOrEmpty())
+                allItems
+            else {
+                allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
+            }
+
+            filteredItems = items
+
+            notifyDataSetChanged()
+
+            setupEmptyState()
         }
-
-        filteredItems = items
-
-        notifyDataSetChanged()
     }
 
     fun filterItemsBySearchString(searchString: String?) {
@@ -120,11 +128,28 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
 
         notifyDataSetChanged()
+
+        setupEmptyState()
+
+        if (searchString.isNullOrEmpty()) {
+            setupAdditionalEmptyFavoritesState()
+        }
+    }
+
+    private fun setupEmptyState() {
+        callback.setEmptyState(items.isEmpty())
+    }
+
+    private fun setupAdditionalEmptyFavoritesState() {
+        callback.setFavoritePlacesEmptyState(items.isEmpty())
     }
 
     interface Callback {
         fun onPlaceClicked(item: Place)
         fun onLikeClicked(item: Place)
         fun onPlaceLocationClicked(item: Place)
+
+        fun setEmptyState(isEmpty: Boolean)
+        fun setFavoritePlacesEmptyState(isEmpty: Boolean)
     }
 }
