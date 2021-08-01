@@ -35,6 +35,7 @@
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>
     <string name="clear_place_btn">Очистить</string>
+    <string name="success_message">Успешно</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>
@@ -49,6 +50,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="clear_fields_alert">Внимание!</string>
     <string name="clear_fields_message">Все поля будут очищены. Продолжить?</string>
+    <string name="select_category_alert">Выберите категорию:</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>
 </resources>

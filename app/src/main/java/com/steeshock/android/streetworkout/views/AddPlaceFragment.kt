@@ -3,7 +3,6 @@ package com.steeshock.android.streetworkout.views
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -25,6 +24,8 @@ import androidx.navigation.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.R
@@ -32,15 +33,12 @@ import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
-import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import kotlinx.android.synthetic.main.fragment_add_place.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-@ExperimentalCoroutinesApi
 class AddPlaceFragment : Fragment() {
 
     private val TAG = "LocationTag"
@@ -65,7 +63,6 @@ class AddPlaceFragment : Fragment() {
     private val fragmentAddPlaceBinding get() = _fragmentAddPlaceBinding!!
 
     private var allCategories = emptyList<Category>()
-    private var selectedCategories: ArrayList<Int> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,16 +82,16 @@ class AddPlaceFragment : Fragment() {
             getMyPosition()
         }
 
-        fragmentAddPlaceBinding.setAddCategoryClickListener {
-            addRandomCategory()
-        }
-
         fragmentAddPlaceBinding.setAddNewPlaceClickListener {
             addNewPlace()
         }
 
         fragmentAddPlaceBinding.setResetFieldsClickListener {
-            onCreateClearFieldsDialog().show()
+            getClearFieldsDialog().show()
+        }
+
+        fragmentAddPlaceBinding.setAddCategoryClickListener {
+            getCategoriesDialog().show()
         }
 
         resultReceiver = AddressResultReceiver(Handler())
@@ -108,10 +105,14 @@ class AddPlaceFragment : Fragment() {
 
         addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner, Observer { categories ->
             categories?.let { allCategories = it }
+
+            if (addPlaceViewModel.checkedCategoriesArray == null) {
+                addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
+            }
         })
     }
 
-    private fun onCreateClearFieldsDialog(): Dialog {
+    private fun getClearFieldsDialog(): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         return builder
             .setTitle(getString(R.string.clear_fields_alert))
@@ -121,8 +122,51 @@ class AddPlaceFragment : Fragment() {
             .create()
     }
 
+    private fun getCategoriesDialog(): Dialog {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
+        return builder
+            .setTitle(getString(R.string.select_category_alert))
+            .setMultiChoiceItems(
+                allCategories.map { i -> i.category_name }.toTypedArray(),
+                addPlaceViewModel.checkedCategoriesArray
+            ) { _, which, isChecked ->
+
+                val selectedCategory = allCategories[which]
+
+                if (isChecked) {
+                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.add(it) }
+                } else {
+                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(it) }
+                }
+            }
+            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
+            .create()
+    }
+
+    private fun addCategories() {
+        if (addPlaceViewModel.selectedCategories.isEmpty()) {
+            fragmentAddPlaceBinding.placeCategories.text.clear()
+            return
+        }
+
+        fragmentAddPlaceBinding.placeCategories.text.clear()
+
+        addPlaceViewModel.selectedCategories.forEach { i ->
+            run {
+                val category = allCategories.find { j -> j.category_id == i }?.category_name
+
+                if (!category.isNullOrEmpty()) {
+                    fragmentAddPlaceBinding.placeCategories.text.append(
+                        category,
+                        "; "
+                    )
+                }
+            }
+        }
+    }
+
     private fun resetFields() {
-        
+
         fragmentAddPlaceBinding.let {
             it.placeTitle.text.clear()
             it.placeDescription.text.clear()
@@ -133,24 +177,12 @@ class AddPlaceFragment : Fragment() {
             it.progressBar.visibility = View.GONE
             it.myPositionBtn.visibility = View.VISIBLE
             it.myPositionBtn.isEnabled = true
+
+            addPlaceViewModel.selectedCategories.clear()
+            addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
         }
-    }
 
-    private fun addRandomCategory() {
-
-        val newRandomCategoryId = (1..10).random()
-        val selectedCategory = allCategories.find { i -> i.category_id == newRandomCategoryId }?.category_name
-
-        if (!selectedCategories.contains(newRandomCategoryId)) {
-            if (selectedCategory != null){
-                val newValue = fragmentAddPlaceBinding.placeCategories.text.append(
-                    selectedCategory,
-                    "; "
-                )
-                selectedCategories.add(newRandomCategoryId)
-                fragmentAddPlaceBinding.placeCategories.text = newValue
-            }
-        }
+        Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
     }
 
     private fun getMyPosition() {
@@ -348,7 +380,7 @@ class AddPlaceFragment : Fragment() {
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
             address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = selectedCategories,
+            categories = addPlaceViewModel.selectedCategories,
         )
 
         addPlaceViewModel.insert(newPlace)
@@ -358,10 +390,17 @@ class AddPlaceFragment : Fragment() {
 
     private fun addNewPlaceOnFirebase(newPlace: Place) {
 
-        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+        val database =
+            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
         val myRef = database.getReference("new_place_${(1..1000000).random()}")
 
-        myRef.setValue(newPlace)
+        myRef.setValue(newPlace) { _: DatabaseError?, _: DatabaseReference ->
+            Toast.makeText(
+                requireActivity(),
+                R.string.success_message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     override fun onDestroyView() {

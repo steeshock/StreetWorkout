@@ -16,6 +16,9 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
     val allCategoriesLive: LiveData<List<Category>> = repository.allCategories
 
+    var checkedCategoriesArray: BooleanArray? = null
+    var selectedCategories: ArrayList<Int> = arrayListOf()
+
     fun insert(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)
     }
