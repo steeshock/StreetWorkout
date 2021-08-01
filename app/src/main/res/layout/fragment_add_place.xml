@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/mainBackGroundColor">
+
+    <data class="FragmentAddPlaceBinding">
+
+        <import
+            alias="V"
+            type="android.view.View" />
+
+        <variable
+            name="myPositionClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="addCategoryClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="addNewPlaceClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="resetFieldsClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="viewmodel"
+            type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/mainBackGroundColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:navigationIcon="@drawable/ic_arrow_back_24dp"
+                app:title="@string/add_place_title"
+                app:titleTextColor="@android:color/black" />
+
+            <!--Название-->
+            <EditText
+                android:id="@+id/place_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:layout_marginBottom="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_name"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@+id/place_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <!--Краткое описание-->
+            <EditText
+                android:id="@+id/place_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_description"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@+id/place_address"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_title" />
+
+            <!--Адрес-->
+            <EditText
+                android:id="@+id/place_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:ems="10"
+                android:hint="@string/hint_place_address"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@+id/place_position_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_description" />
+
+            <!--Координаты-->
+            <LinearLayout
+                android:id="@+id/place_position_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/place_categories"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_address">
+
+                <EditText
+                    android:id="@+id/place_position"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/list_item_spacing"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/hint_place_position"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+                <ImageButton
+                    android:id="@+id/myPositionBtn"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{myPositionClickListener}"
+                    android:src="@drawable/ic_map_location_36dp" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:orientation="horizontal"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!--Категории-->
+            <EditText
+                android:id="@+id/place_categories"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:focusable="false"
+                android:hint="@string/hint_place_categories"
+                android:inputType="text"
+                app:layout_constraintBottom_toTopOf="@+id/place_images"
+                app:layout_constraintEnd_toStartOf="@id/categoryBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_position_layout" />
+
+            <ImageButton
+                android:id="@+id/categoryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:background="@android:color/transparent"
+                android:onClick="@{addCategoryClickListener}"
+                android:src="@drawable/ic_add_circle_36dp"
+                app:layout_constraintBottom_toBottomOf="@+id/place_categories"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/place_categories" />
+
+            <!--Фотографии-->
+            <EditText
+                android:id="@+id/place_images"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:focusable="false"
+                android:hint="@string/hint_place_images"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toTopOf="@+id/btn_add"
+                app:layout_constraintEnd_toStartOf="@id/takeImageBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/place_categories" />
+
+            <ImageButton
+                android:id="@+id/takeImageBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:background="@android:color/transparent"
+                android:onClick="@{addCategoryClickListener}"
+                android:src="@drawable/ic_add_image"
+                app:layout_constraintBottom_toBottomOf="@+id/place_images"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/place_images" />
+
+            <Button
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginVertical="35dp"
+                android:background="@color/colorPrimary"
+                android:minWidth="120dp"
+                android:text="@string/clear_place_btn"
+                android:onClick="@{resetFieldsClickListener}"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_clear"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginVertical="35dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimary"
+                android:minWidth="120dp"
+                android:onClick="@{addNewPlaceClickListener}"
+                android:text="@string/add_place_btn"
+                android:textColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/btn_add"
+                app:layout_constraintTop_toBottomOf="@+id/place_images" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

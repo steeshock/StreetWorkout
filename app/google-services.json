@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "368287432467",
+    "project_id": "test-projects-b523c",
+    "storage_bucket": "test-projects-b523c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368287432467:android:2ffa9d152e28d1af6f64e6",
+        "android_client_info": {
+          "package_name": "com.google.firebase.quickstart.database"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368287432467-r3n86tv3f6dqphr9vauj85b7ur33nmt3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW9MSVQUTKyBYVPfu93CGrrMAqTMiFqxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368287432467-r3n86tv3f6dqphr9vauj85b7ur33nmt3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368287432467:android:538135e93bcf0fd36f64e6",
+        "android_client_info": {
+          "package_name": "com.steeshock.android.streetworkout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368287432467-r3n86tv3f6dqphr9vauj85b7ur33nmt3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW9MSVQUTKyBYVPfu93CGrrMAqTMiFqxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368287432467-r3n86tv3f6dqphr9vauj85b7ur33nmt3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
