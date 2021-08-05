@@ -69,12 +69,10 @@ class PlacesFragment : BaseFragment(){
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
-                    val placeId = item.place_id
+                    val placeUUID = item.place_uuid
 
-                    if (placeId != null){
-                        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeId)
-                        view.findNavController().navigate(action)
-                    }
+                    val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
+                    view.findNavController().navigate(action)
                 }
 
                 override fun setEmptyListState(isEmpty: Boolean) {

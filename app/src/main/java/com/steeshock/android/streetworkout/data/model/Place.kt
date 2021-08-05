@@ -10,7 +10,7 @@ data class Place(
 
     @PrimaryKey
     @ColumnInfo(name = "place_id")
-    var place_id: Int? = null,
+    var place_uuid: String = "",
 
     @ColumnInfo(name = "title")
     var title: String = "",
