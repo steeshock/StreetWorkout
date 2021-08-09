@@ -29,7 +29,7 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
         repository.insertPlace(place)
     }
 
-    fun addNewPlaceInFirebase(newPlace: Place) {
+    fun insertNewPlaceInFirebase(newPlace: Place) {
 
         val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
 
