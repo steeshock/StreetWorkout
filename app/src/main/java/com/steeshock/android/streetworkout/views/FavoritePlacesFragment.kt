@@ -64,12 +64,10 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
-                    val placeId = item.place_id
+                    val placeUUID = item.place_uuid
 
-                    if (placeId != null){
-                        val action = FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(placeId)
-                        view.findNavController().navigate(action)
-                    }
+                    val action = FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(placeUUID)
+                    view.findNavController().navigate(action)
                 }
 
                 override fun setEmptyListState(isEmpty: Boolean) {

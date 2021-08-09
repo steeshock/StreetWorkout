@@ -37,6 +37,7 @@ import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import kotlinx.android.synthetic.main.fragment_add_place.*
+import java.util.*
 
 
 class AddPlaceFragment : Fragment() {
@@ -136,7 +137,9 @@ class AddPlaceFragment : Fragment() {
                 if (isChecked) {
                     selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.add(it) }
                 } else {
-                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(it) }
+                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(
+                        it
+                    ) }
                 }
             }
             .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
@@ -374,7 +377,10 @@ class AddPlaceFragment : Fragment() {
 
         val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
 
+        val uuid = UUID.randomUUID().toString()
+
         val newPlace = Place(
+            place_uuid = uuid,
             title = fragmentAddPlaceBinding.placeTitle.text.toString(),
             description = fragmentAddPlaceBinding.placeDescription.text.toString(),
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
@@ -390,9 +396,9 @@ class AddPlaceFragment : Fragment() {
 
     private fun addNewPlaceOnFirebase(newPlace: Place) {
 
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-        val myRef = database.getReference("new_place_${(1..1000000).random()}")
+        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        val myRef = database.getReference("places").child(newPlace.place_uuid)
 
         myRef.setValue(newPlace) { _: DatabaseError?, _: DatabaseReference ->
             Toast.makeText(

@@ -34,7 +34,7 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
                 val place = child.getValue<Place>()
 
-                val isFavorite = placesLiveData.value?.find { p -> p.place_id == place?.place_id }?.isFavorite
+                val isFavorite = placesLiveData.value?.find { p -> p.place_uuid == place?.place_uuid }?.isFavorite
 
                 place?.isFavorite = isFavorite
 
