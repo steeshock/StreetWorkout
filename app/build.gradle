@@ -58,6 +58,9 @@ dependencies {
     // Firebase Realtime Database (Kotlin)
     implementation 'com.google.firebase:firebase-database-ktx'
 
+    // Declare the dependency for the Cloud Storage library
+    implementation 'com.google.firebase:firebase-storage-ktx'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "com.google.android.material:material:$materialVersion"
@@ -106,4 +109,12 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$testExtJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+
+    implementation "androidx.activity:activity-ktx:1.3.1"
+    implementation "androidx.fragment:fragment-ktx:1.3.6"
+
+    //Kotlin Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
 }

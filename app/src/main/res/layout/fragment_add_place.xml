@@ -18,6 +18,10 @@
             type="android.view.View.OnClickListener" />
 
         <variable
+            name="addImagesClickListener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
             name="addNewPlaceClickListener"
             type="android.view.View.OnClickListener" />
 
@@ -187,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/list_item_spacing"
                 android:background="@android:color/transparent"
-                android:onClick="@{addCategoryClickListener}"
+                android:onClick="@{addImagesClickListener}"
                 android:src="@drawable/ic_add_image"
                 app:layout_constraintBottom_toBottomOf="@+id/place_images"
                 app:layout_constraintEnd_toEndOf="parent"
