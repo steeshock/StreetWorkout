@@ -389,24 +389,8 @@ class AddPlaceFragment : Fragment() {
             categories = addPlaceViewModel.selectedCategories,
         )
 
-        addPlaceViewModel.insert(newPlace)
-
-        addNewPlaceOnFirebase(newPlace)
-    }
-
-    private fun addNewPlaceOnFirebase(newPlace: Place) {
-
-        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-
-        val myRef = database.getReference("places").child(newPlace.place_uuid)
-
-        myRef.setValue(newPlace) { _: DatabaseError?, _: DatabaseReference ->
-            Toast.makeText(
-                requireActivity(),
-                R.string.success_message,
-                Toast.LENGTH_LONG
-            ).show()
-        }
+        addPlaceViewModel.insertNewPlaceInDatabase(newPlace)
+        addPlaceViewModel.addNewPlaceInFirebase(newPlace)
     }
 
     override fun onDestroyView() {
