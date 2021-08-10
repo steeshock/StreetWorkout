@@ -28,8 +28,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.data.model.Category
@@ -42,8 +40,6 @@ import kotlinx.android.synthetic.main.fragment_add_place.*
 import java.util.*
 
 class AddPlaceFragment : Fragment() {
-
-    private val placeUUID= UUID.randomUUID().toString()
 
     private lateinit var imagePicker: ImagePicker.Builder
 
@@ -106,6 +102,12 @@ class AddPlaceFragment : Fragment() {
 
             if (addPlaceViewModel.checkedCategoriesArray == null) {
                 addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
+            }
+        })
+
+        addPlaceViewModel.loadCompleted.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                resetFields()
             }
         })
     }
@@ -203,79 +205,39 @@ class AddPlaceFragment : Fragment() {
 
     private fun addNewPlace() {
 
-        fragmentAddPlaceBinding.progressSending.progress = 0
+        val placeUUID = UUID.randomUUID().toString()
 
-        if (addPlaceViewModel.selectedImages.size > 0){
+        addPlaceViewModel.sendingPlace = createNewPlace(placeUUID)
 
-            fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size
+        addPlaceViewModel.isSendingProgress.set(true)
 
-            addPlaceViewModel.isSendingProgress.set(true)
+        fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size + 1
 
-            addPlaceViewModel.selectedImages.forEachIndexed { index, uri ->
-
-                val reference = Firebase.storage.reference.child("${placeUUID}/image-${index}.jpg")
-
-                val uploadTask = reference.putFile(uri)
-
-                uploadTask
-                    .addOnSuccessListener {
-                        reference.downloadUrl.addOnSuccessListener { downloadedLink ->
-                            addPlaceViewModel.downloadedImagesLinks.add(downloadedLink.toString())
-
-                            fragmentAddPlaceBinding.progressSending.progress = index + 1
-
-                            //ToDo Придумать решение лучше! Возможно использовать корутины
-                            // Значит все фотографии передались успешно, можно отправлять новое место
-                            if (addPlaceViewModel.downloadedImagesLinks.size == addPlaceViewModel.selectedImages.size) {
-                                createAndPublishNewPlace()
-                            }
-                        }
-                    }
-                    .addOnCanceledListener {
-                        addPlaceViewModel.isSendingProgress.set(false)
-
-                        Toast.makeText(
-                            requireActivity(),
-                            R.string.canceled_message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        addPlaceViewModel.isSendingProgress.set(false)
-
-                        Toast.makeText(
-                            requireActivity(),
-                            R.string.failed_message,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+        if (addPlaceViewModel.selectedImages.size > 0) {
+            addPlaceViewModel.selectedImages.forEachIndexed { _, uri ->
+                addPlaceViewModel.uploadDataToFirebase(uri, placeUUID)
             }
         }
-        else {
-            createAndPublishNewPlace()
+        else{
+            addPlaceViewModel.createAndPublishNewPlace()
         }
+
+
     }
 
-    private fun createAndPublishNewPlace() {
+    private fun createNewPlace(placeUUID: String): Place {
+
         val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
 
-        val place =  Place(
+        return Place(
             place_uuid = placeUUID,
             title = fragmentAddPlaceBinding.placeTitle.text.toString(),
             description = fragmentAddPlaceBinding.placeDescription.text.toString(),
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
             address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = addPlaceViewModel.selectedCategories,
-            images = addPlaceViewModel.downloadedImagesLinks
+            categories = addPlaceViewModel.selectedCategories
         )
-
-        addPlaceViewModel.insertNewPlaceInDatabase(place)
-        addPlaceViewModel.insertNewPlaceInFirebase(place)
-
-        addPlaceViewModel.isSendingProgress.set(false)
-
-        resetFields()
     }
 
     private fun resetFields() {

@@ -17,13 +17,18 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.model.State
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
+    val uiDispatcher = Dispatchers.Main.immediate
+    val job = SupervisorJob()
+    val modelScope = CoroutineScope(uiDispatcher + job)
+
     val allCategoriesLive: LiveData<List<Category>> = repository.allCategories
+    val loadCompleted: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var checkedCategoriesArray: BooleanArray? = null
     var selectedCategories: ArrayList<Int> = arrayListOf()
@@ -35,6 +40,42 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
     var isImagePickingInProgress: ObservableBoolean = ObservableBoolean(false)
     var isLocationInProgress: ObservableBoolean = ObservableBoolean(false)
     var isSendingProgress: ObservableBoolean = ObservableBoolean(false)
+    var sendingProgress: ObservableInt = ObservableInt(0)
+
+    var sendingPlace: Place? = null
+
+    fun uploadDataToFirebase(uri: Uri, placeUUID: String) {
+
+        sendingProgress.set(0)
+
+        modelScope.launch{
+
+            val result = repository.uploadImageToFirebase(uri, placeUUID)
+            downloadedImagesLinks.add(result.toString())
+
+            sendingProgress.set(sendingProgress.get() + 1)
+            delay(500)
+
+            if (downloadedImagesLinks.size == selectedImages.size) {
+                createAndPublishNewPlace()
+                isSendingProgress.set(false)
+            }
+        }
+    }
+
+    fun createAndPublishNewPlace() = viewModelScope.launch(Dispatchers.IO) {
+
+        sendingPlace?.images = downloadedImagesLinks
+
+        sendingPlace?.let { insertNewPlaceInDatabase(it) }
+        sendingPlace?.let { insertNewPlaceInFirebase(it) }
+
+        sendingProgress.set(sendingProgress.get() + 1)
+        delay(500)
+
+        loadCompleted.postValue(true)
+        isSendingProgress.set(false)
+    }
 
     fun insertNewPlaceInDatabase(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)

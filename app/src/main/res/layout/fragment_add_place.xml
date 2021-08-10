@@ -54,6 +54,18 @@
                 app:title="@string/add_place_title"
                 app:titleTextColor="@android:color/black" />
 
+            <ProgressBar
+                android:id="@+id/progress_sending"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:progressTint="@color/greenColor"
+                android:progress="@{viewmodel.sendingProgress}"
+                android:visibility="@{viewmodel.isSendingProgress ? V.VISIBLE : V.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
             <!--Название-->
             <EditText
                 android:id="@+id/place_title"
@@ -220,22 +232,10 @@
                     android:visibility="@{viewmodel.isImagePickingInProgress ? V.VISIBLE : V.GONE}" />
             </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/progress_sending"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:progressTint="@color/colorPrimary"
-                android:layout_margin="@dimen/list_item_spacing_half"
-                android:visibility="@{viewmodel.isSendingProgress ? V.VISIBLE : V.GONE}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
-
             <Button
                 android:id="@+id/btn_add"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginVertical="30dp"
                 android:background="@color/colorPrimary"
                 android:enabled="@{viewmodel.isSendingProgress ? false : true}"
@@ -251,7 +251,7 @@
             <Button
                 android:id="@+id/btn_clear"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:layout_marginVertical="30dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorPrimary"
@@ -264,7 +264,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btn_add"
-                app:layout_constraintTop_toBottomOf="@+id/progress_sending" />
+                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
