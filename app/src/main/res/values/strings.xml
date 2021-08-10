@@ -37,6 +37,8 @@
     <string name="add_place_btn">Отправить</string>
     <string name="clear_place_btn">Очистить</string>
     <string name="success_message">Успешно</string>
+    <string name="failed_message">Ошибка при отправке</string>
+    <string name="canceled_message">Отправка отменена</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>

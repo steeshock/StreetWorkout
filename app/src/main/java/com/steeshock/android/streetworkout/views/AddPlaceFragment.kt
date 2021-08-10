@@ -175,9 +175,10 @@ class AddPlaceFragment : Fragment() {
         imagePicker
             .compress(512)
             .crop(900f, 600f)
-            .setDismissListener {
-                addPlaceViewModel.isImagePickingInProgress.set(false)
-            }
+            .galleryOnly()
+//            .setDismissListener {
+//                addPlaceViewModel.isImagePickingInProgress.set(false)
+//            }
             .createIntent { intent ->
                 startForProfileImageResult.launch(intent)
         }
@@ -202,7 +203,14 @@ class AddPlaceFragment : Fragment() {
 
     private fun addNewPlace() {
 
+        fragmentAddPlaceBinding.progressSending.progress = 0
+
         if (addPlaceViewModel.selectedImages.size > 0){
+
+            fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size
+
+            addPlaceViewModel.isSendingProgress.set(true)
+
             addPlaceViewModel.selectedImages.forEachIndexed { index, uri ->
 
                 val reference = Firebase.storage.reference.child("${placeUUID}/image-${index}.jpg")
@@ -214,12 +222,32 @@ class AddPlaceFragment : Fragment() {
                         reference.downloadUrl.addOnSuccessListener { downloadedLink ->
                             addPlaceViewModel.downloadedImagesLinks.add(downloadedLink.toString())
 
+                            fragmentAddPlaceBinding.progressSending.progress = index + 1
+
                             //ToDo Придумать решение лучше! Возможно использовать корутины
                             // Значит все фотографии передались успешно, можно отправлять новое место
                             if (addPlaceViewModel.downloadedImagesLinks.size == addPlaceViewModel.selectedImages.size) {
                                 createAndPublishNewPlace()
                             }
                         }
+                    }
+                    .addOnCanceledListener {
+                        addPlaceViewModel.isSendingProgress.set(false)
+
+                        Toast.makeText(
+                            requireActivity(),
+                            R.string.canceled_message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    .addOnFailureListener {
+                        addPlaceViewModel.isSendingProgress.set(false)
+
+                        Toast.makeText(
+                            requireActivity(),
+                            R.string.failed_message,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
             }
         }
@@ -244,6 +272,10 @@ class AddPlaceFragment : Fragment() {
 
         addPlaceViewModel.insertNewPlaceInDatabase(place)
         addPlaceViewModel.insertNewPlaceInFirebase(place)
+
+        addPlaceViewModel.isSendingProgress.set(false)
+
+        resetFields()
     }
 
     private fun resetFields() {

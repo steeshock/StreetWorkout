@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.viewmodels
 import android.net.Uri
 import android.widget.Toast
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,6 +34,7 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
     var isImagePickingInProgress: ObservableBoolean = ObservableBoolean(false)
     var isLocationInProgress: ObservableBoolean = ObservableBoolean(false)
+    var isSendingProgress: ObservableBoolean = ObservableBoolean(false)
 
     fun insertNewPlaceInDatabase(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)

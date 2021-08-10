@@ -133,17 +133,17 @@
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:onClick="@{myPositionClickListener}"
-                    android:visibility="@{viewmodel.isLocationInProgress ? V.GONE : V.VISIBLE}"
-                    android:src="@drawable/ic_map_location_36dp" />
+                    android:src="@drawable/ic_map_location_36dp"
+                    android:visibility="@{viewmodel.isLocationInProgress ? V.GONE : V.VISIBLE}" />
 
                 <ProgressBar
                     android:id="@+id/progress_location_bar"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_gravity="center"
-                    android:visibility="@{viewmodel.isLocationInProgress ? V.VISIBLE : V.GONE}"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:orientation="horizontal" />
+                    android:orientation="horizontal"
+                    android:visibility="@{viewmodel.isLocationInProgress ? V.VISIBLE : V.GONE}" />
             </LinearLayout>
 
             <!--Категории-->
@@ -195,9 +195,9 @@
                     android:ems="10"
                     android:focusable="false"
                     android:hint="@string/hint_place_images"
-                    android:text="@{viewmodel.isImagePickingInProgress ? @string/hint_images_loading : viewmodel.selectedImagesMessage}"
                     android:inputType="textPersonName"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:text="@{viewmodel.isImagePickingInProgress ? @string/hint_images_loading : viewmodel.selectedImagesMessage}" />
 
                 <ImageButton
                     android:id="@+id/takeImageBtn"
@@ -220,12 +220,25 @@
                     android:visibility="@{viewmodel.isImagePickingInProgress ? V.VISIBLE : V.GONE}" />
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/progress_sending"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:progressTint="@color/colorPrimary"
+                android:layout_margin="@dimen/list_item_spacing_half"
+                android:visibility="@{viewmodel.isSendingProgress ? V.VISIBLE : V.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
+
             <Button
                 android:id="@+id/btn_add"
                 android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginVertical="35dp"
+                android:layout_height="40dp"
+                android:layout_marginVertical="30dp"
                 android:background="@color/colorPrimary"
+                android:enabled="@{viewmodel.isSendingProgress ? false : true}"
                 android:minWidth="120dp"
                 android:onClick="@{resetFieldsClickListener}"
                 android:text="@string/clear_place_btn"
@@ -238,10 +251,11 @@
             <Button
                 android:id="@+id/btn_clear"
                 android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:layout_marginVertical="35dp"
+                android:layout_height="40dp"
+                android:layout_marginVertical="30dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorPrimary"
+                android:enabled="@{viewmodel.isSendingProgress ? false : true}"
                 android:minWidth="120dp"
                 android:onClick="@{addNewPlaceClickListener}"
                 android:text="@string/add_place_btn"
@@ -250,7 +264,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btn_add"
-                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/progress_sending" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
