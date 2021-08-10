@@ -133,16 +133,17 @@
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:onClick="@{myPositionClickListener}"
+                    android:visibility="@{viewmodel.isLocationInProgress ? V.GONE : V.VISIBLE}"
                     android:src="@drawable/ic_map_location_36dp" />
 
                 <ProgressBar
-                    android:id="@+id/progress_bar"
+                    android:id="@+id/progress_location_bar"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_gravity="center"
+                    android:visibility="@{viewmodel.isLocationInProgress ? V.VISIBLE : V.GONE}"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:orientation="horizontal"
-                    android:visibility="gone" />
+                    android:orientation="horizontal" />
             </LinearLayout>
 
             <!--Категории-->
@@ -154,7 +155,7 @@
                 android:focusable="false"
                 android:hint="@string/hint_place_categories"
                 android:inputType="text"
-                app:layout_constraintBottom_toTopOf="@+id/place_images"
+                app:layout_constraintBottom_toTopOf="@+id/images_layout"
                 app:layout_constraintEnd_toStartOf="@id/categoryBtn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/place_position_layout" />
@@ -172,30 +173,52 @@
                 app:layout_constraintTop_toTopOf="@id/place_categories" />
 
             <!--Фотографии-->
-            <EditText
-                android:id="@+id/place_images"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/images_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                android:focusable="false"
-                android:hint="@string/hint_place_images"
-                android:inputType="textPersonName"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/btn_add"
-                app:layout_constraintEnd_toStartOf="@id/takeImageBtn"
+                app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_categories" />
+                app:layout_constraintTop_toBottomOf="@+id/place_categories">
 
-            <ImageButton
-                android:id="@+id/takeImageBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:background="@android:color/transparent"
-                android:onClick="@{addImagesClickListener}"
-                android:src="@drawable/ic_add_image"
-                app:layout_constraintBottom_toBottomOf="@+id/place_images"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/place_images" />
+                <EditText
+                    android:id="@+id/place_images"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/list_item_spacing"
+                    android:layout_marginVertical="@dimen/list_item_spacing"
+                    android:layout_marginStart="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:focusable="false"
+                    android:hint="@string/hint_place_images"
+                    android:text="@{viewmodel.isImagePickingInProgress ? @string/hint_images_loading : viewmodel.selectedImagesMessage}"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+
+                <ImageButton
+                    android:id="@+id/takeImageBtn"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:onClick="@{addImagesClickListener}"
+                    android:src="@drawable/ic_add_image"
+                    android:visibility="@{viewmodel.isImagePickingInProgress ? V.GONE : V.VISIBLE}" />
+
+                <ProgressBar
+                    android:id="@+id/progress_image_bar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:orientation="horizontal"
+                    android:visibility="@{viewmodel.isImagePickingInProgress ? V.VISIBLE : V.GONE}" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_add"
@@ -204,8 +227,8 @@
                 android:layout_marginVertical="35dp"
                 android:background="@color/colorPrimary"
                 android:minWidth="120dp"
-                android:text="@string/clear_place_btn"
                 android:onClick="@{resetFieldsClickListener}"
+                android:text="@string/clear_place_btn"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_clear"
@@ -227,7 +250,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/btn_add"
-                app:layout_constraintTop_toBottomOf="@+id/place_images" />
+                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
@@ -41,31 +40,12 @@ import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import kotlinx.android.synthetic.main.fragment_add_place.*
 import java.util.*
-import kotlin.collections.ArrayList
-
 
 class AddPlaceFragment : Fragment() {
 
-    private val TAG = "LocationTag"
-
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-
     private val placeUUID= UUID.randomUUID().toString()
 
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-
-    private var lastLocation: Location? = null
-
-    private var addressRequested = false
-
-    private var addressOutput = ""
-
-    private lateinit var resultReceiver: AddressResultReceiver
-
     private lateinit var imagePicker: ImagePicker.Builder
-
-    private var selectedImages: MutableList<Uri> = mutableListOf()
-    private var downloadedImagesLinks: ArrayList<String> = arrayListOf()
 
     private val addPlaceViewModel: AddPlaceViewModel by viewModels {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
@@ -130,6 +110,7 @@ class AddPlaceFragment : Fragment() {
         })
     }
 
+    //region Categories
     private fun getClearFieldsDialog(): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         return builder
@@ -184,65 +165,45 @@ class AddPlaceFragment : Fragment() {
             }
         }
     }
+    //endregion
 
-    private fun openImagePicker(){
+    //region Image picking
+    private fun openImagePicker() {
+
+        addPlaceViewModel.isImagePickingInProgress.set(true)
+
         imagePicker
-            .compress(1024)         //Final image size will be less than 1 MB(Optional)
-            .maxResultSize(900, 600)  //Final image resolution will be less than 1080 x 1080(Optional)
+            .compress(512)
+            .crop(900f, 600f)
+            .setDismissListener {
+                addPlaceViewModel.isImagePickingInProgress.set(false)
+            }
             .createIntent { intent ->
-            startForProfileImageResult.launch(intent)
+                startForProfileImageResult.launch(intent)
         }
     }
 
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
             val resultCode = result.resultCode
             val data = result.data
 
             if (resultCode == Activity.RESULT_OK) {
 
-                selectedImages.add(data?.data!!)
+                addPlaceViewModel.selectedImages.add(data?.data!!)
 
-                fragmentAddPlaceBinding.placeImages.setText("Прикреплено фотографий: ${selectedImages?.size}")
+                addPlaceViewModel.selectedImagesMessage = "Прикреплено фотографий: ${addPlaceViewModel.selectedImages.size}"
             }
+
+            addPlaceViewModel.isImagePickingInProgress.set(false)
         }
-
-    private fun resetFields() {
-
-        fragmentAddPlaceBinding.let {
-            it.placeTitle.text.clear()
-            it.placeDescription.text.clear()
-            it.placeAddress.text.clear()
-            it.placePosition.text.clear()
-            it.placeCategories.text.clear()
-            it.placeImages.text.clear()
-            it.progressBar.visibility = View.GONE
-            it.myPositionBtn.visibility = View.VISIBLE
-            it.myPositionBtn.isEnabled = true
-
-            addPlaceViewModel.selectedCategories.clear()
-            addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
-        }
-
-        Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun updateUIWidgets() {
-        if (addressRequested) {
-            fragmentAddPlaceBinding.progressBar.visibility = View.VISIBLE
-            fragmentAddPlaceBinding.myPositionBtn.visibility = View.GONE
-            fragmentAddPlaceBinding.myPositionBtn.isEnabled = false
-        } else {
-            fragmentAddPlaceBinding.progressBar.visibility = View.GONE
-            fragmentAddPlaceBinding.myPositionBtn.visibility = View.VISIBLE
-            fragmentAddPlaceBinding.myPositionBtn.isEnabled = true
-        }
-    }
+    //endregion
 
     private fun addNewPlace() {
 
-        if (selectedImages.size > 0){
-            selectedImages.forEachIndexed { index, uri ->
+        if (addPlaceViewModel.selectedImages.size > 0){
+            addPlaceViewModel.selectedImages.forEachIndexed { index, uri ->
 
                 val reference = Firebase.storage.reference.child("${placeUUID}/image-${index}.jpg")
 
@@ -251,11 +212,11 @@ class AddPlaceFragment : Fragment() {
                 uploadTask
                     .addOnSuccessListener {
                         reference.downloadUrl.addOnSuccessListener { downloadedLink ->
-                            downloadedImagesLinks.add(downloadedLink.toString())
+                            addPlaceViewModel.downloadedImagesLinks.add(downloadedLink.toString())
 
                             //ToDo Придумать решение лучше! Возможно использовать корутины
                             // Значит все фотографии передались успешно, можно отправлять новое место
-                            if (downloadedImagesLinks.size == selectedImages.size) {
+                            if (addPlaceViewModel.downloadedImagesLinks.size == addPlaceViewModel.selectedImages.size) {
                                 createAndPublishNewPlace()
                             }
                         }
@@ -278,11 +239,36 @@ class AddPlaceFragment : Fragment() {
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
             address = fragmentAddPlaceBinding.placeAddress.text.toString(),
             categories = addPlaceViewModel.selectedCategories,
-            images = downloadedImagesLinks
+            images = addPlaceViewModel.downloadedImagesLinks
         )
 
         addPlaceViewModel.insertNewPlaceInDatabase(place)
         addPlaceViewModel.insertNewPlaceInFirebase(place)
+    }
+
+    private fun resetFields() {
+
+        fragmentAddPlaceBinding.let {
+            it.placeTitle.text.clear()
+            it.placeDescription.text.clear()
+            it.placeAddress.text.clear()
+            it.placePosition.text.clear()
+            it.placeImages.text.clear()
+            it.placeCategories.text.clear()
+            it.progressLocationBar.visibility = View.GONE
+            it.myPositionBtn.visibility = View.VISIBLE
+            it.myPositionBtn.isEnabled = true
+
+            addPlaceViewModel.selectedCategories.clear()
+            addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
+
+            addPlaceViewModel.selectedImagesMessage = ""
+            addPlaceViewModel.selectedImages.clear()
+            addPlaceViewModel.downloadedImagesLinks.clear()
+            addPlaceViewModel.isImagePickingInProgress.set(false)
+        }
+
+        Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
@@ -292,6 +278,18 @@ class AddPlaceFragment : Fragment() {
     }
 
     //region GPS
+    private val TAG = "LocationTag"
+
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+
+    private var lastLocation: Location? = null
+
+    private var addressOutput = ""
+
+    private lateinit var resultReceiver: AddressResultReceiver
+
     private fun getMyPosition() {
         if (!checkPermissions()) {
             requestPermissions()
@@ -304,8 +302,7 @@ class AddPlaceFragment : Fragment() {
             // If we have not yet retrieved the user location, we process the user's request by setting
             // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
             // button immediately kicks off the process of getting the address.
-            addressRequested = true
-            updateUIWidgets()
+            addPlaceViewModel.isLocationInProgress.set(true)
 
             getAddress()
         }
@@ -337,7 +334,7 @@ class AddPlaceFragment : Fragment() {
                 // If the user pressed the fetch address button before we had the location,
                 // this will be set to true indicating that we should kick off the intent
                 // service after fetching the location.
-                if (addressRequested) startIntentService()
+                if (addPlaceViewModel.isLocationInProgress.get()) startIntentService()
             })?.addOnFailureListener(requireActivity()) { e ->
             Log.w(
                 TAG,
@@ -390,14 +387,14 @@ class AddPlaceFragment : Fragment() {
             }
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            addressRequested = false
-            updateUIWidgets()
+            addPlaceViewModel.isLocationInProgress.set(false)
         }
     }
 
     private fun displayAddressOutput() {
         fragmentAddPlaceBinding.placeAddress.setText(addressOutput)
-        fragmentAddPlaceBinding.placePosition.setText("${lastLocation?.latitude} ${lastLocation?.longitude}")
+        fragmentAddPlaceBinding.placePosition.text.clear()
+        fragmentAddPlaceBinding.placePosition.text.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
     }
 
     private fun checkPermissions(): Boolean {
