@@ -75,7 +75,7 @@ class AddPlaceFragment : Fragment() {
         }
 
         fragmentAddPlaceBinding.setAddNewPlaceClickListener {
-            addNewPlace()
+            getPublishPermissionDialog().show()
         }
 
         fragmentAddPlaceBinding.setResetFieldsClickListener {
@@ -178,9 +178,9 @@ class AddPlaceFragment : Fragment() {
             .compress(512)
             .crop(900f, 600f)
             .galleryOnly()
-//            .setDismissListener {
-//                addPlaceViewModel.isImagePickingInProgress.set(false)
-//            }
+            .setDismissListener {
+                addPlaceViewModel.isImagePickingInProgress.set(false)
+            }
             .createIntent { intent ->
                 startForProfileImageResult.launch(intent)
         }
@@ -206,23 +206,21 @@ class AddPlaceFragment : Fragment() {
     private fun addNewPlace() {
 
         val placeUUID = UUID.randomUUID().toString()
-
         addPlaceViewModel.sendingPlace = createNewPlace(placeUUID)
 
-        addPlaceViewModel.isSendingProgress.set(true)
+        addPlaceViewModel.isSendingInProgress.set(true)
+        addPlaceViewModel.sendingProgress.postValue(0)
 
         fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size + 1
 
         if (addPlaceViewModel.selectedImages.size > 0) {
-            addPlaceViewModel.selectedImages.forEachIndexed { _, uri ->
+            addPlaceViewModel.selectedImages.forEach { uri ->
                 addPlaceViewModel.uploadDataToFirebase(uri, placeUUID)
             }
         }
-        else{
+        else {
             addPlaceViewModel.createAndPublishNewPlace()
         }
-
-
     }
 
     private fun createNewPlace(placeUUID: String): Place {
@@ -263,6 +261,16 @@ class AddPlaceFragment : Fragment() {
         }
 
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getPublishPermissionDialog(): Dialog {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
+        return builder
+            .setTitle(getString(R.string.clear_fields_alert))
+            .setMessage(getString(R.string.publish_permission_message))
+            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addNewPlace() }
+            .setNegativeButton(getString(R.string.cancel_item), null)
+            .create()
     }
 
     override fun onDestroyView() {

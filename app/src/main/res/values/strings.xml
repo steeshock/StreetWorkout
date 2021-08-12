@@ -53,6 +53,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="clear_fields_alert">Внимание!</string>
     <string name="clear_fields_message">Все поля будут очищены. Продолжить?</string>
+    <string name="publish_permission_message">Данные будут отправлены на сервер. Продолжить?</string>
     <string name="select_category_alert">Выберите категорию:</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>
