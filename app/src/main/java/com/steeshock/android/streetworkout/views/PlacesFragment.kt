@@ -17,9 +17,6 @@ import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.data.model.Category
-import kotlinx.android.synthetic.main.fragment_favorite_places.view.*
-import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
-import kotlinx.android.synthetic.main.fragment_places.view.*
 import kotlinx.android.synthetic.main.v_empty_state.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -69,12 +66,10 @@ class PlacesFragment : BaseFragment(){
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
-                    val placeId = item.place_id
+                    val placeUUID = item.place_uuid
 
-                    if (placeId != null){
-                        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeId)
-                        view.findNavController().navigate(action)
-                    }
+                    val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
+                    view.findNavController().navigate(action)
                 }
 
                 override fun setEmptyListState(isEmpty: Boolean) {
@@ -149,20 +144,22 @@ class PlacesFragment : BaseFragment(){
             })
 
             fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
-                updatePlacesFromFirebase()
-                updateCategoriesFromFirebase()
+                fetchDataFromFirebase(placesViewModel)
             }
 
             fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
-                updatePlacesFromFirebase()
-                updateCategoriesFromFirebase()
+                fetchDataFromFirebase(placesViewModel)
             }
 
             fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
-                updatePlacesFromFirebase()
-                updateCategoriesFromFirebase()
+                fetchDataFromFirebase(placesViewModel)
             }
         }
+    }
+
+    private fun fetchDataFromFirebase(placesViewModel: PlacesViewModel) {
+        placesViewModel.fetchPlacesFromFirebase()
+        placesViewModel.fetchCategoriesFromFirebase()
     }
 
     private fun addPlaceToFavorites(place: Place) {
@@ -230,8 +227,6 @@ class PlacesFragment : BaseFragment(){
                 true
             }
             R.id.action_map -> {
-                //placesViewModel.removeAllPlacesExceptFavorites(false)
-                //placesViewModel.removeAllPlaces()
                 placesViewModel.clearDatabase()
                 true
             }

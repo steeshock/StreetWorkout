@@ -30,12 +30,15 @@
     <string name="hint_place_position">Координаты широта/долгота</string>
     <string name="hint_place_categories">Выберите категории</string>
     <string name="hint_place_images">Выберите фотографии</string>
+    <string name="hint_images_loading">Обработка изображений…</string>
     <string name="hint_place_description">Краткое описание</string>
     <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>
     <string name="clear_place_btn">Очистить</string>
     <string name="success_message">Успешно</string>
+    <string name="failed_message">Ошибка при отправке</string>
+    <string name="canceled_message">Отправка отменена</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>
@@ -50,6 +53,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="clear_fields_alert">Внимание!</string>
     <string name="clear_fields_message">Все поля будут очищены. Продолжить?</string>
+    <string name="publish_permission_message">Данные будут отправлены на сервер. Продолжить?</string>
     <string name="select_category_alert">Выберите категорию:</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>

@@ -11,4 +11,5 @@
     <color name="grayIconColor">#878080</color>
     <color name="redIconColor">#FF3347</color>
     <color name="chipsColor">#ABABAB</color>
+    <color name="greenColor">#8bf70a</color>
 </resources>

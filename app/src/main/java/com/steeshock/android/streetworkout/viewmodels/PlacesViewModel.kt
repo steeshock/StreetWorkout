@@ -17,12 +17,11 @@ import kotlinx.coroutines.launch
 class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
     val isLoading = MutableLiveData(false)
-    //private val compositeDisposable = CompositeDisposable()
 
     val placesLiveData = repository.allPlaces
     val categoriesLiveData = repository.allCategories
 
-    fun updatePlacesFromFirebase() {
+    fun fetchPlacesFromFirebase() {
 
         setLoading(true)
 
@@ -34,7 +33,7 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
                 val place = child.getValue<Place>()
 
-                val isFavorite = placesLiveData.value?.find { p -> p.place_id == place?.place_id }?.isFavorite
+                val isFavorite = placesLiveData.value?.find { p -> p.place_uuid == place?.place_uuid }?.isFavorite
 
                 place?.isFavorite = isFavorite
 
@@ -48,7 +47,7 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun updateCategoriesFromFirebase() {
+    fun fetchCategoriesFromFirebase() {
 
         setLoading(true)
 
@@ -73,38 +72,6 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
             setLoading(false)
         }
     }
-
-//    fun updatePlaces() {
-//        setLoading(true)
-//        repository.updatePlaces(compositeDisposable, object :
-//            APIResponse<List<Place>> {
-//            override fun onSuccess(result: List<Place>?) {
-//                setLoading(false)
-//                result?.let { insertPlaces(it) }
-//            }
-//
-//            override fun onError(t: Throwable) {
-//                setLoading(false)
-//                t.printStackTrace()
-//            }
-//        })
-//    }
-//
-//    fun updateCategories() {
-//        setLoading(true)
-//        repository.updateCategories(compositeDisposable, object :
-//            APIResponse<List<Category>> {
-//            override fun onSuccess(result: List<Category>?) {
-//                setLoading(false)
-//                result?.let { insertCategories(it) }
-//            }
-//
-//            override fun onError(t: Throwable) {
-//                setLoading(false)
-//                t.printStackTrace()
-//            }
-//        })
-//    }
 
     fun insertPlaces(places: List<Place>) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertAllPlaces(places)
@@ -138,11 +105,45 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
         repository.updatePlace(place)
     }
 
-    fun removeAllPlacesExceptFavorites(boolean: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        repository.removeAllPlacesExceptFavorites(boolean)
-    }
-
     fun removeAllPlaces() = viewModelScope.launch(Dispatchers.IO) {
         repository.clearPlacesTable()
     }
+
+    //region RX Java approach
+
+    //    private val compositeDisposable = CompositeDisposable()
+
+//    fun updatePlaces() {
+//        setLoading(true)
+//        repository.updatePlaces(compositeDisposable, object :
+//            APIResponse<List<Place>> {
+//            override fun onSuccess(result: List<Place>?) {
+//                setLoading(false)
+//                result?.let { insertPlaces(it) }
+//            }
+//
+//            override fun onError(t: Throwable) {
+//                setLoading(false)
+//                t.printStackTrace()
+//            }
+//        })
+//    }
+//
+//    fun updateCategories() {
+//        setLoading(true)
+//        repository.updateCategories(compositeDisposable, object :
+//            APIResponse<List<Category>> {
+//            override fun onSuccess(result: List<Category>?) {
+//                setLoading(false)
+//                result?.let { insertCategories(it) }
+//            }
+//
+//            override fun onError(t: Throwable) {
+//                setLoading(false)
+//                t.printStackTrace()
+//            }
+//        })
+//    }
+
+    //endregion
 }

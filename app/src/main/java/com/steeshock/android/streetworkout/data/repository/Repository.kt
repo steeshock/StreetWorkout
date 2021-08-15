@@ -1,12 +1,20 @@
 package com.steeshock.android.streetworkout.data.repository
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.*
 
 class Repository(
     private val placesDao: PlacesDao,
@@ -16,6 +24,23 @@ class Repository(
     val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
     val allCategories: LiveData<List<Category>> = placesDao.getCategoriesLive()
+
+    suspend fun uploadImageToFirebase(uri: Uri, placeUUID: String): Uri? {
+        val reference = Firebase.storage.reference.child("${placeUUID}/image-${Date().time}.jpg")
+        val uploadTask = reference.putFile(uri)
+
+        uploadTask.await()
+        return reference.downloadUrl.await()
+    }
+
+    suspend fun insertNewPlaceInFirebase(newPlace: Place) {
+
+        val database = Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        val myRef = database.getReference("places").child(newPlace.place_uuid)
+
+        myRef.setValue(newPlace).await()
+    }
 
     fun updatePlaces(
         compositeDisposable: io.reactivex.rxjava3.disposables.CompositeDisposable,

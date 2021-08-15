@@ -2,6 +2,7 @@ package com.steeshock.android.streetworkout.views
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,19 +16,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.data.model.Category
@@ -37,23 +37,11 @@ import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import kotlinx.android.synthetic.main.fragment_add_place.*
-
+import java.util.*
 
 class AddPlaceFragment : Fragment() {
 
-    private val TAG = "LocationTag"
-
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-
-    private var lastLocation: Location? = null
-
-    private var addressRequested = false
-
-    private var addressOutput = ""
-
-    private lateinit var resultReceiver: AddressResultReceiver
+    private lateinit var imagePicker: ImagePicker.Builder
 
     private val addPlaceViewModel: AddPlaceViewModel by viewModels {
         InjectorUtils.provideAddPlaceViewModelFactory(requireActivity())
@@ -82,8 +70,12 @@ class AddPlaceFragment : Fragment() {
             getMyPosition()
         }
 
+        fragmentAddPlaceBinding.setAddImagesClickListener {
+            openImagePicker()
+        }
+
         fragmentAddPlaceBinding.setAddNewPlaceClickListener {
-            addNewPlace()
+            getPublishPermissionDialog().show()
         }
 
         fragmentAddPlaceBinding.setResetFieldsClickListener {
@@ -96,6 +88,8 @@ class AddPlaceFragment : Fragment() {
 
         resultReceiver = AddressResultReceiver(Handler())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        imagePicker = ImagePicker.with(requireActivity())
 
         return fragmentAddPlaceBinding.root
     }
@@ -110,8 +104,15 @@ class AddPlaceFragment : Fragment() {
                 addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
             }
         })
+
+        addPlaceViewModel.loadCompleted.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                resetFields()
+            }
+        })
     }
 
+    //region Categories
     private fun getClearFieldsDialog(): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         return builder
@@ -136,7 +137,9 @@ class AddPlaceFragment : Fragment() {
                 if (isChecked) {
                     selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.add(it) }
                 } else {
-                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(it) }
+                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(
+                        it
+                    ) }
                 }
             }
             .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
@@ -164,6 +167,76 @@ class AddPlaceFragment : Fragment() {
             }
         }
     }
+    //endregion
+
+    //region Image picking
+    private fun openImagePicker() {
+
+        addPlaceViewModel.isImagePickingInProgress.set(true)
+
+        imagePicker
+            .compress(512)
+            .crop(900f, 600f)
+            .galleryOnly()
+            .setDismissListener {
+                addPlaceViewModel.isImagePickingInProgress.set(false)
+            }
+            .createIntent { intent ->
+                startForProfileImageResult.launch(intent)
+        }
+    }
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+
+                addPlaceViewModel.selectedImages.add(data?.data!!)
+
+                addPlaceViewModel.selectedImagesMessage = "Прикреплено фотографий: ${addPlaceViewModel.selectedImages.size}"
+            }
+
+            addPlaceViewModel.isImagePickingInProgress.set(false)
+        }
+    //endregion
+
+    private fun addNewPlace() {
+
+        val placeUUID = UUID.randomUUID().toString()
+        addPlaceViewModel.sendingPlace = createNewPlace(placeUUID)
+
+        addPlaceViewModel.isSendingInProgress.set(true)
+        addPlaceViewModel.sendingProgress.postValue(0)
+
+        fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size + 1
+
+        if (addPlaceViewModel.selectedImages.size > 0) {
+            addPlaceViewModel.selectedImages.forEach { uri ->
+                addPlaceViewModel.uploadDataToFirebase(uri, placeUUID)
+            }
+        }
+        else {
+            addPlaceViewModel.createAndPublishNewPlace()
+        }
+    }
+
+    private fun createNewPlace(placeUUID: String): Place {
+
+        val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
+
+        return Place(
+            place_uuid = placeUUID,
+            title = fragmentAddPlaceBinding.placeTitle.text.toString(),
+            description = fragmentAddPlaceBinding.placeDescription.text.toString(),
+            latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
+            longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
+            address = fragmentAddPlaceBinding.placeAddress.text.toString(),
+            categories = addPlaceViewModel.selectedCategories
+        )
+    }
 
     private fun resetFields() {
 
@@ -172,18 +245,52 @@ class AddPlaceFragment : Fragment() {
             it.placeDescription.text.clear()
             it.placeAddress.text.clear()
             it.placePosition.text.clear()
-            it.placeCategories.text.clear()
             it.placeImages.text.clear()
-            it.progressBar.visibility = View.GONE
+            it.placeCategories.text.clear()
+            it.progressLocationBar.visibility = View.GONE
             it.myPositionBtn.visibility = View.VISIBLE
             it.myPositionBtn.isEnabled = true
 
             addPlaceViewModel.selectedCategories.clear()
             addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
+
+            addPlaceViewModel.selectedImagesMessage = ""
+            addPlaceViewModel.selectedImages.clear()
+            addPlaceViewModel.downloadedImagesLinks.clear()
+            addPlaceViewModel.isImagePickingInProgress.set(false)
         }
 
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
     }
+
+    private fun getPublishPermissionDialog(): Dialog {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
+        return builder
+            .setTitle(getString(R.string.clear_fields_alert))
+            .setMessage(getString(R.string.publish_permission_message))
+            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addNewPlace() }
+            .setNegativeButton(getString(R.string.cancel_item), null)
+            .create()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _fragmentAddPlaceBinding = null
+    }
+
+    //region GPS
+    private val TAG = "LocationTag"
+
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+
+    private var lastLocation: Location? = null
+
+    private var addressOutput = ""
+
+    private lateinit var resultReceiver: AddressResultReceiver
 
     private fun getMyPosition() {
         if (!checkPermissions()) {
@@ -197,10 +304,45 @@ class AddPlaceFragment : Fragment() {
             // If we have not yet retrieved the user location, we process the user's request by setting
             // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
             // button immediately kicks off the process of getting the address.
-            addressRequested = true
-            updateUIWidgets()
+            addPlaceViewModel.isLocationInProgress.set(true)
 
             getAddress()
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun getAddress() {
+        fusedLocationClient?.lastLocation?.addOnSuccessListener(
+            requireActivity(),
+            OnSuccessListener { location ->
+                if (location == null) {
+                    Log.w(TAG, "onSuccess:null")
+                    return@OnSuccessListener
+                }
+
+                lastLocation = location
+
+                // Determine whether a Geocoder is available.
+                if (!Geocoder.isPresent()) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.no_geocoder_available,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@OnSuccessListener
+                }
+
+                // If the user pressed the fetch address button before we had the location,
+                // this will be set to true indicating that we should kick off the intent
+                // service after fetching the location.
+                if (addPlaceViewModel.isLocationInProgress.get()) startIntentService()
+            })?.addOnFailureListener(requireActivity()) { e ->
+            Log.w(
+                TAG,
+                "getLastLocation:onFailure",
+                e
+            )
         }
     }
 
@@ -247,61 +389,14 @@ class AddPlaceFragment : Fragment() {
             }
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            addressRequested = false
-            updateUIWidgets()
+            addPlaceViewModel.isLocationInProgress.set(false)
         }
     }
 
     private fun displayAddressOutput() {
         fragmentAddPlaceBinding.placeAddress.setText(addressOutput)
-        fragmentAddPlaceBinding.placePosition.setText("${lastLocation?.latitude} ${lastLocation?.longitude}")
-    }
-
-    private fun updateUIWidgets() {
-        if (addressRequested) {
-            fragmentAddPlaceBinding.progressBar.visibility = View.VISIBLE
-            fragmentAddPlaceBinding.myPositionBtn.visibility = View.GONE
-            fragmentAddPlaceBinding.myPositionBtn.isEnabled = false
-        } else {
-            fragmentAddPlaceBinding.progressBar.visibility = View.GONE
-            fragmentAddPlaceBinding.myPositionBtn.visibility = View.VISIBLE
-            fragmentAddPlaceBinding.myPositionBtn.isEnabled = true
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getAddress() {
-        fusedLocationClient?.lastLocation?.addOnSuccessListener(
-            requireActivity(),
-            OnSuccessListener { location ->
-                if (location == null) {
-                    Log.w(TAG, "onSuccess:null")
-                    return@OnSuccessListener
-                }
-
-                lastLocation = location
-
-                // Determine whether a Geocoder is available.
-                if (!Geocoder.isPresent()) {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.no_geocoder_available,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return@OnSuccessListener
-                }
-
-                // If the user pressed the fetch address button before we had the location,
-                // this will be set to true indicating that we should kick off the intent
-                // service after fetching the location.
-                if (addressRequested) startIntentService()
-            })?.addOnFailureListener(requireActivity()) { e ->
-            Log.w(
-                TAG,
-                "getLastLocation:onFailure",
-                e
-            )
-        }
+        fragmentAddPlaceBinding.placePosition.text.clear()
+        fragmentAddPlaceBinding.placePosition.text.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
     }
 
     private fun checkPermissions(): Boolean {
@@ -369,43 +464,5 @@ class AddPlaceFragment : Fragment() {
                 ).show()
         }
     }
-
-    private fun addNewPlace() {
-
-        val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
-
-        val newPlace = Place(
-            title = fragmentAddPlaceBinding.placeTitle.text.toString(),
-            description = fragmentAddPlaceBinding.placeDescription.text.toString(),
-            latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
-            longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
-            address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = addPlaceViewModel.selectedCategories,
-        )
-
-        addPlaceViewModel.insert(newPlace)
-
-        addNewPlaceOnFirebase(newPlace)
-    }
-
-    private fun addNewPlaceOnFirebase(newPlace: Place) {
-
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-        val myRef = database.getReference("new_place_${(1..1000000).random()}")
-
-        myRef.setValue(newPlace) { _: DatabaseError?, _: DatabaseReference ->
-            Toast.makeText(
-                requireActivity(),
-                R.string.success_message,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _fragmentAddPlaceBinding = null
-    }
+    //endregion
 }
