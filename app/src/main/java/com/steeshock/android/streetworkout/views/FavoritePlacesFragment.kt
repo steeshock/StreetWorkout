@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
@@ -61,6 +62,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
                 override fun onLikeClicked(item: Place) {
                     removePlaceFromFavorites(item)
+                    showRollbackSnack(item)
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
@@ -163,6 +165,22 @@ class FavoritePlacesFragment : BaseFragment() {
 
         fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
         fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
+    }
+
+    private fun showRollbackSnack(item: Place) {
+
+        val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" удалено из избранного", Snackbar.LENGTH_LONG) }
+
+        if (activity is MainActivity) {
+            val baseline = (activity as MainActivity).baseline
+            rollbackSnack?.anchorView = baseline
+        }
+
+        rollbackSnack?.setAction("Вернуть...") {
+
+        }
+
+        rollbackSnack?.show()
     }
 
     override fun onDestroyView() {
