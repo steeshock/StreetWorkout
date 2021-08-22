@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -176,6 +177,7 @@ class FavoritePlacesFragment : BaseFragment() {
             rollbackSnack?.anchorView = baseline
         }
 
+        rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction("Вернуть...") {
 
         }
