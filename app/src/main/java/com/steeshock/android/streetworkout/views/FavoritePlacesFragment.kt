@@ -62,7 +62,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
 
                 override fun onLikeClicked(item: Place) {
-                    removePlaceFromFavorites(item)
+                    favoritePlacesViewModel.removePlaceFromFavorites(item)
                     showRollbackSnack(item)
                 }
 
@@ -107,11 +107,6 @@ class FavoritePlacesFragment : BaseFragment() {
             LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
 
         setupEmptyViews()
-    }
-
-    private fun removePlaceFromFavorites(place: Place) {
-        place.changeFavoriteState()
-        favoritePlacesViewModel.insertPlace(place)
     }
 
     fun showBottomSheet() {
@@ -179,7 +174,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction("Вернуть...") {
-
+            favoritePlacesViewModel.returnPlaceToFavorites(item)
         }
 
         rollbackSnack?.show()

@@ -13,7 +13,17 @@ class FavoritePlacesViewModel(private val repository: Repository) : ViewModel() 
 
     val allFavoritePlacesLive: LiveData<List<Place>> = repository.allFavoritePlaces
 
-    fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+    fun removePlaceFromFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO){
+        place.changeFavoriteState()
+        insertPlace(place)
+    }
+
+    fun returnPlaceToFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO){
+        place.changeFavoriteState()
+        insertPlace(place)
+    }
+
+    private fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         repository.insertPlace(place)
     }
 }
