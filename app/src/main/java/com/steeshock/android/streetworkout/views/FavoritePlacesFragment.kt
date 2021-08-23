@@ -3,10 +3,12 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
@@ -60,7 +62,8 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
 
                 override fun onLikeClicked(item: Place) {
-                    removePlaceFromFavorites(item)
+                    favoritePlacesViewModel.removePlaceFromFavorites(item)
+                    showRollbackSnack(item)
                 }
 
                 override fun onPlaceLocationClicked(item: Place) {
@@ -104,11 +107,6 @@ class FavoritePlacesFragment : BaseFragment() {
             LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
 
         setupEmptyViews()
-    }
-
-    private fun removePlaceFromFavorites(place: Place) {
-        place.changeFavoriteState()
-        favoritePlacesViewModel.insertPlace(place)
     }
 
     fun showBottomSheet() {
@@ -163,6 +161,23 @@ class FavoritePlacesFragment : BaseFragment() {
 
         fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
         fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
+    }
+
+    private fun showRollbackSnack(item: Place) {
+
+        val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" удалено из избранного", Snackbar.LENGTH_LONG) }
+
+        if (activity is MainActivity) {
+            val baseline = (activity as MainActivity).baseline
+            rollbackSnack?.anchorView = baseline
+        }
+
+        rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
+        rollbackSnack?.setAction("Вернуть...") {
+            favoritePlacesViewModel.returnPlaceToFavorites(item)
+        }
+
+        rollbackSnack?.show()
     }
 
     override fun onDestroyView() {
