@@ -15,10 +15,8 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
-import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
-import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
 import kotlinx.android.synthetic.main.v_empty_state.view.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -98,8 +96,9 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
             })
 
-        favoritePlacesViewModel.allFavoritePlacesLive.observe(viewLifecycleOwner, Observer { places ->
-            places?.let { placesAdapter.setPlaces(it) }
+        favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner, Observer {
+            val sortedData = sortDataByCreatedDate(it)
+            placesAdapter.setPlaces(sortedData)
         })
 
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
@@ -153,6 +152,10 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun filterDataBySearchString(searchString: String?) {
         placesAdapter.filterItemsBySearchString(searchString)
+    }
+
+    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
+        return list.sortedBy { i -> i.created }
     }
 
     private fun setupEmptyViews() {
