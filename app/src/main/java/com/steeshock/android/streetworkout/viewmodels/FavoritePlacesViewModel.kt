@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class FavoritePlacesViewModel(private val repository: Repository) : ViewModel() {
 
-    val allFavoritePlacesLive: LiveData<List<Place>> = repository.allFavoritePlaces
+    val favoritePlacesLive: LiveData<List<Place>> = repository.allFavoritePlaces
 
     fun removePlaceFromFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO){
         place.changeFavoriteState()

@@ -127,7 +127,8 @@ class PlacesFragment : BaseFragment(){
         with(placesViewModel) {
 
             placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                placesAdapter.setPlaces(it)
+                val sortedData = sortDataByCreatedDate(it)
+                placesAdapter.setPlaces(sortedData)
                 filterData()
             })
 
@@ -167,6 +168,8 @@ class PlacesFragment : BaseFragment(){
         placesViewModel.updatePlace(place)
     }
 
+    // region Filtering
+
     private fun filterByCategory(category: Category) {
 
         category.changeSelectedState()
@@ -193,8 +196,18 @@ class PlacesFragment : BaseFragment(){
 
     private fun filterDataBySearchString(searchString: String?) {
         lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(searchString)
+        placesAdapter.filterItemsBySearchString(lastSearchString)
     }
+
+    // endregion
+
+    // region Sorting
+
+    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
+        return list.sortedBy { i -> i.created }
+    }
+
+    // endregion
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_menu, menu)
