@@ -196,7 +196,7 @@ class PlacesFragment : BaseFragment(){
 
     private fun filterDataBySearchString(searchString: String?) {
         lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(searchString)
+        placesAdapter.filterItemsBySearchString(lastSearchString)
     }
 
     // endregion

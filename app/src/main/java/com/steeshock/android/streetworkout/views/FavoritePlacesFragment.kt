@@ -30,6 +30,8 @@ class FavoritePlacesFragment : BaseFragment() {
     private var _fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding? = null
     private val fragmentFavoritePlacesBinding get() = _fragmentFavoritePlacesBinding!!
 
+    private var lastSearchString: String? = null
+
     private lateinit var placesAdapter: PlaceAdapter
 
     override fun onCreateView(
@@ -99,6 +101,10 @@ class FavoritePlacesFragment : BaseFragment() {
         favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner, Observer {
             val sortedData = sortDataByCreatedDate(it)
             placesAdapter.setPlaces(sortedData)
+
+            if (!lastSearchString.isNullOrEmpty()){
+                filterDataBySearchString(lastSearchString)
+            }
         })
 
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
@@ -151,7 +157,8 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     private fun filterDataBySearchString(searchString: String?) {
-        placesAdapter.filterItemsBySearchString(searchString)
+        lastSearchString = searchString
+        placesAdapter.filterItemsBySearchString(lastSearchString)
     }
 
     private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
