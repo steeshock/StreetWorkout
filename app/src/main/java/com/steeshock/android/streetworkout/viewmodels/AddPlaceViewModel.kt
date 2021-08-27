@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.repository.Repository
 import com.steeshock.android.streetworkout.data.model.Place
-import kotlinx.coroutines.*
-import java.util.*
-import kotlin.collections.ArrayList
+import com.steeshock.android.streetworkout.data.repository.Repository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 

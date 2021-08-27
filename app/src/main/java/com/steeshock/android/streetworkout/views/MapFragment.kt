@@ -5,27 +5,22 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
-import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
-import com.steeshock.android.streetworkout.utils.InjectorUtils
-import com.steeshock.android.streetworkout.viewmodels.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.steeshock.android.streetworkout.R
+import com.steeshock.android.streetworkout.common.BaseFragment
+import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
+import com.steeshock.android.streetworkout.utils.InjectorUtils
+import com.steeshock.android.streetworkout.viewmodels.MapViewModel
 
-
-@ExperimentalCoroutinesApi
 class MapFragment : BaseFragment(), OnMapReadyCallback {
     private val mapViewModel: MapViewModel by viewModels {
         InjectorUtils.provideMapViewModelFactory(requireActivity())
@@ -90,6 +85,33 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
+    private fun showAllPlaces(places: List<Place>) {
+
+        if (places.isNotEmpty()) {
+
+            lateinit var pin: LatLng
+            lateinit var bounds: LatLngBounds
+            val pinsPositions = mutableListOf<LatLng>()
+            val builder = LatLngBounds.Builder()
+
+            for (place in places) {
+                pin = LatLng(place.latitude, place.longitude)
+                val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
+                pinsPositions.add(pin)
+                place.place_uuid?.let { markers.add(CustomMarker(it, marker)) }
+            }
+
+            for (position in pinsPositions) {
+                builder.include(position)
+            }
+
+            bounds = builder.build()
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
+        }
+    }
+
+    // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
         inflater.inflate(R.menu.activity_menu, menu)
@@ -126,32 +148,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    private fun showAllPlaces(places: List<Place>) {
-
-        if (places.isNotEmpty()) {
-
-            lateinit var pin: LatLng
-            lateinit var bounds: LatLngBounds
-            val pinsPositions = mutableListOf<LatLng>()
-            val builder = LatLngBounds.Builder()
-
-            for (place in places) {
-                pin = LatLng(place.latitude, place.longitude)
-                val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
-                pinsPositions.add(pin)
-                place.place_uuid?.let { markers.add(CustomMarker(it, marker)) }
-            }
-
-            for (position in pinsPositions) {
-                builder.include(position)
-            }
-
-            bounds = builder.build()
-
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
-        }
-    }
+    // endregion
 
     override fun onDestroyView() {
         super.onDestroyView()
