@@ -1,12 +1,11 @@
 package com.steeshock.android.streetworkout.utils
 
+import com.google.gson.Gson
 import com.steeshock.android.streetworkout.BuildConfig
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
-import com.google.gson.Gson
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiUtils {

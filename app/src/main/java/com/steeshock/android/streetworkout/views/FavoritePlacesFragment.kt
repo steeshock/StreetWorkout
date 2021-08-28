@@ -18,9 +18,7 @@ import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBin
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import kotlinx.android.synthetic.main.v_empty_state.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 class FavoritePlacesFragment : BaseFragment() {
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels {
@@ -114,11 +112,20 @@ class FavoritePlacesFragment : BaseFragment() {
         setupEmptyViews()
     }
 
-    fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30)
-            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
+    // region Filtering
+    private fun filterDataBySearchString(searchString: String?) {
+        lastSearchString = searchString
+        placesAdapter.filterItemsBySearchString(lastSearchString)
     }
+    // endregion
 
+    // region Sorting
+    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
+        return list.sortedBy { i -> i.created }
+    }
+    // endregion
+
+    // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_menu, menu)
 
@@ -155,23 +162,7 @@ class FavoritePlacesFragment : BaseFragment() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    private fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(lastSearchString)
-    }
-
-    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
-        return list.sortedBy { i -> i.created }
-    }
-
-    private fun setupEmptyViews() {
-        fragmentFavoritePlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
-        fragmentFavoritePlacesBinding.emptyListView.title.setText(R.string.empty_favorites_list_state_message)
-
-        fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
-        fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
-    }
+    // endregion
 
     private fun showRollbackSnack(item: Place) {
 
@@ -188,6 +179,19 @@ class FavoritePlacesFragment : BaseFragment() {
         }
 
         rollbackSnack?.show()
+    }
+
+    private fun showBottomSheet() {
+        ItemListDialogFragment.newInstance(30)
+            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
+    }
+
+    private fun setupEmptyViews() {
+        fragmentFavoritePlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
+        fragmentFavoritePlacesBinding.emptyListView.title.setText(R.string.empty_favorites_list_state_message)
+
+        fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
+        fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
     }
 
     override fun onDestroyView() {

@@ -2,8 +2,8 @@ package com.steeshock.android.streetworkout.utils
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.steeshock.android.streetworkout.R
 import com.squareup.picasso.Picasso
+import com.steeshock.android.streetworkout.R
 
 @BindingAdapter("bind:imageUrl")
 fun loadImageFromUrl(imageView: ImageView, urlImage: String?) {

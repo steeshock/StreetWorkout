@@ -8,19 +8,17 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
+import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
-import com.steeshock.android.streetworkout.adapters.CategoryAdapter
-import com.steeshock.android.streetworkout.data.model.Category
 import kotlinx.android.synthetic.main.v_empty_state.view.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 class PlacesFragment : BaseFragment(){
 
     private val placesViewModel: PlacesViewModel by viewModels {
@@ -209,6 +207,7 @@ class PlacesFragment : BaseFragment(){
 
     // endregion
 
+    // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.activity_menu, menu)
 
@@ -246,6 +245,7 @@ class PlacesFragment : BaseFragment(){
             else -> super.onOptionsItemSelected(item)
         }
     }
+    // endregion
 
     private fun showBottomSheet() {
         ItemListDialogFragment.newInstance(30)

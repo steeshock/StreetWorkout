@@ -24,10 +24,10 @@ import android.location.Location
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.util.Log
-import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.R
+import com.steeshock.android.streetworkout.common.Constants
 import java.io.IOException
-import java.util.Locale
+import java.util.*
 
 /**
  * Asynchronously handles an intent using a worker thread. Receives a ResultReceiver object and a
