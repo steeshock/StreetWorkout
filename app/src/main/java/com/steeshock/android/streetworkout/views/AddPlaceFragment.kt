@@ -20,6 +20,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -37,6 +38,7 @@ import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
 import kotlinx.android.synthetic.main.fragment_add_place.*
+import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
 import java.util.*
 
 class AddPlaceFragment : Fragment() {
@@ -75,7 +77,9 @@ class AddPlaceFragment : Fragment() {
         }
 
         fragmentAddPlaceBinding.setAddNewPlaceClickListener {
-            getPublishPermissionDialog().show()
+            if (validatePlace()) {
+                getPublishPermissionDialog().show()
+            }
         }
 
         fragmentAddPlaceBinding.setResetFieldsClickListener {
@@ -84,6 +88,18 @@ class AddPlaceFragment : Fragment() {
 
         fragmentAddPlaceBinding.setAddCategoryClickListener {
             getCategoriesDialog().show()
+        }
+
+        fragmentAddPlaceBinding.placeTitle.addTextChangedListener {
+            if (!it.isNullOrEmpty()){
+                fragmentAddPlaceBinding.placeTitleInput.error = null
+            }
+        }
+
+        fragmentAddPlaceBinding.placeAddress.addTextChangedListener {
+            if (!it.isNullOrEmpty()){
+                fragmentAddPlaceBinding.placeAddressInput.error = null
+            }
         }
 
         resultReceiver = AddressResultReceiver(Handler())
@@ -223,6 +239,23 @@ class AddPlaceFragment : Fragment() {
         }
     }
 
+    private fun validatePlace(): Boolean {
+
+        var validationResult = true;
+
+        if (fragmentAddPlaceBinding.placeTitle.text.isNullOrEmpty()){
+            fragmentAddPlaceBinding.placeTitleInput.error = resources.getString(R.string.required_field_empty_error)
+            validationResult = false;
+        }
+
+        if (fragmentAddPlaceBinding.placeAddress.text.isNullOrEmpty()){
+            fragmentAddPlaceBinding.placeAddressInput.error = resources.getString(R.string.required_field_empty_error)
+            validationResult = false;
+        }
+
+        return validationResult;
+    }
+
     private fun createNewPlace(placeUUID: String): Place {
 
         val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
@@ -241,9 +274,9 @@ class AddPlaceFragment : Fragment() {
     private fun resetFields() {
 
         fragmentAddPlaceBinding.let {
-            it.placeTitle.text.clear()
-            it.placeDescription.text.clear()
-            it.placeAddress.text.clear()
+            it.placeTitle.text?.clear()
+            it.placeDescription.text?.clear()
+            it.placeAddress.text?.clear()
             it.placePosition.text.clear()
             it.placeImages.text.clear()
             it.placeCategories.text.clear()

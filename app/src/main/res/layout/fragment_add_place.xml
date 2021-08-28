@@ -38,9 +38,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -61,71 +62,74 @@
                 android:layout_height="5dp"
                 android:progress="@{viewmodel.sendingProgress}"
                 android:progressTint="@color/greenColor"
-                android:visibility="@{viewmodel.isSendingInProgress ? V.VISIBLE : V.GONE}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                android:visibility="@{viewmodel.isSendingInProgress ? V.VISIBLE : V.GONE}" />
 
             <!--Название-->
-            <EditText
-                android:id="@+id/place_title"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/place_title_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/list_item_spacing"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:hint="@string/hint_place_name"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--Краткое описание-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/place_description_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:layout_marginBottom="@dimen/list_item_spacing"
-                android:ems="10"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:hint="@string/hint_place_name"
-                android:inputType="textCapSentences"
-                android:maxLines="1"
-                app:layout_constraintBottom_toTopOf="@+id/place_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:layout_constraintVertical_chainStyle="packed" />
+                app:errorEnabled="true">
 
-            <!--Краткое описание-->
-            <EditText
-                android:id="@+id/place_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                android:ems="10"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:hint="@string/hint_place_description"
-                android:inputType="textCapSentences"
-                android:maxLines="1"
-                app:layout_constraintBottom_toTopOf="@+id/place_address"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_title" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:hint="@string/hint_place_description"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Адрес-->
-            <EditText
-                android:id="@+id/place_address"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/place_address_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/list_item_spacing"
-                android:ems="10"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:hint="@string/hint_place_address"
-                android:inputType="textCapSentences"
-                android:maxLines="1"
-                app:layout_constraintBottom_toTopOf="@+id/place_position_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_description" />
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:hint="@string/hint_place_address"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Координаты-->
             <LinearLayout
                 android:id="@+id/place_position_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/place_categories"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_address">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/place_position"
@@ -164,43 +168,40 @@
             </LinearLayout>
 
             <!--Категории-->
-            <EditText
-                android:id="@+id/place_categories"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:focusable="false"
-                android:hint="@string/hint_place_categories"
-                android:inputType="text"
-                app:layout_constraintBottom_toTopOf="@+id/images_layout"
-                app:layout_constraintEnd_toStartOf="@id/categoryBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_position_layout" />
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/categoryBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:background="@android:color/transparent"
-                android:clickable="@{!viewmodel.isSendingInProgress}"
-                android:onClick="@{addCategoryClickListener}"
-                android:src="@drawable/ic_add_circle_36dp"
-                app:layout_constraintBottom_toBottomOf="@+id/place_categories"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/place_categories" />
+                <EditText
+                    android:id="@+id/place_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/list_item_spacing"
+                    android:layout_weight="1"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:focusable="false"
+                    android:hint="@string/hint_place_categories"
+                    android:inputType="text" />
+
+                <ImageButton
+                    android:id="@+id/categoryBtn"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/list_item_spacing"
+                    android:background="@android:color/transparent"
+                    android:clickable="@{!viewmodel.isSendingInProgress}"
+                    android:onClick="@{addCategoryClickListener}"
+                    android:src="@drawable/ic_add_circle_36dp" />
+            </LinearLayout>
 
             <!--Фотографии-->
             <LinearLayout
                 android:id="@+id/images_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/btn_add"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/place_categories">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/place_images"
@@ -241,40 +242,38 @@
                     android:visibility="@{viewmodel.isImagePickingInProgress ? V.VISIBLE : V.GONE}" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_add"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginVertical="30dp"
-                android:background="@color/colorPrimary"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:minWidth="120dp"
-                android:onClick="@{resetFieldsClickListener}"
-                android:text="@string/clear_place_btn"
-                android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_clear"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btn_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginVertical="30dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorPrimary"
-                android:enabled="@{!viewmodel.isSendingInProgress}"
-                android:minWidth="120dp"
-                android:onClick="@{addNewPlaceClickListener}"
-                android:text="@string/add_place_btn"
-                android:textColor="@android:color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/btn_add"
-                app:layout_constraintTop_toBottomOf="@+id/images_layout" />
+                <Button
+                    android:id="@+id/btn_add"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="30dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:minWidth="120dp"
+                    android:onClick="@{resetFieldsClickListener}"
+                    android:text="@string/clear_place_btn"
+                    android:textColor="@android:color/white" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="30dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:enabled="@{!viewmodel.isSendingInProgress}"
+                    android:minWidth="120dp"
+                    android:onClick="@{addNewPlaceClickListener}"
+                    android:text="@string/add_place_btn"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+        </LinearLayout>
     </ScrollView>
 </layout>
