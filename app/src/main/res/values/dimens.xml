@@ -8,8 +8,8 @@
     <dimen name="card_margin_half">4dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="icon_margin">12dp</dimen>
-    <dimen name="list_item_spacing">14dp</dimen>
-    <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="list_item_spacing">12dp</dimen>
+    <dimen name="list_item_spacing_half">6dp</dimen>
 
     <!--Category item dimens-->
     <dimen name="chips_margin">8dp</dimen>

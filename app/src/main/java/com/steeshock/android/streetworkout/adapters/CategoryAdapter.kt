@@ -4,9 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.CategoryItemBinding
-import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 
 class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 

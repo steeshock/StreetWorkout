@@ -5,8 +5,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.steeshock.android.streetworkout.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.steeshock.android.streetworkout.R
 
 class MainActivity : AppCompatActivity() {
 
