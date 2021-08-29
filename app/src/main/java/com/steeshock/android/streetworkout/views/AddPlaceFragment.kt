@@ -291,6 +291,9 @@ class AddPlaceFragment : Fragment() {
             addPlaceViewModel.selectedImages.clear()
             addPlaceViewModel.downloadedImagesLinks.clear()
             addPlaceViewModel.isImagePickingInProgress.set(false)
+
+            fragmentAddPlaceBinding.placeTitleInput.error = null
+            fragmentAddPlaceBinding.placeAddressInput.error = null
         }
 
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
