@@ -4,10 +4,10 @@
     <string name="title_map">Map</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_profile">Profile</string>
-    <string name="action_search">Find places…</string>
+    <string name="action_search">Find spots…</string>
     <string name="action_map">Go to map</string>
     <string name="action_add_place">Add new place</string>
-    <string name="places_title">Training places</string>
+    <string name="places_title">Training spots</string>
     <string name="page_not_ready_title">Section is under construction</string>
 
     <string name="empty_favorites_list_state_message">"There is nothing
@@ -27,7 +27,7 @@ search conditions"</string>
     <string name="required_field_empty_error">"Required field"</string>
 
     <!--Add new place fragment-->
-    <string name="add_place_title">New place</string>
+    <string name="add_place_title">New spot</string>
     <string name="hint_place_name">Place title</string>
     <string name="hint_place_address">Place address</string>
     <string name="hint_place_position">Location latitude/longitude</string>
@@ -49,6 +49,8 @@ search conditions"</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Cancel</string>
     <string name="address_found">Address found</string>
+    <string name="place_removed">removed from favorites</string>
+    <string name="rollback_place">Abort…</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>
