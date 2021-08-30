@@ -166,7 +166,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun showRollbackSnack(item: Place) {
 
-        val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" удалено из избранного", Snackbar.LENGTH_LONG) }
+        val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" ${resources.getString(R.string.place_removed)}", Snackbar.LENGTH_LONG) }
 
         if (activity is MainActivity) {
             val baseline = (activity as MainActivity).baseline
@@ -174,7 +174,7 @@ class FavoritePlacesFragment : BaseFragment() {
         }
 
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
-        rollbackSnack?.setAction("Вернуть...") {
+        rollbackSnack?.setAction(R.string.rollback_place) {
             favoritePlacesViewModel.returnPlaceToFavorites(item)
         }
 

@@ -48,6 +48,8 @@
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>
     <string name="address_found">Адрес найден</string>
+    <string name="place_removed">удалено из избранного</string>
+    <string name="rollback_place">Вернуть…</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>
