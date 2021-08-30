@@ -121,7 +121,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     // region Sorting
     private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
-        return list.sortedBy { i -> i.created }
+        return list.sortedByDescending { i -> i.created }
     }
     // endregion
 
