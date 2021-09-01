@@ -10,28 +10,12 @@
             type="android.view.View" />
 
         <variable
-            name="myPositionClickListener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="addCategoryClickListener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="addImagesClickListener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="addNewPlaceClickListener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="resetFieldsClickListener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
             name="viewmodel"
             type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
+
+        <variable
+            name="fragmentBehaviour"
+            type="com.steeshock.android.streetworkout.views.IAddPlace" />
     </data>
 
     <ScrollView
@@ -153,7 +137,7 @@
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{myPositionClickListener}"
+                    android:onClick="@{fragmentBehaviour::getPosition}"
                     android:src="@drawable/ic_map_location_36dp"
                     android:visibility="@{viewmodel.isLocationInProgress ? V.GONE : V.VISIBLE}" />
 
@@ -192,7 +176,7 @@
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{addCategoryClickListener}"
+                    android:onClick="@{fragmentBehaviour::showCategories}"
                     android:src="@drawable/ic_add_circle_36dp" />
             </LinearLayout>
 
@@ -228,7 +212,7 @@
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
                     android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{addImagesClickListener}"
+                    android:onClick="@{fragmentBehaviour::openImagePicker}"
                     android:src="@drawable/ic_add_image"
                     android:visibility="@{viewmodel.isImagePickingInProgress ? V.GONE : V.VISIBLE}" />
 
@@ -255,7 +239,7 @@
                     android:background="@color/colorPrimary"
                     android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:minWidth="120dp"
-                    android:onClick="@{resetFieldsClickListener}"
+                    android:onClick="@{fragmentBehaviour::resetFields}"
                     android:text="@string/clear_place_btn"
                     android:textColor="@android:color/white" />
 
@@ -269,7 +253,7 @@
                     android:background="@color/colorPrimary"
                     android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:minWidth="120dp"
-                    android:onClick="@{addNewPlaceClickListener}"
+                    android:onClick="@{fragmentBehaviour::addNewPlace}"
                     android:text="@string/add_place_btn"
                     android:textColor="@android:color/white" />
             </LinearLayout>

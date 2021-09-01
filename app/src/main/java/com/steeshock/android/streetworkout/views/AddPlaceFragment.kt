@@ -11,6 +11,7 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -37,11 +38,9 @@ import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
-import kotlinx.android.synthetic.main.fragment_add_place.*
-import kotlinx.android.synthetic.main.fragment_place_detail_item.view.*
 import java.util.*
 
-class AddPlaceFragment : Fragment() {
+class AddPlaceFragment : Fragment(), IAddPlace {
 
     private lateinit var imagePicker: ImagePicker.Builder
 
@@ -64,40 +63,20 @@ class AddPlaceFragment : Fragment() {
         fragmentAddPlaceBinding.viewmodel = addPlaceViewModel
         fragmentAddPlaceBinding.lifecycleOwner = this
 
+        fragmentAddPlaceBinding.fragmentBehaviour = this
+
         fragmentAddPlaceBinding.toolbar.setNavigationOnClickListener { view ->
             view.findNavController().navigateUp()
         }
 
-        fragmentAddPlaceBinding.setMyPositionClickListener {
-            getMyPosition()
-        }
-
-        fragmentAddPlaceBinding.setAddImagesClickListener {
-            openImagePicker()
-        }
-
-        fragmentAddPlaceBinding.setAddNewPlaceClickListener {
-            if (validatePlace()) {
-                getPublishPermissionDialog().show()
-            }
-        }
-
-        fragmentAddPlaceBinding.setResetFieldsClickListener {
-            getClearFieldsDialog().show()
-        }
-
-        fragmentAddPlaceBinding.setAddCategoryClickListener {
-            getCategoriesDialog().show()
-        }
-
         fragmentAddPlaceBinding.placeTitle.addTextChangedListener {
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty()) {
                 fragmentAddPlaceBinding.placeTitleInput.error = null
             }
         }
 
         fragmentAddPlaceBinding.placeAddress.addTextChangedListener {
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty()) {
                 fragmentAddPlaceBinding.placeAddressInput.error = null
             }
         }
@@ -153,9 +132,11 @@ class AddPlaceFragment : Fragment() {
                 if (isChecked) {
                     selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.add(it) }
                 } else {
-                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.remove(
-                        it
-                    ) }
+                    selectedCategory.category_id?.let {
+                        addPlaceViewModel.selectedCategories.remove(
+                            it
+                        )
+                    }
                 }
             }
             .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
@@ -186,22 +167,6 @@ class AddPlaceFragment : Fragment() {
     //endregion
 
     //region Image picking
-    private fun openImagePicker() {
-
-        addPlaceViewModel.isImagePickingInProgress.set(true)
-
-        imagePicker
-            .compress(512)
-            .crop(900f, 600f)
-            .galleryOnly()
-            .setDismissListener {
-                addPlaceViewModel.isImagePickingInProgress.set(false)
-            }
-            .createIntent { intent ->
-                startForProfileImageResult.launch(intent)
-        }
-    }
-
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
 
@@ -212,7 +177,8 @@ class AddPlaceFragment : Fragment() {
 
                 addPlaceViewModel.selectedImages.add(data?.data!!)
 
-                addPlaceViewModel.selectedImagesMessage = "Прикреплено фотографий: ${addPlaceViewModel.selectedImages.size}"
+                addPlaceViewModel.selectedImagesMessage =
+                    "Прикреплено фотографий: ${addPlaceViewModel.selectedImages.size}"
             }
 
             addPlaceViewModel.isImagePickingInProgress.set(false)
@@ -233,8 +199,7 @@ class AddPlaceFragment : Fragment() {
             addPlaceViewModel.selectedImages.forEach { uri ->
                 addPlaceViewModel.uploadDataToFirebase(uri, placeUUID)
             }
-        }
-        else {
+        } else {
             addPlaceViewModel.createAndPublishNewPlace()
         }
     }
@@ -243,13 +208,15 @@ class AddPlaceFragment : Fragment() {
 
         var validationResult = true;
 
-        if (fragmentAddPlaceBinding.placeTitle.text.isNullOrEmpty()){
-            fragmentAddPlaceBinding.placeTitleInput.error = resources.getString(R.string.required_field_empty_error)
+        if (fragmentAddPlaceBinding.placeTitle.text.isNullOrEmpty()) {
+            fragmentAddPlaceBinding.placeTitleInput.error =
+                resources.getString(R.string.required_field_empty_error)
             validationResult = false;
         }
 
-        if (fragmentAddPlaceBinding.placeAddress.text.isNullOrEmpty()){
-            fragmentAddPlaceBinding.placeAddressInput.error = resources.getString(R.string.required_field_empty_error)
+        if (fragmentAddPlaceBinding.placeAddress.text.isNullOrEmpty()) {
+            fragmentAddPlaceBinding.placeAddressInput.error =
+                resources.getString(R.string.required_field_empty_error)
             validationResult = false;
         }
 
@@ -314,6 +281,54 @@ class AddPlaceFragment : Fragment() {
 
         _fragmentAddPlaceBinding = null
     }
+
+    // region Fragment behaviour
+
+    override fun getPosition(view: View) {
+        getMyPosition()
+    }
+
+    override fun openImagePicker(view: View) {
+        addPlaceViewModel.isImagePickingInProgress.set(true)
+
+        imagePicker
+            .compress(512)
+            .crop(900f, 600f)
+            .galleryOnly()
+            .setDismissListener {
+                addPlaceViewModel.isImagePickingInProgress.set(false)
+            }
+            .createIntent { intent ->
+                startForProfileImageResult.launch(intent)
+            }
+    }
+
+    override fun addNewPlace(view: View) {
+        if (validatePlace()) {
+            getPublishPermissionDialog().show()
+        }
+    }
+
+    override fun resetFields(view: View) {
+        getClearFieldsDialog().show()
+    }
+
+    override fun showCategories(view: View) {
+        getCategoriesDialog().show()
+    }
+
+    override fun handleTitleChanged(editable: Editable?) {
+        if (!editable.isNullOrEmpty()) {
+            fragmentAddPlaceBinding.placeTitleInput.error = null
+        }
+    }
+
+    override fun handleAddressChanged(editable: Editable?) {
+        if (!editable.isNullOrEmpty()) {
+            fragmentAddPlaceBinding.placeAddressInput.error = null
+        }
+    }
+    // endregion
 
     //region GPS
     private val TAG = "LocationTag"
@@ -502,3 +517,13 @@ class AddPlaceFragment : Fragment() {
     }
     //endregion
 }
+
+    interface IAddPlace {
+        fun getPosition(view: View)
+        fun openImagePicker(view: View)
+        fun addNewPlace(view: View)
+        fun resetFields(view: View)
+        fun showCategories(view: View)
+        fun handleTitleChanged(editable: Editable?)
+        fun handleAddressChanged(editable: Editable?)
+    }
