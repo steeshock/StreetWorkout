@@ -17,7 +17,6 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
-import kotlinx.android.synthetic.main.v_empty_state.view.*
 
 class PlacesFragment : BaseFragment(){
 
