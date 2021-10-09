@@ -2,15 +2,23 @@ package com.steeshock.android.streetworkout.utils
 
 import android.content.Context
 import com.steeshock.android.streetworkout.data.database.PlacesDatabase
-import com.steeshock.android.streetworkout.data.repository.Repository
+import com.steeshock.android.streetworkout.data.repository.implementation.FirebaseCategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.FirebasePlacesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.android.streetworkout.utils.factories.*
 
 object InjectorUtils {
 
-    private fun getRepository(context: Context): Repository {
-        return Repository.getInstance(
+    private fun getPlacesRepository(context: Context): IPlacesRepository {
+        return FirebasePlacesRepository.getInstance(
             PlacesDatabase.getInstance(context.applicationContext).getPlacesDao(),
-            ApiUtils.getInstance()
+        )
+    }
+
+    private fun getCategoriesRepository(context: Context): ICategoriesRepository {
+        return FirebaseCategoriesRepository.getInstance(
+            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao(),
         )
     }
 
@@ -18,7 +26,8 @@ object InjectorUtils {
         context: Context
     ): CustomPlacesViewModelFactory {
         return CustomPlacesViewModelFactory(
-            getRepository(context)
+            getPlacesRepository(context),
+            getCategoriesRepository(context),
         )
     }
 
@@ -26,7 +35,7 @@ object InjectorUtils {
         context: Context
     ): CustomMapViewModelFactory {
         return CustomMapViewModelFactory(
-            getRepository(context)
+            getPlacesRepository(context)
         )
     }
 
@@ -34,7 +43,7 @@ object InjectorUtils {
         context: Context
     ): CustomFavoritePlacesViewModelFactory {
         return CustomFavoritePlacesViewModelFactory(
-            getRepository(context)
+            getPlacesRepository(context)
         )
     }
 
@@ -42,7 +51,8 @@ object InjectorUtils {
         context: Context
     ): CustomAddPlaceViewModelFactory {
         return CustomAddPlaceViewModelFactory(
-            getRepository(context)
+            getPlacesRepository(context),
+            getCategoriesRepository(context),
         )
     }
 
@@ -50,7 +60,7 @@ object InjectorUtils {
         context: Context
     ): CustomProfileViewModelFactory {
         return CustomProfileViewModelFactory(
-            getRepository(context)
+            getPlacesRepository(context)
         )
     }
 }

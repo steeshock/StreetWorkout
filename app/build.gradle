@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.21"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
 
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 

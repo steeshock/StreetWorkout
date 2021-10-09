@@ -6,22 +6,26 @@ import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.data.repository.Repository
+import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class PlacesViewModel(private val repository: Repository) : ViewModel() {
+class PlacesViewModel(
+    private val placesRepository: IPlacesRepository,
+    private val categoriesRepository: ICategoriesRepository,
+) : ViewModel() {
 
     val isLoading = MutableLiveData(false)
 
-    val placesLiveData = repository.allPlaces
-    val categoriesLiveData = repository.allCategories
+    val placesLiveData = placesRepository.allPlaces
+    val categoriesLiveData = categoriesRepository.allCategories
 
     fun fetchPlacesFromFirebase() = viewModelScope.launch(Dispatchers.IO) {
 
         setLoading(true)
 
-        repository.fetchPlacesFromFirebase(object :
+        placesRepository.fetchPlaces(object :
             APIResponse<List<Place>> {
             override fun onSuccess(result: List<Place>?) {
                 result?.let { insertPlaces(it) }
@@ -38,7 +42,7 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
 
         setLoading(true)
 
-        repository.fetchCategoriesFromFirebase(object :
+        categoriesRepository.fetchCategories(object :
             APIResponse<List<Category>> {
             override fun onSuccess(result: List<Category>?) {
                 result?.let { insertCategories(it) }
@@ -52,33 +56,26 @@ class PlacesViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun insertPlaces(places: List<Place>) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertAllPlaces(places)
+        placesRepository.insertAllPlaces(places)
         setLoading(false)
     }
 
-    fun insertCategories(categories:List<Category>) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertAllCategories(categories)
+    fun insertCategories(categories: List<Category>) = viewModelScope.launch(Dispatchers.IO) {
+        categoriesRepository.insertAllCategories(categories)
         setLoading(false)
-    }
-
-    fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertPlace(place)
-    }
-
-    fun insertCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertCategory(category)
     }
 
     fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateCategory(category)
+        categoriesRepository.updateCategory(category)
     }
 
     fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updatePlace(place)
+        placesRepository.updatePlace(place)
     }
 
     fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
-        repository.clearDatabase()
+        placesRepository.clearPlacesTable()
+        categoriesRepository.clearCategoriesTable()
     }
 
     fun setLoading(isVisible: Boolean) {
