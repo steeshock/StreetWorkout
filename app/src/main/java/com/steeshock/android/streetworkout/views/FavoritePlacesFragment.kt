@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
@@ -17,8 +18,6 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.android.streetworkout.utils.InjectorUtils
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
-import kotlinx.android.synthetic.main.v_empty_state.view.*
-
 class FavoritePlacesFragment : BaseFragment() {
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels {
@@ -74,24 +73,24 @@ class FavoritePlacesFragment : BaseFragment() {
                 override fun setEmptyListState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.VISIBLE
+                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.VISIBLE
                     }
                     else {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
                     }
                 }
 
                 override fun setEmptyResultsState(isEmpty: Boolean) {
                     if (isEmpty) {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.VISIBLE
+                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.VISIBLE
                     }
                     else {
                         fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyResultsView.visibility = View.GONE
+                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
                     }
                 }
             })
@@ -177,6 +176,8 @@ class FavoritePlacesFragment : BaseFragment() {
         rollbackSnack?.setAction(R.string.rollback_place) {
             favoritePlacesViewModel.returnPlaceToFavorites(item)
         }
+
+        rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
 
         rollbackSnack?.show()
     }

@@ -98,7 +98,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 pin = LatLng(place.latitude, place.longitude)
                 val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)
-                place.place_uuid?.let { markers.add(CustomMarker(it, marker)) }
+                place.place_uuid.let { markers.add(CustomMarker(it, marker)) }
             }
 
             for (position in pinsPositions) {
