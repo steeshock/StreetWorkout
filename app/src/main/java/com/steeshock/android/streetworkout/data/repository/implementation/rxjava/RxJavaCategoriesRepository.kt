@@ -1,61 +1,56 @@
-package com.steeshock.android.streetworkout.data.repository.implementation
+package com.steeshock.android.streetworkout.data.repository.implementation.rxjava
 
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.api.APIResponse
+import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.CategoriesDao
-import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class FirebaseCategoriesRepository(
-    private val categoriesDao: CategoriesDao
+class RxJavaCategoriesRepository(
+    private val categoriesDao: CategoriesDao,
+    private val placesAPI: PlacesAPI,
 ) : ICategoriesRepository {
 
     override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
     companion object {
 
         @Volatile
-        private var instance: FirebaseCategoriesRepository? = null
+        private var instance: RxJavaCategoriesRepository? = null
 
-        fun getInstance(categoriesDao: CategoriesDao) =
-            instance
+        fun getInstance(
+            categoriesDao: CategoriesDao,
+            placesAPI: PlacesAPI
+        ) = instance
                 ?: synchronized(this) {
                     instance
-                        ?: FirebaseCategoriesRepository(
+                        ?: RxJavaCategoriesRepository(
                             categoriesDao,
+                            placesAPI
                         )
                             .also { instance = it }
                 }
     }
 
     override fun fetchCategories(onResponse: APIResponse<List<Category>>) {
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-        val categories: MutableList<Category> = mutableListOf()
-
-        database.getReference("categories").get().addOnSuccessListener {
-
-            for (child in it.children) {
-
-                val category = child.getValue<Category>()
-
-                val isSelected =
-                    allCategories.value?.find { p -> p.category_id == category?.category_id }?.isSelected
-
-                category?.isSelected = isSelected
-
-                category?.let { c -> categories.add(c) }
+        placesAPI.getCategories()
+            .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                onResponse.onSuccess(it)
+            }, {
+                onResponse.onError(it)
+            }).also {
+                compositeDisposable.add(it)
             }
-
-            onResponse.onSuccess(categories)
-
-        }.addOnFailureListener {
-            onResponse.onError(it)
-        }
     }
 
     override suspend fun insertCategoryLocal(newCategory: Category) {
