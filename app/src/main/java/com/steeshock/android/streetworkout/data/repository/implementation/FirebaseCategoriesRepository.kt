@@ -5,27 +5,28 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.api.APIResponse
+import com.steeshock.android.streetworkout.data.database.CategoriesDao
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 
 class FirebaseCategoriesRepository(
-    private val placesDao: PlacesDao
+    private val categoriesDao: CategoriesDao
 ) : ICategoriesRepository {
 
-    override val allCategories: LiveData<List<Category>> = placesDao.getCategoriesLive()
+    override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
     companion object {
 
         @Volatile
         private var instance: FirebaseCategoriesRepository? = null
 
-        fun getInstance(placesDao: PlacesDao) =
+        fun getInstance(categoriesDao: CategoriesDao) =
             instance
                 ?: synchronized(this) {
                     instance
                         ?: FirebaseCategoriesRepository(
-                            placesDao,
+                            categoriesDao,
                         )
                             .also { instance = it }
                 }
@@ -58,18 +59,18 @@ class FirebaseCategoriesRepository(
     }
 
     override suspend fun insertCategoryLocal(newCategory: Category) {
-        placesDao.insertCategory(newCategory)
+        categoriesDao.insertCategory(newCategory)
     }
 
     override suspend fun insertAllCategories(categories: List<Category>) {
-        placesDao.insertAllCategories(categories)
+        categoriesDao.insertAllCategories(categories)
     }
 
     override suspend fun updateCategory(category: Category) {
-        placesDao.updateCategory(category)
+        categoriesDao.updateCategory(category)
     }
 
     override suspend fun clearCategoriesTable() {
-        placesDao.clearCategoriesTable()
+        categoriesDao.clearCategoriesTable()
     }
 }
