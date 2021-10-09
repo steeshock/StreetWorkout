@@ -30,7 +30,7 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
         init {
             binding.setItemClickListener {
                 binding.category?.let { category ->
-                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onClicked(category)
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onClicked(category)
                 }
             }
         }

@@ -43,18 +43,18 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         init {
             binding.setItemClickListener {
                 binding.place?.let { place ->
-                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onPlaceClicked(place)
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onPlaceClicked(place)
                 }
             }
             binding.setLikeClickListener {
                 binding.place?.let { place ->
-                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onLikeClicked(place)
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onLikeClicked(place)
                 }
             }
 
             binding.setPlaceLocationClickListener {
                 binding.place?.let { place ->
-                    if (adapterPosition != RecyclerView.NO_POSITION) callback.onPlaceLocationClicked(place)
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onPlaceLocationClicked(place)
                 }
             }
         }
