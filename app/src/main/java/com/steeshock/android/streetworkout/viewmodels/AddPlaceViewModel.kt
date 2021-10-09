@@ -8,14 +8,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.data.repository.Repository
+import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
+class AddPlaceViewModel(
+    private val placesRepository: IPlacesRepository,
+    private val categoriesRepository: ICategoriesRepository,
+) : ViewModel() {
 
-    val allCategoriesLive: LiveData<List<Category>> = repository.allCategories
+    val allCategoriesLive: LiveData<List<Category>> = categoriesRepository.allCategories
     val loadCompleted: MutableLiveData<Boolean> = MutableLiveData(false)
     var sendingProgress: MutableLiveData<Int> = MutableLiveData(0)
 
@@ -32,9 +36,9 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
     var sendingPlace: Place? = null
 
-    fun uploadDataToFirebase(uri: Uri, placeUUID: String) = viewModelScope.launch()  {
+    fun uploadDataToFirebase(uri: Uri, placeUUID: String) = viewModelScope.launch() {
 
-        val result = repository.uploadImageToFirebase(uri, placeUUID)
+        val result = placesRepository.uploadImage(uri, placeUUID)
         downloadedImagesLinks.add(result.toString())
 
         sendingProgress.postValue(sendingProgress.value?.plus(1))
@@ -49,21 +53,13 @@ class AddPlaceViewModel(private val repository: Repository) : ViewModel() {
 
         sendingPlace?.images = downloadedImagesLinks
 
-        sendingPlace?.let { insertNewPlaceInDatabase(it) }
-        sendingPlace?.let { insertNewPlaceInFirebase(it) }
+        sendingPlace?.let { placesRepository.insertPlaceLocal(it) }
+        sendingPlace?.let { placesRepository.insertPlaceRemote(it) }
 
         sendingProgress.postValue(sendingProgress.value?.plus(1))
         delay(500)
 
         loadCompleted.postValue(true)
         isSendingInProgress.set(false)
-    }
-
-    private fun insertNewPlaceInDatabase(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertPlace(place)
-    }
-
-    private fun insertNewPlaceInFirebase(newPlace: Place) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertNewPlaceInFirebase(newPlace)
     }
 }
