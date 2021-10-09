@@ -20,6 +20,7 @@ import com.steeshock.android.streetworkout.utils.converters.ArrayStringConverter
 abstract class PlacesDatabase : RoomDatabase() {
 
     abstract fun getPlacesDao(): PlacesDao
+    abstract fun getCategoriesDao(): CategoriesDao
 
     companion object {
 

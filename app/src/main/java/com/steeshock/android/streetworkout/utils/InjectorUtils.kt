@@ -18,7 +18,7 @@ object InjectorUtils {
 
     private fun getCategoriesRepository(context: Context): ICategoriesRepository {
         return FirebaseCategoriesRepository.getInstance(
-            PlacesDatabase.getInstance(context.applicationContext).getPlacesDao(),
+            PlacesDatabase.getInstance(context.applicationContext).getCategoriesDao(),
         )
     }
 
