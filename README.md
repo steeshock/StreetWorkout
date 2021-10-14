@@ -28,6 +28,7 @@ Training spots loads from Firebase Realtime Database and persisted with Room. Im
   - [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - Generates a binding class for each XML layout file, allows you to more easily write code that interacts with views.
   - [Room](https://developer.android.com/topic/libraries/architecture/room) - SQLite object mapping library.
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
+- [Dagger 2](https://dagger.dev/) - Fully static, compile-time dependency injection framework for Java, Kotlin, and Android.
 - [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For managing background threads with simplified code and reducing needs for callbacks.
 - [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
 - [Firebase](https://firebase.google.com/) - Servless set of solutions for your app, helps you build and run successful apps.
@@ -35,6 +36,5 @@ Training spots loads from Firebase Realtime Database and persisted with Room. Im
 ## Upcoming features:
 - Authorization with Firebase Auth
 - Share spots functionality
-- Migration to Dagger 2 or Hilt
 - First UI tests
 - **And many others!**
