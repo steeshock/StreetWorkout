@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.utils.converters
+package com.steeshock.android.streetworkout.data.converters
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
