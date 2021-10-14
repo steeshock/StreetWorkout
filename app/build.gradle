@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     packagingOptions {
@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.5.31"
 
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
@@ -109,6 +110,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3"
+
+    // Dagger
+    implementation "com.google.dagger:dagger:2.36"
+    kapt "com.google.dagger:dagger-compiler:2.36"
 
     implementation 'com.github.dhaval2404:imagepicker:2.1'
 

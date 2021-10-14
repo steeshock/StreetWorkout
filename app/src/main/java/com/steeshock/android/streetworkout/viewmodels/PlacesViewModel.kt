@@ -10,6 +10,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.ICategorie
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class PlacesViewModel(
     private val placesRepository: IPlacesRepository,
