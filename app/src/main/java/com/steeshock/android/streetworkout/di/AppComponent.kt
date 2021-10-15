@@ -2,14 +2,12 @@ package com.steeshock.android.streetworkout.di
 
 import com.steeshock.android.streetworkout.di.modules.DatabaseModule
 import com.steeshock.android.streetworkout.di.modules.NetworkModule
-import com.steeshock.android.streetworkout.di.modules.ViewModelsModule
 import com.steeshock.android.streetworkout.views.*
 import dagger.Component
 
 @Component(modules = [
     DatabaseModule::class,
     NetworkModule::class,
-    ViewModelsModule::class
 ])
 interface AppComponent {
 

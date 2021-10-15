@@ -2,10 +2,7 @@ package com.steeshock.android.streetworkout.viewmodels
 
 import android.net.Uri
 import androidx.databinding.ObservableBoolean
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
@@ -13,6 +10,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRep
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class AddPlaceViewModel(
     private val placesRepository: IPlacesRepository,
@@ -61,5 +59,19 @@ class AddPlaceViewModel(
 
         loadCompleted.postValue(true)
         isSendingInProgress.set(false)
+    }
+}
+class CustomAddPlaceViewModelFactory @Inject constructor(
+    private val placesRepository: IPlacesRepository,
+    private val categoriesRepository: ICategoriesRepository,
+) :
+    ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return AddPlaceViewModel(
+            placesRepository,
+            categoriesRepository,
+        ) as T
     }
 }

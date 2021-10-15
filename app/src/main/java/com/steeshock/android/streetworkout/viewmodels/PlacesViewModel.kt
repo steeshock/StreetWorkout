@@ -2,6 +2,7 @@ package com.steeshock.android.streetworkout.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
@@ -81,5 +82,19 @@ class PlacesViewModel(
 
     fun setLoading(isVisible: Boolean) {
         this.isLoading.postValue(isVisible)
+    }
+}
+
+class CustomPlacesViewModelFactory @Inject constructor(
+    private val placesRepository: IPlacesRepository,
+    private val categoriesRepository: ICategoriesRepository,
+) : ViewModelProvider.Factory {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return PlacesViewModel(
+            placesRepository,
+            categoriesRepository
+        ) as T
     }
 }

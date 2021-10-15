@@ -22,7 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -30,7 +30,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.common.App
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.common.appComponent
@@ -39,15 +38,18 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
+import com.steeshock.android.streetworkout.viewmodels.CustomAddPlaceViewModelFactory
 import java.util.*
 import javax.inject.Inject
 
 class AddPlaceFragment : BaseFragment(), IAddPlace {
 
-    private lateinit var imagePicker: ImagePicker.Builder
-
     @Inject
-    lateinit var addPlaceViewModel: AddPlaceViewModel
+    lateinit var factory: CustomAddPlaceViewModelFactory
+
+    private val addPlaceViewModel: AddPlaceViewModel by viewModels { factory }
+
+    private lateinit var imagePicker: ImagePicker.Builder
 
     private var _fragmentAddPlaceBinding: FragmentAddPlaceBinding? = null
     private val fragmentAddPlaceBinding get() = _fragmentAddPlaceBinding!!

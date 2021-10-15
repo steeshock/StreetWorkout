@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,20 +13,23 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.common.App
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
+import com.steeshock.android.streetworkout.viewmodels.CustomMapViewModelFactory
 import com.steeshock.android.streetworkout.viewmodels.MapViewModel
+import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     @Inject
-    lateinit var mapViewModel: MapViewModel
+    lateinit var factory: CustomMapViewModelFactory
+
+    private val mapViewModel: MapViewModel by viewModels { factory }
 
     private var _fragmentMapBinding: FragmentMapBinding? = null
     private val fragmentMapBinding get() = _fragmentMapBinding!!

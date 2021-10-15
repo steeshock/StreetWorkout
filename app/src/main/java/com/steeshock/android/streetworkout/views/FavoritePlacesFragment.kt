@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,19 +12,21 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
-import com.steeshock.android.streetworkout.common.App
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
+import com.steeshock.android.streetworkout.viewmodels.CustomFavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var favoritePlacesViewModel: FavoritePlacesViewModel
+    lateinit var factory: CustomFavoritePlacesViewModelFactory
+
+    private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels { factory }
 
     private var _fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding? = null
     private val fragmentFavoritePlacesBinding get() = _fragmentFavoritePlacesBinding!!
