@@ -28,14 +28,3 @@ class FavoritePlacesViewModel(private val placesRepository: IPlacesRepository) :
         placesRepository.insertPlaceLocal(place)
     }
 }
-class CustomFavoritePlacesViewModelFactory @Inject constructor(
-    private val repository: IPlacesRepository
-    ) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return FavoritePlacesViewModel(
-            repository
-        ) as T
-    }
-}

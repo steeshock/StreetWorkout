@@ -45,7 +45,7 @@ class RxJavaPlacesRepository(
                 }
     }
 
-    override fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
+    override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
         placesAPI.getPlaces()
             .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

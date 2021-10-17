@@ -61,17 +61,3 @@ class AddPlaceViewModel(
         isSendingInProgress.set(false)
     }
 }
-class CustomAddPlaceViewModelFactory @Inject constructor(
-    private val placesRepository: IPlacesRepository,
-    private val categoriesRepository: ICategoriesRepository,
-) :
-    ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return AddPlaceViewModel(
-            placesRepository,
-            categoriesRepository,
-        ) as T
-    }
-}

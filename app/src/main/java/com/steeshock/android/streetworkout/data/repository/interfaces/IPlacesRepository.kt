@@ -13,7 +13,7 @@ interface IPlacesRepository {
     /**
      * Fetch places from remote source and return data to [onResponse] callback
      */
-    fun fetchPlaces(onResponse: APIResponse<List<Place>>)
+    suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>)
 
     /**
      * Upload image with file [uri] to Firebase Storage

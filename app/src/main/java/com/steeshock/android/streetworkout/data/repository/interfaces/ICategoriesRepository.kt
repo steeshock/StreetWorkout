@@ -11,7 +11,7 @@ interface ICategoriesRepository {
     /**
      * Fetch categories from remote source and return data to [onResponse] callback
      */
-    fun fetchCategories(onResponse: APIResponse<List<Category>>)
+    suspend fun fetchCategories(onResponse: APIResponse<List<Category>>)
 
     /**
      * Insert new place in local Places table

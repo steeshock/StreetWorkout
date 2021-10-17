@@ -84,17 +84,3 @@ class PlacesViewModel(
         this.isLoading.postValue(isVisible)
     }
 }
-
-class CustomPlacesViewModelFactory @Inject constructor(
-    private val placesRepository: IPlacesRepository,
-    private val categoriesRepository: ICategoriesRepository,
-) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return PlacesViewModel(
-            placesRepository,
-            categoriesRepository
-        ) as T
-    }
-}

@@ -10,21 +10,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
-import com.steeshock.android.streetworkout.common.App
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.factories.PlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
-import com.steeshock.android.streetworkout.viewmodels.CustomPlacesViewModelFactory
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: CustomPlacesViewModelFactory
+    lateinit var factory: PlacesViewModelFactory
 
     private val placesViewModel: PlacesViewModel by viewModels { factory }
 
