@@ -7,14 +7,3 @@ import javax.inject.Inject
 
 class ProfileViewModel(private val placesRepository: IPlacesRepository) : ViewModel() {
 }
-class CustomProfileViewModelFactory @Inject constructor(
-    private val placesRepository: IPlacesRepository
-    ) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return ProfileViewModel(
-            placesRepository
-        ) as T
-    }
-}

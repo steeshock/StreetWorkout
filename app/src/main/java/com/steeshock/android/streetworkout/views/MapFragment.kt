@@ -16,18 +16,17 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.factories.MapViewModelFactory
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
-import com.steeshock.android.streetworkout.viewmodels.CustomMapViewModelFactory
 import com.steeshock.android.streetworkout.viewmodels.MapViewModel
-import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     @Inject
-    lateinit var factory: CustomMapViewModelFactory
+    lateinit var factory: MapViewModelFactory
 
     private val mapViewModel: MapViewModel by viewModels { factory }
 

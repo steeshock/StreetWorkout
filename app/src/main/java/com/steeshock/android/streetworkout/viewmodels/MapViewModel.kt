@@ -11,14 +11,3 @@ class MapViewModel(placesRepository: IPlacesRepository) : ViewModel() {
 
     val allPlacesLive: LiveData<List<Place>> = placesRepository.allPlaces
 }
-class CustomMapViewModelFactory @Inject constructor(
-    private val placesRepository: IPlacesRepository,
-) : ViewModelProvider.Factory {
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MapViewModel(
-            placesRepository
-        ) as T
-    }
-}

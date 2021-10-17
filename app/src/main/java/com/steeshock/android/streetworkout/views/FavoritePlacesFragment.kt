@@ -15,16 +15,16 @@ import com.steeshock.android.streetworkout.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.factories.FavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
-import com.steeshock.android.streetworkout.viewmodels.CustomFavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: CustomFavoritePlacesViewModelFactory
+    lateinit var factory: FavoritePlacesViewModelFactory
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels { factory }
 
