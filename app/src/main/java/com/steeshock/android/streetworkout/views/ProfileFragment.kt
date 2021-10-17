@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.steeshock.android.streetworkout.common.App
+import androidx.fragment.app.viewModels
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.factories.ProfileViewModelFactory
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.android.streetworkout.viewmodels.ProfileViewModel
 import javax.inject.Inject
@@ -14,7 +15,9 @@ import javax.inject.Inject
 class ProfileFragment : BaseFragment() {
 
     @Inject
-    lateinit var profileViewModel: ProfileViewModel
+    lateinit var factory: ProfileViewModelFactory
+
+    private val profileViewModel: ProfileViewModel by viewModels { factory }
 
     private var _fragmentProfileBinding: FragmentProfileBinding? = null
     private val fragmentProfileBinding get() = _fragmentProfileBinding!!

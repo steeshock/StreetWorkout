@@ -3,26 +3,29 @@ package com.steeshock.android.streetworkout.views
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.adapters.PlaceAdapter
-import com.steeshock.android.streetworkout.common.App
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.factories.PlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
-class PlacesFragment : BaseFragment(){
+class PlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var placesViewModel: PlacesViewModel
+    lateinit var factory: PlacesViewModelFactory
+
+    private val placesViewModel: PlacesViewModel by viewModels { factory }
 
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter

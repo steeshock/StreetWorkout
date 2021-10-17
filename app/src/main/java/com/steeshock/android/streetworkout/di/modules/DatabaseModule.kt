@@ -18,7 +18,10 @@ import dagger.Provides
 class DatabaseModule(private val appContext: Context) {
 
     @Provides
-    fun providePlacesRepository(placesDao: PlacesDao, placesAPI: PlacesAPI): IPlacesRepository {
+    fun providePlacesRepository(
+        placesDao: PlacesDao,
+        placesAPI: PlacesAPI
+    ): IPlacesRepository {
 
         // Реализация для работы с Firebase Realtime Database
         return FirebasePlacesRepository.getInstance(placesDao)
@@ -28,7 +31,10 @@ class DatabaseModule(private val appContext: Context) {
     }
 
     @Provides
-    fun provideCategoriesRepository(categoriesDao: CategoriesDao, placesAPI: PlacesAPI): ICategoriesRepository {
+    fun provideCategoriesRepository(
+        categoriesDao: CategoriesDao,
+        placesAPI: PlacesAPI
+    ): ICategoriesRepository {
 
         // Реализация для работы с Firebase Realtime Database
         return FirebaseCategoriesRepository.getInstance(categoriesDao)
@@ -39,11 +45,15 @@ class DatabaseModule(private val appContext: Context) {
 
     @Provides
     fun providePlacesDao(): PlacesDao {
-        return PlacesDatabase.getInstance(appContext).getPlacesDao()
+        return PlacesDatabase
+            .getInstance(appContext)
+            .getPlacesDao()
     }
 
     @Provides
     fun provideCategoriesDao(): CategoriesDao {
-        return PlacesDatabase.getInstance(appContext).getCategoriesDao()
+        return PlacesDatabase
+            .getInstance(appContext)
+            .getCategoriesDao()
     }
 }

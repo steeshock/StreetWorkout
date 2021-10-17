@@ -2,6 +2,7 @@ package com.steeshock.android.streetworkout.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
