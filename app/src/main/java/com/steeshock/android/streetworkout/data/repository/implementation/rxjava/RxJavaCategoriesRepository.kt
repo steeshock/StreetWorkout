@@ -12,7 +12,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.ICategorie
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-class RxJavaCategoriesRepository(
+open class RxJavaCategoriesRepository(
     private val categoriesDao: CategoriesDao,
     private val placesAPI: PlacesAPI,
 ) : ICategoriesRepository {

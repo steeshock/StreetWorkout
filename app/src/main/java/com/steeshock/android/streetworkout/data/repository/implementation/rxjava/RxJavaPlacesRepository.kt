@@ -15,7 +15,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class RxJavaPlacesRepository(
+open class RxJavaPlacesRepository(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {

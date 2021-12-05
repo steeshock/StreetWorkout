@@ -14,7 +14,7 @@ class AddPlaceViewModelFactory @Inject constructor(
     ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return AddPlaceViewModel(
             placesRepository,
             categoriesRepository,
