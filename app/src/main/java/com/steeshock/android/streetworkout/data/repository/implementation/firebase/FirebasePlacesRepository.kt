@@ -36,7 +36,7 @@ class FirebasePlacesRepository(
                 }
     }
 
-    override fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
+    override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
         val database =
             Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
         val places: MutableList<Place> = mutableListOf()

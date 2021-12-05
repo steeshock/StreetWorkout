@@ -31,7 +31,7 @@ class FirebaseCategoriesRepository(
                 }
     }
 
-    override fun fetchCategories(onResponse: APIResponse<List<Category>>) {
+    override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
         val database =
             Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
         val categories: MutableList<Category> = mutableListOf()

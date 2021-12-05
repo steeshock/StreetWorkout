@@ -40,7 +40,7 @@ class RxJavaCategoriesRepository(
                 }
     }
 
-    override fun fetchCategories(onResponse: APIResponse<List<Category>>) {
+    override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
         placesAPI.getCategories()
             .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
