@@ -1,5 +1,6 @@
-package com.steeshock.android.streetworkout.adapters
+package com.steeshock.android.streetworkout.presentation.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
         holder.bind(items[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setCategories(categories: List<Category>) {
         this.items = categories
         notifyDataSetChanged()

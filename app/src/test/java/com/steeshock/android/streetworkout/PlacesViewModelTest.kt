@@ -4,7 +4,7 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.implementation.rxjava.RxJavaCategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.implementation.rxjava.RxJavaPlacesRepository
-import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.junit.Before

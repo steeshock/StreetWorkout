@@ -3,7 +3,7 @@ package com.steeshock.android.streetworkout.data.factories
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.android.streetworkout.viewmodels.ProfileViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import javax.inject.Inject
 
 class ProfileViewModelFactory @Inject constructor(

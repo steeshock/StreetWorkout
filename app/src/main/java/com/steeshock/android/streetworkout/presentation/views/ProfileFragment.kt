@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.factories.ProfileViewModelFactory
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
-import com.steeshock.android.streetworkout.viewmodels.ProfileViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {

@@ -1,5 +1,6 @@
-package com.steeshock.android.streetworkout.adapters
+package com.steeshock.android.streetworkout.presentation.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         holder.bind(items[position])
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     internal fun setPlaces(places: List<Place>) {
         items = places
         allItems = places.toList()
@@ -99,11 +101,12 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filterItemsByCategory(filterList: MutableList<Category>) {
 
         if (allItems.isNotEmpty()) {
 
-            items = if (filterList.isNullOrEmpty())
+            items = if (filterList.isEmpty())
                 allItems
             else {
                 allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
@@ -117,12 +120,13 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filterItemsBySearchString(searchString: String?) {
 
         items = if (searchString.isNullOrEmpty())
             filteredItems
         else {
-            filteredItems.filter { it.title.toLowerCase(Locale.ROOT).contains(searchString)}
+            filteredItems.filter { it.title.lowercase(Locale.ROOT).contains(searchString)}
         }
 
         notifyDataSetChanged()

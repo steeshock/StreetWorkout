@@ -3,7 +3,7 @@ package com.steeshock.android.streetworkout.data.factories
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.android.streetworkout.viewmodels.MapViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.MapViewModel
 import javax.inject.Inject
 
 class MapViewModelFactory @Inject constructor(

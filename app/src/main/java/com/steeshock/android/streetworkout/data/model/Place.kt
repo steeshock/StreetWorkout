@@ -34,9 +34,9 @@ data class Place(
     var categories: ArrayList<Int>? = null,
 
     @ColumnInfo(name = "images")
-    var images: ArrayList<String>? = null
+    var images: ArrayList<String>? = null,
 
-) {
+    ) {
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean? = null
 
@@ -53,8 +53,8 @@ data class Place(
     }
 
     fun changeFavoriteState() {
-        if (this.isFavorite == null){
-            this.isFavorite = true;
+        if (this.isFavorite == null) {
+            this.isFavorite = true
         } else {
             this.isFavorite = !this.isFavorite!!
         }

@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.viewmodels
+package com.steeshock.android.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +23,7 @@ class PlacesViewModel(
     val placesLiveData = placesRepository.allPlaces
     val categoriesLiveData = categoriesRepository.allCategories
 
-    fun fetchPlacesFromFirebase() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchPlaces() = viewModelScope.launch(Dispatchers.IO) {
 
         setLoading(true)
 
@@ -40,7 +40,7 @@ class PlacesViewModel(
         })
     }
 
-    fun fetchCategoriesFromFirebase() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchCategories() = viewModelScope.launch(Dispatchers.IO) {
 
         setLoading(true)
 

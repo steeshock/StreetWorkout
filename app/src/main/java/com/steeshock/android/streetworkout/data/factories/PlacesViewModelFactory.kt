@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class PlacesViewModelFactory @Inject constructor(
