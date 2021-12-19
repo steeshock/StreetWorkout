@@ -9,7 +9,7 @@ import com.steeshock.android.streetworkout.data.database.CategoriesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 
-class FirebaseCategoriesRepository(
+open class FirebaseCategoriesRepository(
     private val categoriesDao: CategoriesDao
 ) : ICategoriesRepository {
 

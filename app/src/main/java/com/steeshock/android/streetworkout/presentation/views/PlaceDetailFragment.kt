@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.LayoutInflater

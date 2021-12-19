@@ -1,10 +1,9 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,7 +19,7 @@ import com.steeshock.android.streetworkout.data.factories.MapViewModelFactory
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
-import com.steeshock.android.streetworkout.viewmodels.MapViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.MapViewModel
 import javax.inject.Inject
 
 class MapFragment : BaseFragment(), OnMapReadyCallback {
@@ -65,11 +64,11 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
         mMap = googleMap
 
-        mapViewModel.allPlacesLive.observe(viewLifecycleOwner, Observer { places ->
+        mapViewModel.allPlacesLive.observe(viewLifecycleOwner) { places ->
             places?.let { showAllPlaces(it) }
 
             moveToPointLocation()
-        })
+        }
     }
 
     private fun moveToPointLocation() {
@@ -88,7 +87,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 val selectedMarker = markers.find { i -> i.place_uuid == placeUUID }
                 selectedMarker?.mapMarker?.showInfoWindow()
 
-                movedCameraToInitialPoint = true;
+                movedCameraToInitialPoint = true
             }
         }
     }

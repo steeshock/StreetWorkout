@@ -13,7 +13,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRep
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class FirebasePlacesRepository(
+open class FirebasePlacesRepository(
     private val placesDao: PlacesDao
 ) : IPlacesRepository {
 

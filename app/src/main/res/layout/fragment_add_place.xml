@@ -11,11 +11,11 @@
 
         <variable
             name="viewmodel"
-            type="com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel" />
+            type="com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel" />
 
         <variable
             name="fragmentBehaviour"
-            type="com.steeshock.android.streetworkout.views.IAddPlace" />
+            type="com.steeshock.android.streetworkout.presentation.views.IAddPlace" />
     </data>
 
     <ScrollView

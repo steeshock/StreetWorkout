@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -23,7 +23,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -38,7 +37,7 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
-import com.steeshock.android.streetworkout.viewmodels.AddPlaceViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import java.util.*
 import javax.inject.Inject
 
@@ -99,19 +98,19 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner, Observer { categories ->
+        addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner) { categories ->
             categories?.let { allCategories = it }
 
             if (addPlaceViewModel.checkedCategoriesArray == null) {
                 addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
             }
-        })
+        }
 
-        addPlaceViewModel.loadCompleted.observe(viewLifecycleOwner, Observer {
+        addPlaceViewModel.loadCompleted.observe(viewLifecycleOwner) {
             if (it) {
                 resetFields()
             }
-        })
+        }
     }
 
     //region Categories
@@ -213,21 +212,21 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
 
     private fun validatePlace(): Boolean {
 
-        var validationResult = true;
+        var validationResult = true
 
         if (fragmentAddPlaceBinding.placeTitle.text.isNullOrEmpty()) {
             fragmentAddPlaceBinding.placeTitleInput.error =
                 resources.getString(R.string.required_field_empty_error)
-            validationResult = false;
+            validationResult = false
         }
 
         if (fragmentAddPlaceBinding.placeAddress.text.isNullOrEmpty()) {
             fragmentAddPlaceBinding.placeAddressInput.error =
                 resources.getString(R.string.required_field_empty_error)
-            validationResult = false;
+            validationResult = false
         }
 
-        return validationResult;
+        return validationResult
     }
 
     private fun createNewPlace(placeUUID: String): Place {
@@ -428,7 +427,7 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     /**
      * Receiver for data sent from FetchAddressIntentService.
      */
-    private inner class AddressResultReceiver internal constructor(
+    private inner class AddressResultReceiver(
         handler: Handler
     ) : ResultReceiver(handler) {
 

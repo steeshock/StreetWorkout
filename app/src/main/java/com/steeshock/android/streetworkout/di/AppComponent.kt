@@ -2,7 +2,7 @@ package com.steeshock.android.streetworkout.di
 
 import com.steeshock.android.streetworkout.di.modules.DatabaseModule
 import com.steeshock.android.streetworkout.di.modules.NetworkModule
-import com.steeshock.android.streetworkout.views.*
+import com.steeshock.android.streetworkout.presentation.views.*
 import dagger.Component
 
 @Component(modules = [

@@ -6,7 +6,7 @@
 
         <variable
             name="viewmodel"
-            type="com.steeshock.android.streetworkout.viewmodels.PlacesViewModel" />
+            type="com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,14 +1,12 @@
-package com.steeshock.android.streetworkout.viewmodels
+package com.steeshock.android.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class FavoritePlacesViewModel(private val placesRepository: IPlacesRepository) : ViewModel() {
 

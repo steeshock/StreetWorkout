@@ -4,5 +4,5 @@ import com.google.android.gms.maps.model.Marker
 
 data class CustomMarker(
     var place_uuid: String,
-    var mapMarker: Marker? = null
+    var mapMarker: Marker? = null,
 )

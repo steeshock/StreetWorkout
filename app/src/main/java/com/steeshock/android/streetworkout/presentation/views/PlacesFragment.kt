@@ -1,15 +1,14 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.adapters.CategoryAdapter
-import com.steeshock.android.streetworkout.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
@@ -17,7 +16,7 @@ import com.steeshock.android.streetworkout.data.factories.PlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
-import com.steeshock.android.streetworkout.viewmodels.PlacesViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -72,7 +71,9 @@ class PlacesFragment : BaseFragment() {
                 override fun onPlaceLocationClicked(item: Place) {
                     val placeUUID = item.place_uuid
 
-                    val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
+                    val action =
+                        PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(
+                            placeUUID)
                     view.findNavController().navigate(action)
                 }
 
@@ -130,41 +131,41 @@ class PlacesFragment : BaseFragment() {
     private fun initData() {
         with(placesViewModel) {
 
-            placesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            placesLiveData.observe(viewLifecycleOwner) {
                 val sortedData = sortDataByCreatedDate(it)
                 placesAdapter.setPlaces(sortedData)
                 filterData()
-            })
+            }
 
-            categoriesLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            categoriesLiveData.observe(viewLifecycleOwner) {
                 categoriesAdapter.setCategories(it)
                 updateFilterList()
                 filterData()
-            })
+            }
 
-            isLoading.observe(viewLifecycleOwner, Observer {
+            isLoading.observe(viewLifecycleOwner) {
                 fragmentPlacesBinding.placesRefresher.isRefreshing = it
                 fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it
                 fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it
-            })
+            }
 
             fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
-                fetchDataFromFirebase(placesViewModel)
+                fetchData(placesViewModel)
             }
 
             fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
-                fetchDataFromFirebase(placesViewModel)
+                fetchData(placesViewModel)
             }
 
             fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
-                fetchDataFromFirebase(placesViewModel)
+                fetchData(placesViewModel)
             }
         }
     }
 
-    private fun fetchDataFromFirebase(placesViewModel: PlacesViewModel) {
-        placesViewModel.fetchPlacesFromFirebase()
-        placesViewModel.fetchCategoriesFromFirebase()
+    private fun fetchData(placesViewModel: PlacesViewModel) {
+        placesViewModel.fetchPlaces()
+        placesViewModel.fetchCategories()
     }
 
     private fun addPlaceToFavorites(place: Place) {

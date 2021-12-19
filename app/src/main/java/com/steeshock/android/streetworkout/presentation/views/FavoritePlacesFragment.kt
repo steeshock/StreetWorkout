@@ -1,24 +1,23 @@
-package com.steeshock.android.streetworkout.views
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.factories.FavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
-import com.steeshock.android.streetworkout.viewmodels.FavoritePlacesViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
@@ -74,7 +73,9 @@ class FavoritePlacesFragment : BaseFragment() {
                 override fun onPlaceLocationClicked(item: Place) {
                     val placeUUID = item.place_uuid
 
-                    val action = FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(placeUUID)
+                    val action =
+                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
+                            placeUUID)
                     view.findNavController().navigate(action)
                 }
 
@@ -103,14 +104,14 @@ class FavoritePlacesFragment : BaseFragment() {
                 }
             })
 
-        favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner, Observer {
+        favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner) {
             val sortedData = sortDataByCreatedDate(it)
             placesAdapter.setPlaces(sortedData)
 
-            if (!lastSearchString.isNullOrEmpty()){
+            if (!lastSearchString.isNullOrEmpty()) {
                 filterDataBySearchString(lastSearchString)
             }
-        })
+        }
 
         fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
         fragmentFavoritePlacesBinding.placesRecycler.layoutManager =

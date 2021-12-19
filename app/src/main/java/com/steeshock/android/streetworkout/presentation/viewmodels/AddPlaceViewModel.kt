@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.viewmodels
+package com.steeshock.android.streetworkout.presentation.viewmodels
 
 import android.net.Uri
 import androidx.databinding.ObservableBoolean
@@ -10,7 +10,6 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRep
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class AddPlaceViewModel(
     private val placesRepository: IPlacesRepository,
@@ -51,11 +50,13 @@ class AddPlaceViewModel(
 
         sendingPlace?.images = downloadedImagesLinks
 
-        sendingPlace?.let { placesRepository.insertPlaceLocal(it) }
-        sendingPlace?.let { placesRepository.insertPlaceRemote(it) }
+        sendingPlace?.let {
+            placesRepository.insertPlaceLocal(it)
+            placesRepository.insertPlaceRemote(it)
+        }
 
         sendingProgress.postValue(sendingProgress.value?.plus(1))
-        delay(500)
+        delay(300)
 
         loadCompleted.postValue(true)
         isSendingInProgress.set(false)
