@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 database.json
+.idea/deploymentTargetDropDown.xml

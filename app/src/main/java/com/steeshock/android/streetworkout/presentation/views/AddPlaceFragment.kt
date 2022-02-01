@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -32,19 +33,18 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.AddPlaceViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
-import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel
+import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import java.util.*
 import javax.inject.Inject
 
 class AddPlaceFragment : BaseFragment(), IAddPlace {
 
     @Inject
-    lateinit var factory: AddPlaceViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
     private val addPlaceViewModel: AddPlaceViewModel by viewModels { factory }
 
@@ -56,7 +56,7 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     private var allCategories = emptyList<Category>()
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.providePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(

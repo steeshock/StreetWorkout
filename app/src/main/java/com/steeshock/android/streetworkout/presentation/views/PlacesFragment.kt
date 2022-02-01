@@ -4,25 +4,25 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
-import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.PlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
+import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: PlacesViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
     private val placesViewModel: PlacesViewModel by viewModels { factory }
 
@@ -36,7 +36,7 @@ class PlacesFragment : BaseFragment() {
     private var lastSearchString: String? = null
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.providePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(

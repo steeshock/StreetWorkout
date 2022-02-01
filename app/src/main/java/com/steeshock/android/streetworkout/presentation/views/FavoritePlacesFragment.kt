@@ -5,25 +5,25 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.FavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: FavoritePlacesViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
     private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels { factory }
 
@@ -35,7 +35,7 @@ class FavoritePlacesFragment : BaseFragment() {
     private lateinit var placesAdapter: PlaceAdapter
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.provideFavoritePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(

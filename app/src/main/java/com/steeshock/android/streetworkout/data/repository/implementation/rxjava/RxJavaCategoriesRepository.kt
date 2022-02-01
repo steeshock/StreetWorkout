@@ -1,9 +1,6 @@
 package com.steeshock.android.streetworkout.data.repository.implementation.rxjava
 
 import androidx.lifecycle.LiveData
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.CategoriesDao

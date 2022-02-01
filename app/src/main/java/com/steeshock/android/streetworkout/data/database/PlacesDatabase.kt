@@ -5,10 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.converters.ArrayIntConverter
 import com.steeshock.android.streetworkout.data.converters.ArrayStringConverter
+import com.steeshock.android.streetworkout.data.model.Category
+import com.steeshock.android.streetworkout.data.model.Place
 
 
 @Database(

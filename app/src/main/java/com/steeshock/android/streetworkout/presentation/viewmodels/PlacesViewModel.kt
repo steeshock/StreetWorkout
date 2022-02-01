@@ -2,7 +2,6 @@ package com.steeshock.android.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
@@ -13,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PlacesViewModel(
+class PlacesViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     private val categoriesRepository: ICategoriesRepository,
 ) : ViewModel() {

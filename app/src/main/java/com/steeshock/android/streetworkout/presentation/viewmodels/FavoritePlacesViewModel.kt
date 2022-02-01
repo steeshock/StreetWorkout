@@ -7,8 +7,11 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FavoritePlacesViewModel(private val placesRepository: IPlacesRepository) : ViewModel() {
+class FavoritePlacesViewModel @Inject constructor(
+    private val placesRepository: IPlacesRepository,
+) : ViewModel() {
 
     val favoritePlacesLive: LiveData<List<Place>> = placesRepository.allFavoritePlaces
 

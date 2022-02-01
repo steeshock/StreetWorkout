@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,7 +16,6 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.MapViewModelFactory
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentMapBinding
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     @Inject
-    lateinit var factory: MapViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
     private val mapViewModel: MapViewModel by viewModels { factory }
 
@@ -38,7 +38,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     private var movedCameraToInitialPoint = false
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.provideMapComponent()?.inject(this)
     }
 
     override fun onCreateView(
