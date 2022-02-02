@@ -46,15 +46,17 @@
                     android:id="@+id/placesRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/mainBackGroundColor" />
+                    android:background="@color/mainBackGroundColor"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/emptyListViewRefresher"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
                 <include
                     android:id="@+id/emptyListView"
                     layout="@layout/v_empty_state"
@@ -64,9 +66,10 @@
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/emptyResultsViewRefresher"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
                 <include
                     android:id="@+id/emptyResultsView"
                     layout="@layout/v_empty_state"

@@ -61,17 +61,17 @@ class FavoritePlacesFragment : BaseFragment() {
         placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: Place) {
+                override fun onPlaceClicked(place: Place) {
                     showBottomSheet()
                 }
 
-                override fun onLikeClicked(item: Place) {
-                    favoritePlacesViewModel.removePlaceFromFavorites(item)
-                    showRollbackSnack(item)
+                override fun onLikeClicked(place: Place) {
+                    favoritePlacesViewModel.removePlaceFromFavorites(place)
+                    showRollbackSnack(place)
                 }
 
-                override fun onPlaceLocationClicked(item: Place) {
-                    val placeUUID = item.place_uuid
+                override fun onPlaceLocationClicked(place: Place) {
+                    val placeUUID = place.place_uuid
 
                     val action =
                         FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
@@ -109,7 +109,7 @@ class FavoritePlacesFragment : BaseFragment() {
             placesAdapter.setPlaces(sortedData)
 
             if (!lastSearchString.isNullOrEmpty()) {
-                filterDataBySearchString(lastSearchString)
+                //filterDataBySearchString(lastSearchString)
             }
         }
 
@@ -119,13 +119,6 @@ class FavoritePlacesFragment : BaseFragment() {
 
         setupEmptyViews()
     }
-
-    // region Filtering
-    private fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(lastSearchString)
-    }
-    // endregion
 
     // region Sorting
     private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
@@ -151,7 +144,7 @@ class FavoritePlacesFragment : BaseFragment() {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                filterDataBySearchString(s)
+                //filterDataBySearchString(s)
                 return false
             }
         })

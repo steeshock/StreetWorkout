@@ -1,15 +1,15 @@
 package com.steeshock.android.streetworkout.presentation.viewmodels
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class PlacesViewModel @Inject constructor(
@@ -17,60 +17,83 @@ class PlacesViewModel @Inject constructor(
     private val categoriesRepository: ICategoriesRepository,
 ) : ViewModel() {
 
-    val isLoading = MutableLiveData(false)
+    private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
+    val viewState: LiveData<PlacesViewState>
+        get() = mutableViewState
 
-    val placesLiveData = placesRepository.allPlaces
-    val categoriesLiveData = categoriesRepository.allCategories
+    val observablePlaces = MediatorLiveData<List<Place>>()
+    val observableCategories = categoriesRepository.allCategories
 
-    fun fetchPlaces() = viewModelScope.launch(Dispatchers.IO) {
+    private val allPlaces = placesRepository.allPlaces
+    private val filteredPlaces: MutableLiveData<List<Place>> = MutableLiveData()
+    private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
-        setLoading(true)
+    private var lastSearchString: String? = null
 
-        placesRepository.fetchPlaces(object :
-            APIResponse<List<Place>> {
-            override fun onSuccess(result: List<Place>?) {
-                result?.let { insertPlaces(it) }
-            }
+    init {
+        observablePlaces.addSource(allPlaces) {
+            filteredPlaces.value = it
+            filterData(filterList)
+        }
+        observablePlaces.addSource(observableCategories) {
+            filterList = it.filter { category -> category.isSelected == true }.toMutableList()
+            filterData(filterList)
+        }
+        observablePlaces.addSource(actualPlaces) {
+            observablePlaces.value = it.sortedBy { i -> i.created }
+        }
+    }
+    private var filterList: MutableList<Category> = mutableListOf()
 
-            override fun onError(t: Throwable) {
-                setLoading(false)
-                t.printStackTrace()
-            }
-        })
+    fun fetchPlaces() {
+        mutableViewState.setNewState { copy(isLoading = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            placesRepository.fetchPlaces(object :
+                APIResponse<List<Place>> {
+                override fun onSuccess(result: List<Place>?) {
+                    mutableViewState.setNewState { copy(isLoading = false) }
+                    result?.let { insertPlaces(it) }
+                }
+
+                override fun onError(t: Throwable) {
+                    mutableViewState.setNewState { copy(isLoading = false) }
+                    t.printStackTrace()
+                }
+            })
+        }
     }
 
-    fun fetchCategories() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchCategories() {
+        mutableViewState.setNewState { copy(isLoading = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            categoriesRepository.fetchCategories(object :
+                APIResponse<List<Category>> {
+                override fun onSuccess(result: List<Category>?) {
+                    mutableViewState.setNewState {copy(isLoading = false) }
+                    result?.let { insertCategories(it) }
+                }
 
-        setLoading(true)
-
-        categoriesRepository.fetchCategories(object :
-            APIResponse<List<Category>> {
-            override fun onSuccess(result: List<Category>?) {
-                result?.let { insertCategories(it) }
-            }
-
-            override fun onError(t: Throwable) {
-                setLoading(false)
-                t.printStackTrace()
-            }
-        })
+                override fun onError(t: Throwable) {
+                    mutableViewState.setNewState { copy(isLoading = false) }
+                    t.printStackTrace()
+                }
+            })
+        }
     }
 
     fun insertPlaces(places: List<Place>) = viewModelScope.launch(Dispatchers.IO) {
         placesRepository.insertAllPlaces(places)
-        setLoading(false)
     }
 
     fun insertCategories(categories: List<Category>) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.insertAllCategories(categories)
-        setLoading(false)
     }
 
     fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
     }
 
-    fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+    private fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         placesRepository.updatePlace(place)
     }
 
@@ -79,7 +102,56 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.clearCategoriesTable()
     }
 
-    fun setLoading(isVisible: Boolean) {
-        this.isLoading.postValue(isVisible)
+    private fun MutableLiveData<PlacesViewState>.setNewState(
+        block: PlacesViewState.() -> PlacesViewState,
+    ) {
+        val currentState = value ?: PlacesViewState()
+        val newState = currentState.run { block() }
+        value = newState
+    }
+
+    fun onLikeClicked(place: Place) {
+        place.changeFavoriteState()
+        updatePlace(place)
+    }
+
+    fun onFilterByCategory(category: Category) {
+        category.changeSelectedState()
+        if (filterList.find { it.category_name == category.category_name } != null) {
+            filterList.remove(category)
+        } else {
+            filterList.add(category)
+        }
+        filterData(filterList)
+        updateCategory(category)
+    }
+
+    private fun filterData(filterList: MutableList<Category>) {
+        allPlaces.value?.let {
+            actualPlaces.value = if (filterList.isEmpty())
+                it
+            else {
+                it.filter { place -> place.categories!!.containsAll(filterList.map { i -> i.category_id })}
+            }
+
+            filteredPlaces.value = actualPlaces.value
+        }
+
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(lastSearchString)
+        }
+    }
+
+    fun filterDataBySearchString(searchString: String?) {
+        lastSearchString = searchString
+        filterItemsBySearchString(lastSearchString)
+    }
+
+    private fun filterItemsBySearchString(lastSearchString: String?) {
+        actualPlaces.value = if (lastSearchString.isNullOrEmpty())
+            filteredPlaces.value
+        else {
+            filteredPlaces.value?.filter { it.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+        }
     }
 }

@@ -6,12 +6,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
@@ -24,16 +24,13 @@ class PlacesFragment : BaseFragment() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val placesViewModel: PlacesViewModel by viewModels { factory }
+    private val viewModel: PlacesViewModel by viewModels { factory }
 
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter
 
     private var _fragmentPlacesBinding: FragmentPlacesBinding? = null
     private val fragmentPlacesBinding get() = _fragmentPlacesBinding!!
-
-    private var filterList: MutableList<Category> = mutableListOf()
-    private var lastSearchString: String? = null
 
     override fun injectComponent() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
@@ -44,13 +41,8 @@ class PlacesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
-
-        fragmentPlacesBinding.lifecycleOwner = this
-
         (container?.context as MainActivity).setSupportActionBar(_fragmentPlacesBinding?.toolbar)
-
         return fragmentPlacesBinding.root
     }
 
@@ -60,21 +52,16 @@ class PlacesFragment : BaseFragment() {
         placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: Place) {
+                override fun onPlaceClicked(place: Place) {
                     showBottomSheet()
                 }
 
-                override fun onLikeClicked(item: Place) {
-                    addPlaceToFavorites(item)
+                override fun onLikeClicked(place: Place) {
+                    viewModel.onLikeClicked(place)
                 }
 
-                override fun onPlaceLocationClicked(item: Place) {
-                    val placeUUID = item.place_uuid
-
-                    val action =
-                        PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(
-                            placeUUID)
-                    view.findNavController().navigate(action)
+                override fun onPlaceLocationClicked(place: Place) {
+                    navigateToMap(place)
                 }
 
                 override fun setEmptyListState(isEmpty: Boolean) {
@@ -102,13 +89,9 @@ class PlacesFragment : BaseFragment() {
                 }
             })
 
-        categoriesAdapter =
-            CategoryAdapter(object :
-                CategoryAdapter.Callback {
-                override fun onClicked(item: Category) {
-                    filterByCategory(item)
-                }
-            })
+        categoriesAdapter = CategoryAdapter {
+            viewModel.onFilterByCategory(it)
+        }
 
         fragmentPlacesBinding.fab.setOnClickListener {
             showAddPlaceFragment(it)
@@ -116,8 +99,6 @@ class PlacesFragment : BaseFragment() {
 
         fragmentPlacesBinding.placesRecycler.setHasFixedSize(true)
         fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
-        fragmentPlacesBinding.placesRecycler.layoutManager =
-            LinearLayoutManager(fragmentPlacesBinding.root.context)
 
         fragmentPlacesBinding.categoriesRecycler.adapter = categoriesAdapter
         fragmentPlacesBinding.categoriesRecycler.layoutManager =
@@ -128,37 +109,39 @@ class PlacesFragment : BaseFragment() {
         initData()
     }
 
+    private fun navigateToMap(place: Place) {
+        val placeUUID = place.place_uuid
+        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
+        this.findNavController().navigate(action)
+    }
+
     private fun initData() {
-        with(placesViewModel) {
+        with(viewModel) {
 
-            placesLiveData.observe(viewLifecycleOwner) {
-                val sortedData = sortDataByCreatedDate(it)
-                placesAdapter.setPlaces(sortedData)
-                filterData()
+            observablePlaces.observe(viewLifecycleOwner) {
+                placesAdapter.setPlaces(it)
             }
 
-            categoriesLiveData.observe(viewLifecycleOwner) {
+            observableCategories.observe(viewLifecycleOwner) {
                 categoriesAdapter.setCategories(it)
-                updateFilterList()
-                filterData()
             }
 
-            isLoading.observe(viewLifecycleOwner) {
-                fragmentPlacesBinding.placesRefresher.isRefreshing = it
-                fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it
-                fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it
+            viewState.observe(viewLifecycleOwner) {
+                fragmentPlacesBinding.placesRefresher.isRefreshing = it.isLoading
+                fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it.isLoading
+                fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it.isLoading
             }
 
             fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+                fetchData(viewModel)
             }
 
             fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+                fetchData(viewModel)
             }
 
             fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+                fetchData(viewModel)
             }
         }
     }
@@ -167,52 +150,6 @@ class PlacesFragment : BaseFragment() {
         placesViewModel.fetchPlaces()
         placesViewModel.fetchCategories()
     }
-
-    private fun addPlaceToFavorites(place: Place) {
-        place.changeFavoriteState()
-        placesViewModel.updatePlace(place)
-    }
-
-    // region Filtering
-
-    private fun filterByCategory(category: Category) {
-
-        category.changeSelectedState()
-
-        if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
-
-        filterData()
-
-        placesViewModel.updateCategory(category)
-    }
-
-    private fun updateFilterList() {
-        filterList = categoriesAdapter.getSelectedCategories()
-    }
-
-    private fun filterData() {
-        
-        placesAdapter.filterItemsByCategory(filterList)
-
-        if (!lastSearchString.isNullOrEmpty()){
-            filterDataBySearchString(lastSearchString)
-        }
-    }
-
-    private fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(lastSearchString)
-    }
-
-    // endregion
-
-    // region Sorting
-
-    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
-        return list.sortedBy { i -> i.created }
-    }
-
-    // endregion
 
     // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -232,7 +169,7 @@ class PlacesFragment : BaseFragment() {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                filterDataBySearchString(s)
+                viewModel.filterDataBySearchString(s)
                 return false
             }
         })
@@ -246,7 +183,7 @@ class PlacesFragment : BaseFragment() {
                 true
             }
             R.id.action_map -> {
-                placesViewModel.clearDatabase()
+                viewModel.clearDatabase()
                 true
             }
             else -> super.onOptionsItemSelected(item)
