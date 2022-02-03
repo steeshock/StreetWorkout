@@ -61,9 +61,7 @@ class FavoritePlacesFragment : BaseFragment() {
         placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(place: Place) {
-                    showBottomSheet()
-                }
+                override fun onPlaceClicked(place: Place) {}
 
                 override fun onLikeClicked(place: Place) {
                     favoritePlacesViewModel.removePlaceFromFavorites(place)
@@ -78,30 +76,29 @@ class FavoritePlacesFragment : BaseFragment() {
                             placeUUID)
                     view.findNavController().navigate(action)
                 }
-
-                override fun setEmptyListState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
-                    }
-                }
-
-                override fun setEmptyResultsState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
-                    }
-                }
+//                override fun setEmptyListState(isEmpty: Boolean) {
+//                    if (isEmpty) {
+//                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
+//                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
+//                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.VISIBLE
+//                    }
+//                    else {
+//                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
+//                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
+//                    }
+//                }
+//
+//                override fun setEmptyResultsState(isEmpty: Boolean) {
+//                    if (isEmpty) {
+//                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
+//                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
+//                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.VISIBLE
+//                    }
+//                    else {
+//                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
+//                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
+//                    }
+//                }
             })
 
         favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner) {
@@ -182,11 +179,6 @@ class FavoritePlacesFragment : BaseFragment() {
         rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
 
         rollbackSnack?.show()
-    }
-
-    private fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30)
-            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
     }
 
     private fun setupEmptyViews() {

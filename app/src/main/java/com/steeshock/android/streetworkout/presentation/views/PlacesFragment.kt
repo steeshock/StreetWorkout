@@ -16,7 +16,10 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_PLACES
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_SEARCH_RESULTS
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -49,12 +52,8 @@ class PlacesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        placesAdapter =
-            PlaceAdapter(object :
-                PlaceAdapter.Callback {
-                override fun onPlaceClicked(place: Place) {
-                    showBottomSheet()
-                }
+        placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
+                override fun onPlaceClicked(place: Place) {}
 
                 override fun onLikeClicked(place: Place) {
                     viewModel.onLikeClicked(place)
@@ -62,30 +61,6 @@ class PlacesFragment : BaseFragment() {
 
                 override fun onPlaceLocationClicked(place: Place) {
                     navigateToMap(place)
-                }
-
-                override fun setEmptyListState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                    }
-                }
-
-                override fun setEmptyResultsState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
-                    }
                 }
             })
 
@@ -105,7 +80,6 @@ class PlacesFragment : BaseFragment() {
             LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         setupEmptyViews()
-
         initData()
     }
 
@@ -127,9 +101,7 @@ class PlacesFragment : BaseFragment() {
             }
 
             viewState.observe(viewLifecycleOwner) {
-                fragmentPlacesBinding.placesRefresher.isRefreshing = it.isLoading
-                fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it.isLoading
-                fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it.isLoading
+                renderViewState(it)
             }
 
             fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
@@ -142,6 +114,30 @@ class PlacesFragment : BaseFragment() {
 
             fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
                 fetchData(viewModel)
+            }
+        }
+    }
+
+    private fun renderViewState(viewState: PlacesViewState) {
+        fragmentPlacesBinding.placesRefresher.isRefreshing = viewState.isLoading
+        fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = viewState.isLoading
+        fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = viewState.isLoading
+
+        when (viewState.emptyState) {
+            EMPTY_PLACES -> {
+                fragmentPlacesBinding.placesRefresher.visibility = View.GONE
+                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
+                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.VISIBLE
+            }
+            EMPTY_SEARCH_RESULTS -> {
+                fragmentPlacesBinding.placesRefresher.visibility = View.GONE
+                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
+                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.VISIBLE
+            }
+            else -> {
+                fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
+                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
+                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
             }
         }
     }
@@ -191,11 +187,6 @@ class PlacesFragment : BaseFragment() {
     }
     // endregion
 
-    private fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30)
-            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
-    }
-
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
     }
@@ -210,7 +201,6 @@ class PlacesFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _fragmentPlacesBinding = null
     }
 }

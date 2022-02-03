@@ -6,7 +6,11 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_PLACES
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_SEARCH_RESULTS
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.NOT_EMPTY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -89,7 +93,7 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.insertAllCategories(categories)
     }
 
-    fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
+    private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
     }
 
@@ -137,6 +141,12 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces.value = actualPlaces.value
         }
 
+        mutableViewState.setNewState {
+            copy(
+                emptyState = if (actualPlaces.value.isNullOrEmpty()) EMPTY_PLACES else NOT_EMPTY
+            )
+        }
+
         if (!lastSearchString.isNullOrEmpty()) {
             filterDataBySearchString(lastSearchString)
         }
@@ -152,6 +162,12 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces.value
         else {
             filteredPlaces.value?.filter { it.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+        }
+
+        mutableViewState.setNewState {
+            copy(
+                emptyState = if (actualPlaces.value.isNullOrEmpty()) EMPTY_SEARCH_RESULTS else NOT_EMPTY
+            )
         }
     }
 }

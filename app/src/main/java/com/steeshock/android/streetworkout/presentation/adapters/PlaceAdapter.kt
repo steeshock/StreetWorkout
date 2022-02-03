@@ -8,7 +8,6 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 import java.util.*
@@ -30,7 +29,6 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
     internal fun setPlaces(places: List<Place>) {
         this.items = places
         notifyDataSetChanged()
-        setupEmptyListState()
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -95,20 +93,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         })
     }
 
-    private fun setupEmptyListState() {
-        callback.setEmptyListState(items.isEmpty())
-    }
-
-    private fun setupEmptyFilterResultsState() {
-        callback.setEmptyResultsState(items.isEmpty())
-    }
-
     interface Callback {
         fun onPlaceClicked(place: Place)
         fun onLikeClicked(place: Place)
         fun onPlaceLocationClicked(place: Place)
-
-        fun setEmptyListState(isEmpty: Boolean)
-        fun setEmptyResultsState(isEmpty: Boolean)
     }
 }
