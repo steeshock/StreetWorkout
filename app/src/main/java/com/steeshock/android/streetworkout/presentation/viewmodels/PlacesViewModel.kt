@@ -6,11 +6,8 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_PLACES
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_SEARCH_RESULTS
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.NOT_EMPTY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -128,14 +125,6 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.clearCategoriesTable()
     }
 
-    private fun MutableLiveData<PlacesViewState>.setNewState(
-        block: PlacesViewState.() -> PlacesViewState,
-    ) {
-        val currentState = value ?: PlacesViewState()
-        val newState = currentState.run { block() }
-        value = newState
-    }
-
     fun onLikeClicked(place: Place) {
         place.changeFavoriteState()
         updatePlace(place)
@@ -154,10 +143,10 @@ class PlacesViewModel @Inject constructor(
 
     private fun filterData(filterList: MutableList<Category>) {
         allPlaces.value?.let {
-            actualPlaces.value = if (filterList.isEmpty())
+            actualPlaces.value = if (filterList.isEmpty()) {
                 it
-            else {
-                it.filter { place -> place.categories!!.containsAll(filterList.map { i -> i.category_id })}
+            } else {
+                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true}
             }
 
             filteredPlaces.value = actualPlaces.value
@@ -179,5 +168,13 @@ class PlacesViewModel @Inject constructor(
         else {
             filteredPlaces.value?.filter { it.title.lowercase(Locale.ROOT).contains(lastSearchString)}
         }
+    }
+
+    private fun MutableLiveData<PlacesViewState>.setNewState(
+        block: PlacesViewState.() -> PlacesViewState,
+    ) {
+        val currentState = value ?: PlacesViewState()
+        val newState = currentState.run { block() }
+        value = newState
     }
 }

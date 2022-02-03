@@ -1,7 +1,7 @@
 package com.steeshock.android.streetworkout.presentation.viewStates
 
 /**
- * Describes UI state of screen Places
+ * Describes UI state of screens Places/Favorite Places
  */
 data class PlacesViewState(
 

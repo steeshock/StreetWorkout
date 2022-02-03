@@ -16,11 +16,9 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_PLACES
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_SEARCH_RESULTS
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.NOT_EMPTY
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -33,8 +31,8 @@ class PlacesFragment : BaseFragment() {
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter
 
-    private var _fragmentPlacesBinding: FragmentPlacesBinding? = null
-    private val fragmentPlacesBinding get() = _fragmentPlacesBinding!!
+    private var _binding: FragmentPlacesBinding? = null
+    private val binding get() = _binding!!
 
     override fun injectComponent() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
@@ -45,9 +43,9 @@ class PlacesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
-        (container?.context as MainActivity).setSupportActionBar(_fragmentPlacesBinding?.toolbar)
-        return fragmentPlacesBinding.root
+        _binding = FragmentPlacesBinding.inflate(inflater, container, false)
+        (container?.context as MainActivity).setSupportActionBar(_binding?.toolbar)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,16 +67,16 @@ class PlacesFragment : BaseFragment() {
             viewModel.onFilterByCategory(it)
         }
 
-        fragmentPlacesBinding.fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             showAddPlaceFragment(it)
         }
 
-        fragmentPlacesBinding.placesRecycler.setHasFixedSize(true)
-        fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
+        binding.placesRecycler.setHasFixedSize(true)
+        binding.placesRecycler.adapter = placesAdapter
 
-        fragmentPlacesBinding.categoriesRecycler.adapter = categoriesAdapter
-        fragmentPlacesBinding.categoriesRecycler.layoutManager =
-            LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.categoriesRecycler.adapter = categoriesAdapter
+        binding.categoriesRecycler.layoutManager =
+            LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         setupEmptyViews()
         initData()
@@ -105,30 +103,30 @@ class PlacesFragment : BaseFragment() {
                 renderViewState(it)
             }
 
-            fragmentPlacesBinding.refresher.setOnRefreshListener {
+            binding.refresher.setOnRefreshListener {
                 fetchData(viewModel)
             }
         }
     }
 
     private fun renderViewState(viewState: PlacesViewState) {
-        fragmentPlacesBinding.refresher.isRefreshing = viewState.isLoading
+        binding.refresher.isRefreshing = viewState.isLoading
 
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
-                fragmentPlacesBinding.placesRecycler.visibility = View.GONE
-                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.GONE
-                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.VISIBLE
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.VISIBLE
             }
             EMPTY_SEARCH_RESULTS -> {
-                fragmentPlacesBinding.placesRecycler.visibility = View.GONE
-                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.GONE
-                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.VISIBLE
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.VISIBLE
             }
             NOT_EMPTY -> {
-                fragmentPlacesBinding.placesRecycler.visibility = View.VISIBLE
-                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.GONE
-                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.GONE
+                binding.placesRecycler.visibility = View.VISIBLE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
             }
         }
     }
@@ -183,15 +181,15 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun setupEmptyViews() {
-        fragmentPlacesBinding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
-        fragmentPlacesBinding.emptyList.title.setText(R.string.empty_places_list_state_message)
+        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
+        binding.emptyList.title.setText(R.string.empty_places_list_state_message)
 
-        fragmentPlacesBinding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
-        fragmentPlacesBinding.emptyResults.title.setText(R.string.empty_state_message)
+        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
+        binding.emptyResults.title.setText(R.string.empty_state_message)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _fragmentPlacesBinding = null
+        _binding = null
     }
 }
