@@ -20,6 +20,7 @@ import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewSta
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_PLACES
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.EMPTY_SEARCH_RESULTS
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.NOT_EMPTY
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -104,40 +105,30 @@ class PlacesFragment : BaseFragment() {
                 renderViewState(it)
             }
 
-            fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
-                fetchData(viewModel)
-            }
-
-            fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
-                fetchData(viewModel)
-            }
-
-            fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
+            fragmentPlacesBinding.refresher.setOnRefreshListener {
                 fetchData(viewModel)
             }
         }
     }
 
     private fun renderViewState(viewState: PlacesViewState) {
-        fragmentPlacesBinding.placesRefresher.isRefreshing = viewState.isLoading
-        fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = viewState.isLoading
-        fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = viewState.isLoading
+        fragmentPlacesBinding.refresher.isRefreshing = viewState.isLoading
 
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
-                fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
-                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.VISIBLE
+                fragmentPlacesBinding.placesRecycler.visibility = View.GONE
+                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.GONE
+                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.VISIBLE
             }
             EMPTY_SEARCH_RESULTS -> {
-                fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.VISIBLE
+                fragmentPlacesBinding.placesRecycler.visibility = View.GONE
+                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.GONE
+                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.VISIBLE
             }
-            else -> {
-                fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
-                fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
+            NOT_EMPTY -> {
+                fragmentPlacesBinding.placesRecycler.visibility = View.VISIBLE
+                fragmentPlacesBinding.emptyList.mainLayout.visibility = View.GONE
+                fragmentPlacesBinding.emptyResults.mainLayout.visibility = View.GONE
             }
         }
     }
@@ -192,11 +183,11 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun setupEmptyViews() {
-        fragmentPlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
-        fragmentPlacesBinding.emptyListView.title.setText(R.string.empty_places_list_state_message)
+        fragmentPlacesBinding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
+        fragmentPlacesBinding.emptyList.title.setText(R.string.empty_places_list_state_message)
 
-        fragmentPlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
-        fragmentPlacesBinding.emptyResultsView.title.setText(R.string.empty_state_message)
+        fragmentPlacesBinding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
+        fragmentPlacesBinding.emptyResults.title.setText(R.string.empty_state_message)
     }
 
     override fun onDestroyView() {

@@ -44,9 +44,31 @@ class PlacesViewModel @Inject constructor(
             filterData(filterList)
         }
         observablePlaces.addSource(actualPlaces) {
+            setupEmptyState()
             observablePlaces.value = it.sortedBy { i -> i.created }
         }
     }
+
+    private fun setupEmptyState() {
+        when {
+            allPlaces.value.isNullOrEmpty() -> {
+                mutableViewState.setNewState {
+                    copy(emptyState = EMPTY_PLACES)
+                }
+            }
+            actualPlaces.value.isNullOrEmpty() -> {
+                mutableViewState.setNewState {
+                    copy(emptyState = EMPTY_SEARCH_RESULTS)
+                }
+            }
+            else -> {
+                mutableViewState.setNewState {
+                    copy(emptyState = NOT_EMPTY)
+                }
+            }
+        }
+    }
+
     private var filterList: MutableList<Category> = mutableListOf()
 
     fun fetchPlaces() {
@@ -141,12 +163,6 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces.value = actualPlaces.value
         }
 
-        mutableViewState.setNewState {
-            copy(
-                emptyState = if (actualPlaces.value.isNullOrEmpty()) EMPTY_PLACES else NOT_EMPTY
-            )
-        }
-
         if (!lastSearchString.isNullOrEmpty()) {
             filterDataBySearchString(lastSearchString)
         }
@@ -162,12 +178,6 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces.value
         else {
             filteredPlaces.value?.filter { it.title.lowercase(Locale.ROOT).contains(lastSearchString)}
-        }
-
-        mutableViewState.setNewState {
-            copy(
-                emptyState = if (actualPlaces.value.isNullOrEmpty()) EMPTY_SEARCH_RESULTS else NOT_EMPTY
-            )
         }
     }
 }
