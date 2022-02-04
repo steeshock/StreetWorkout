@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/mainBackGroundColor">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/mainBackGroundColor"
+    tools:ignore="ContentDescription, Autofill">
 
     <data class="FragmentAddPlaceBinding">
-
-        <import
-            alias="V"
-            type="android.view.View" />
 
         <variable
             name="viewmodel"
             type="com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel" />
 
-        <variable
-            name="fragmentBehaviour"
-            type="com.steeshock.android.streetworkout.presentation.views.IAddPlace" />
     </data>
 
     <ScrollView
@@ -44,9 +39,8 @@
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:progress="@{viewmodel.sendingProgress}"
                 android:progressTint="@color/greenColor"
-                android:visibility="@{viewmodel.isSendingInProgress ? V.VISIBLE : V.GONE}" />
+                android:visibility="gone" />
 
             <!--Название-->
             <com.google.android.material.textfield.TextInputLayout
@@ -61,7 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:hint="@string/hint_place_name"
                     android:inputType="textCapSentences"
                     android:maxLines="1" />
@@ -81,7 +74,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:hint="@string/hint_place_description"
                     android:inputType="textCapSentences"
                     android:maxLines="1" />
@@ -101,7 +93,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:hint="@string/hint_place_address"
                     android:inputType="textCapSentences"
                     android:maxLines="1" />
@@ -124,22 +115,19 @@
                     android:layout_marginStart="@dimen/list_item_spacing"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:hint="@string/hint_place_position"
                     android:inputType="textPersonName"
                     android:maxLines="1" />
 
                 <ImageButton
-                    android:id="@+id/myPositionBtn"
+                    android:id="@+id/myPositionButton"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
-                    android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{fragmentBehaviour::getPosition}"
                     android:src="@drawable/ic_map_location_36dp"
-                    android:visibility="@{viewmodel.isLocationInProgress ? V.GONE : V.VISIBLE}" />
+                    android:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/progress_location_bar"
@@ -148,7 +136,7 @@
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:orientation="horizontal"
-                    android:visibility="@{viewmodel.isLocationInProgress ? V.VISIBLE : V.GONE}" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <!--Категории-->
@@ -163,20 +151,17 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/list_item_spacing"
                     android:layout_weight="1"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:focusable="false"
                     android:hint="@string/hint_place_categories"
                     android:inputType="text" />
 
                 <ImageButton
-                    android:id="@+id/categoryBtn"
+                    android:id="@+id/categoryButton"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
-                    android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{fragmentBehaviour::showCategories}"
                     android:src="@drawable/ic_add_circle_36dp" />
             </LinearLayout>
 
@@ -197,24 +182,21 @@
                     android:layout_marginStart="@dimen/list_item_spacing"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:focusable="false"
                     android:hint="@string/hint_place_images"
                     android:inputType="textPersonName"
                     android:maxLines="1"
-                    android:text="@{viewmodel.isImagePickingInProgress ? @string/hint_images_loading : viewmodel.selectedImagesMessage}" />
+                    tools:text="@string/hint_images_loading" />
 
                 <ImageButton
-                    android:id="@+id/takeImageBtn"
+                    android:id="@+id/takeImageButton"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:background="@android:color/transparent"
-                    android:clickable="@{!viewmodel.isSendingInProgress}"
-                    android:onClick="@{fragmentBehaviour::openImagePicker}"
                     android:src="@drawable/ic_add_image"
-                    android:visibility="@{viewmodel.isImagePickingInProgress ? V.GONE : V.VISIBLE}" />
+                    android:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/progress_image_bar"
@@ -223,7 +205,7 @@
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="@dimen/list_item_spacing"
                     android:orientation="horizontal"
-                    android:visibility="@{viewmodel.isImagePickingInProgress ? V.VISIBLE : V.GONE}" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -231,31 +213,29 @@
                 android:layout_height="match_parent">
 
                 <Button
-                    android:id="@+id/btn_add"
+                    android:id="@+id/clear_button"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_margin="30dp"
                     android:layout_weight="1"
                     android:background="@color/colorPrimary"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:minWidth="120dp"
-                    android:onClick="@{fragmentBehaviour::resetFields}"
                     android:text="@string/clear_place_btn"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:id="@+id/btn_clear"
+                    android:id="@+id/send_button"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_margin="30dp"
                     android:layout_marginTop="16dp"
                     android:layout_weight="1"
                     android:background="@color/colorPrimary"
-                    android:enabled="@{!viewmodel.isSendingInProgress}"
                     android:minWidth="120dp"
-                    android:onClick="@{fragmentBehaviour::addNewPlace}"
                     android:text="@string/add_place_btn"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    tools:ignore="ButtonStyle" />
             </LinearLayout>
 
         </LinearLayout>
