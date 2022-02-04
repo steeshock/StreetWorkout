@@ -27,10 +27,10 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val mapViewModel: MapViewModel by viewModels { factory }
+    private val viewModel: MapViewModel by viewModels { factory }
 
-    private var _fragmentMapBinding: FragmentMapBinding? = null
-    private val fragmentMapBinding get() = _fragmentMapBinding!!
+    private var _binding: FragmentMapBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var mMap: GoogleMap
     private var markers : MutableList<CustomMarker> = mutableListOf()
@@ -46,27 +46,17 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _fragmentMapBinding = FragmentMapBinding.inflate(inflater, container, false)
-
+        _binding = FragmentMapBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-
-        fragmentMapBinding.viewmodel = mapViewModel
-
-        (container?.context as MainActivity).setSupportActionBar(fragmentMapBinding.toolbar)
-
+        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
         mapFragment?.getMapAsync(this)
-
-        return fragmentMapBinding.root
+        return binding.root
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-
         mMap = googleMap
-
-        mapViewModel.allPlacesLive.observe(viewLifecycleOwner) { places ->
+        viewModel.observablePlaces.observe(viewLifecycleOwner) { places ->
             places?.let { showAllPlaces(it) }
-
             moveToPointLocation()
         }
     }
@@ -77,7 +67,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
         if (!movedCameraToInitialPoint && placeUUID != null && placeUUID != -1 && placeUUID is String){
 
-            val place = mapViewModel.allPlacesLive.value?.find { i -> i.place_uuid == placeUUID }
+            val place = viewModel.observablePlaces.value?.find { i -> i.place_uuid == placeUUID }
 
             if (place != null){
                 
@@ -136,7 +126,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                //Здесь слушаем именение текста
                 return false
             }
         })
@@ -159,7 +148,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        _fragmentMapBinding = null
+        _binding = null
     }
 }

@@ -10,5 +10,5 @@ class MapViewModel @Inject constructor(
     placesRepository: IPlacesRepository,
 ) : ViewModel() {
 
-    val allPlacesLive: LiveData<List<Place>> = placesRepository.allPlaces
+    val observablePlaces: LiveData<List<Place>> = placesRepository.allPlaces
 }

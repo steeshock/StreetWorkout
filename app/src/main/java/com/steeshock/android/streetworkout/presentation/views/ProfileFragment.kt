@@ -17,10 +17,10 @@ class ProfileFragment : BaseFragment() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val profileViewModel: ProfileViewModel by viewModels { factory }
+    private val viewModel: ProfileViewModel by viewModels { factory }
 
-    private var _fragmentProfileBinding: FragmentProfileBinding? = null
-    private val fragmentProfileBinding get() = _fragmentProfileBinding!!
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
 
     override fun injectComponent() {
         context?.appComponent?.provideProfileComponent()?.inject(this)
@@ -29,19 +29,14 @@ class ProfileFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-
-        _fragmentProfileBinding = FragmentProfileBinding.inflate(inflater, container, false)
-
-        fragmentProfileBinding.viewmodel = profileViewModel
-
-        return fragmentProfileBinding.root
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        _fragmentProfileBinding = null
+        _binding = null
     }
 }
