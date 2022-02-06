@@ -11,7 +11,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
-import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -32,31 +32,31 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.AddPlaceViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
-import com.steeshock.android.streetworkout.services.FetchAddressIntentService
+import com.steeshock.android.streetworkout.presentation.viewStates.AddPlaceViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel
+import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import java.util.*
 import javax.inject.Inject
 
-class AddPlaceFragment : BaseFragment(), IAddPlace {
+class AddPlaceFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: AddPlaceViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
-    private val addPlaceViewModel: AddPlaceViewModel by viewModels { factory }
+    private val viewModel: AddPlaceViewModel by viewModels { factory }
 
     private lateinit var imagePicker: ImagePicker.Builder
 
-    private var _fragmentAddPlaceBinding: FragmentAddPlaceBinding? = null
-    private val fragmentAddPlaceBinding get() = _fragmentAddPlaceBinding!!
+    private var _binding: FragmentAddPlaceBinding? = null
+    private val binding get() = _binding!!
 
     private var allCategories = emptyList<Category>()
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.providePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(
@@ -65,52 +65,132 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
         savedInstanceState: Bundle?
     ): View {
 
-        _fragmentAddPlaceBinding = FragmentAddPlaceBinding.inflate(inflater, container, false)
-        fragmentAddPlaceBinding.viewmodel = addPlaceViewModel
-        fragmentAddPlaceBinding.lifecycleOwner = this
-
-        fragmentAddPlaceBinding.fragmentBehaviour = this
-
-        fragmentAddPlaceBinding.toolbar.setNavigationOnClickListener { view ->
-            view.findNavController().navigateUp()
-        }
-
-        fragmentAddPlaceBinding.placeTitle.addTextChangedListener {
-            if (!it.isNullOrEmpty()) {
-                fragmentAddPlaceBinding.placeTitleInput.error = null
-            }
-        }
-
-        fragmentAddPlaceBinding.placeAddress.addTextChangedListener {
-            if (!it.isNullOrEmpty()) {
-                fragmentAddPlaceBinding.placeAddressInput.error = null
-            }
-        }
+        _binding = FragmentAddPlaceBinding.inflate(inflater, container, false)
+        binding.viewmodel = viewModel
 
         resultReceiver = AddressResultReceiver(Handler())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        imagePicker = ImagePicker.with(requireActivity())
+        return binding.root
+    }
 
-        return fragmentAddPlaceBinding.root
+    private fun initViews() {
+        binding.toolbar.setNavigationOnClickListener { view ->
+            view.findNavController().navigateUp()
+        }
+
+        binding.placeTitle.addTextChangedListener {
+            if (!it.isNullOrEmpty()) {
+                binding.placeTitleInput.error = null
+            }
+        }
+
+        binding.placeAddress.addTextChangedListener {
+            if (!it.isNullOrEmpty()) {
+                binding.placeAddressInput.error = null
+            }
+        }
+
+        binding.myPositionButton.setOnClickListener {
+            getPosition()
+        }
+
+        binding.categoryButton.setOnClickListener {
+            showCategories()
+        }
+
+        binding.takeImageButton.setOnClickListener {
+            openImagePicker()
+        }
+
+        binding.clearButton.setOnClickListener {
+            getClearFieldsDialog().show()
+        }
+
+        binding.sendButton.setOnClickListener {
+            if (validatePlace()) {
+                getPublishPermissionDialog().show()
+            }
+        }
+        binding.placeTitle.addTextChangedListener {
+            binding.placeTitleInput.error = null
+        }
+        binding.placeAddress.addTextChangedListener {
+            binding.placeTitleInput.error = null
+        }
+        imagePicker = ImagePicker.with(requireActivity())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        addPlaceViewModel.allCategoriesLive.observe(viewLifecycleOwner) { categories ->
+        initViews()
+
+        viewModel.allCategories.observe(viewLifecycleOwner) { categories ->
             categories?.let { allCategories = it }
 
-            if (addPlaceViewModel.checkedCategoriesArray == null) {
-                addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
+            if (viewModel.checkedCategoriesArray == null) {
+                viewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
             }
         }
 
-        addPlaceViewModel.loadCompleted.observe(viewLifecycleOwner) {
-            if (it) {
-                resetFields()
-            }
+        viewModel.viewState.observe(viewLifecycleOwner) {
+            renderViewState(it)
         }
+    }
+
+    private fun renderViewState(viewState: AddPlaceViewState) {
+        if (viewState.loadCompleted) {
+            resetFields()
+        }
+        if (viewState.isImagePickingInProgress) {
+            binding.takeImageButton.visibility = View.GONE
+            binding.progressImageBar.visibility = View.VISIBLE
+            binding.placeImages.setText(R.string.hint_images_loading)
+        } else {
+            binding.takeImageButton.visibility = View.VISIBLE
+            binding.progressImageBar.visibility = View.GONE
+            binding.placeImages.setText(viewState.selectedImagesMessage)
+        }
+        if (viewState.isLocationInProgress) {
+            binding.myPositionButton.visibility = View.GONE
+            binding.progressLocationBar.visibility = View.VISIBLE
+        } else {
+            binding.myPositionButton.visibility = View.VISIBLE
+            binding.progressLocationBar.visibility = View.GONE
+        }
+        if (viewState.isSendingInProgress) {
+            binding.placeCategories.isEnabled = false
+            binding.placeTitle.isEnabled = false
+            binding.placeDescription.isEnabled = false
+            binding.placePosition.isEnabled = false
+            binding.placeAddress.isEnabled = false
+            binding.placeImages.isEnabled = false
+            binding.categoryButton.isClickable = false
+            binding.placeImages.isClickable = false
+            binding.takeImageButton.isClickable = false
+            binding.clearButton.isClickable = false
+            binding.sendButton.isClickable = false
+            binding.myPositionButton.isClickable = false
+            binding.progressSending.visibility = View.VISIBLE
+        } else {
+            binding.placeCategories.isEnabled = true
+            binding.placeTitle.isEnabled = true
+            binding.placeDescription.isEnabled = true
+            binding.placePosition.isEnabled = true
+            binding.placeAddress.isEnabled = true
+            binding.placeImages.isEnabled = true
+            binding.categoryButton.isClickable = true
+            binding.placeImages.isClickable = true
+            binding.takeImageButton.isClickable = true
+            binding.clearButton.isClickable = true
+            binding.sendButton.isClickable = true
+            binding.myPositionButton.isClickable = true
+            binding.progressSending.visibility = View.GONE
+        }
+
+        binding.progressSending.progress = viewState.sendingProgress
+        binding.progressSending.max = viewState.maxProgressValue
     }
 
     //region Categories
@@ -130,16 +210,16 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
             .setTitle(getString(R.string.select_category_alert))
             .setMultiChoiceItems(
                 allCategories.map { i -> i.category_name }.toTypedArray(),
-                addPlaceViewModel.checkedCategoriesArray
+                viewModel.checkedCategoriesArray
             ) { _, which, isChecked ->
 
                 val selectedCategory = allCategories[which]
 
                 if (isChecked) {
-                    selectedCategory.category_id?.let { addPlaceViewModel.selectedCategories.add(it) }
+                    selectedCategory.category_id?.let { viewModel.selectedCategories.add(it) }
                 } else {
                     selectedCategory.category_id?.let {
-                        addPlaceViewModel.selectedCategories.remove(
+                        viewModel.selectedCategories.remove(
                             it
                         )
                     }
@@ -150,19 +230,19 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     }
 
     private fun addCategories() {
-        if (addPlaceViewModel.selectedCategories.isEmpty()) {
-            fragmentAddPlaceBinding.placeCategories.text.clear()
+        if (viewModel.selectedCategories.isEmpty()) {
+            binding.placeCategories.text.clear()
             return
         }
 
-        fragmentAddPlaceBinding.placeCategories.text.clear()
+        binding.placeCategories.text.clear()
 
-        addPlaceViewModel.selectedCategories.forEach { i ->
+        viewModel.selectedCategories.forEach { i ->
             run {
                 val category = allCategories.find { j -> j.category_id == i }?.category_name
 
                 if (!category.isNullOrEmpty()) {
-                    fragmentAddPlaceBinding.placeCategories.text.append(
+                    binding.placeCategories.text.append(
                         category,
                         "; "
                     )
@@ -175,53 +255,25 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     //region Image picking
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-
-            val resultCode = result.resultCode
-            val data = result.data
-
-            if (resultCode == Activity.RESULT_OK) {
-
-                addPlaceViewModel.selectedImages.add(data?.data!!)
-
-                addPlaceViewModel.selectedImagesMessage =
-                    "Прикреплено фотографий: ${addPlaceViewModel.selectedImages.size}"
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.onImagePicked(result.data)
             }
-
-            addPlaceViewModel.isImagePickingInProgress.set(false)
+            viewModel.onOpenedImagePicker(false)
         }
     //endregion
-
-    private fun addNewPlace() {
-
-        val placeUUID = UUID.randomUUID().toString()
-        addPlaceViewModel.sendingPlace = createNewPlace(placeUUID)
-
-        addPlaceViewModel.isSendingInProgress.set(true)
-        addPlaceViewModel.sendingProgress.postValue(0)
-
-        fragmentAddPlaceBinding.progressSending.max = addPlaceViewModel.selectedImages.size + 1
-
-        if (addPlaceViewModel.selectedImages.size > 0) {
-            addPlaceViewModel.selectedImages.forEach { uri ->
-                addPlaceViewModel.uploadDataToFirebase(uri, placeUUID)
-            }
-        } else {
-            addPlaceViewModel.createAndPublishNewPlace()
-        }
-    }
 
     private fun validatePlace(): Boolean {
 
         var validationResult = true
 
-        if (fragmentAddPlaceBinding.placeTitle.text.isNullOrEmpty()) {
-            fragmentAddPlaceBinding.placeTitleInput.error =
+        if (binding.placeTitle.text.isNullOrEmpty()) {
+            binding.placeTitleInput.error =
                 resources.getString(R.string.required_field_empty_error)
             validationResult = false
         }
 
-        if (fragmentAddPlaceBinding.placeAddress.text.isNullOrEmpty()) {
-            fragmentAddPlaceBinding.placeAddressInput.error =
+        if (binding.placeAddress.text.isNullOrEmpty()) {
+            binding.placeAddressInput.error =
                 resources.getString(R.string.required_field_empty_error)
             validationResult = false
         }
@@ -229,24 +281,23 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
         return validationResult
     }
 
-    private fun createNewPlace(placeUUID: String): Place {
-
-        val position = fragmentAddPlaceBinding.placePosition.text.toString().split(" ")
-
+    private fun getNewPlace(): Place {
+        val placeUUID = UUID.randomUUID().toString()
+        val position = binding.placePosition.text.toString().split(" ")
         return Place(
             place_uuid = placeUUID,
-            title = fragmentAddPlaceBinding.placeTitle.text.toString(),
-            description = fragmentAddPlaceBinding.placeDescription.text.toString(),
+            title = binding.placeTitle.text.toString(),
+            description = binding.placeDescription.text.toString(),
             latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
             longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
-            address = fragmentAddPlaceBinding.placeAddress.text.toString(),
-            categories = addPlaceViewModel.selectedCategories
+            address = binding.placeAddress.text.toString(),
+            categories = viewModel.selectedCategories
         )
     }
 
     private fun resetFields() {
-
-        fragmentAddPlaceBinding.let {
+        viewModel.onResetFields()
+        binding.let {
             it.placeTitle.text?.clear()
             it.placeDescription.text?.clear()
             it.placeAddress.text?.clear()
@@ -254,21 +305,11 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
             it.placeImages.text.clear()
             it.placeCategories.text.clear()
             it.progressLocationBar.visibility = View.GONE
-            it.myPositionBtn.visibility = View.VISIBLE
-            it.myPositionBtn.isEnabled = true
-
-            addPlaceViewModel.selectedCategories.clear()
-            addPlaceViewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
-
-            addPlaceViewModel.selectedImagesMessage = ""
-            addPlaceViewModel.selectedImages.clear()
-            addPlaceViewModel.downloadedImagesLinks.clear()
-            addPlaceViewModel.isImagePickingInProgress.set(false)
-
-            fragmentAddPlaceBinding.placeTitleInput.error = null
-            fragmentAddPlaceBinding.placeAddressInput.error = null
+            it.myPositionButton.visibility = View.VISIBLE
+            it.myPositionButton.isEnabled = true
+            it.placeTitleInput.error = null
+            it.placeAddressInput.error = null
         }
-
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
     }
 
@@ -277,64 +318,39 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
         return builder
             .setTitle(getString(R.string.clear_fields_alert))
             .setMessage(getString(R.string.publish_permission_message))
-            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addNewPlace() }
+            .setPositiveButton(getString(R.string.ok_item)) { _, _ ->
+                viewModel.onAddNewPlace(place = getNewPlace())
+            }
             .setNegativeButton(getString(R.string.cancel_item), null)
             .create()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        _fragmentAddPlaceBinding = null
-    }
-
-    // region Fragment behaviour
-
-    override fun getPosition(view: View) {
+    private fun getPosition() {
         getMyPosition()
     }
 
-    override fun openImagePicker(view: View) {
-        addPlaceViewModel.isImagePickingInProgress.set(true)
-
+    private fun openImagePicker() {
+        viewModel.onOpenedImagePicker(true)
         imagePicker
             .compress(512)
             .crop(900f, 600f)
             .galleryOnly()
             .setDismissListener {
-                addPlaceViewModel.isImagePickingInProgress.set(false)
+                viewModel.onOpenedImagePicker(false)
             }
             .createIntent { intent ->
                 startForProfileImageResult.launch(intent)
             }
     }
 
-    override fun addNewPlace(view: View) {
-        if (validatePlace()) {
-            getPublishPermissionDialog().show()
-        }
-    }
-
-    override fun resetFields(view: View) {
-        getClearFieldsDialog().show()
-    }
-
-    override fun showCategories(view: View) {
+    private fun showCategories() {
         getCategoriesDialog().show()
     }
 
-    override fun handleTitleChanged(editable: Editable?) {
-        if (!editable.isNullOrEmpty()) {
-            fragmentAddPlaceBinding.placeTitleInput.error = null
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
-
-    override fun handleAddressChanged(editable: Editable?) {
-        if (!editable.isNullOrEmpty()) {
-            fragmentAddPlaceBinding.placeAddressInput.error = null
-        }
-    }
-    // endregion
 
     //region GPS
     private val TAG = "LocationTag"
@@ -361,8 +377,7 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
             // If we have not yet retrieved the user location, we process the user's request by setting
             // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
             // button immediately kicks off the process of getting the address.
-            addPlaceViewModel.isLocationInProgress.set(true)
-
+            viewModel.onLocationProgressChanged(true)
             getAddress()
         }
     }
@@ -393,7 +408,7 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
                 // If the user pressed the fetch address button before we had the location,
                 // this will be set to true indicating that we should kick off the intent
                 // service after fetching the location.
-                if (addPlaceViewModel.isLocationInProgress.get()) startIntentService()
+                if (viewModel.viewState.value?.isLocationInProgress == true) startIntentService()
             })?.addOnFailureListener(requireActivity()) { e ->
             Log.w(
                 TAG,
@@ -446,14 +461,14 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
             }
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            addPlaceViewModel.isLocationInProgress.set(false)
+            viewModel.onLocationProgressChanged(false)
         }
     }
 
     private fun displayAddressOutput() {
-        fragmentAddPlaceBinding.placeAddress.setText(addressOutput)
-        fragmentAddPlaceBinding.placePosition.text.clear()
-        fragmentAddPlaceBinding.placePosition.text.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
+        binding.placeAddress.setText(addressOutput)
+        binding.placePosition.text.clear()
+        binding.placePosition.text.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
     }
 
     private fun checkPermissions(): Boolean {
@@ -523,13 +538,3 @@ class AddPlaceFragment : BaseFragment(), IAddPlace {
     }
     //endregion
 }
-
-    interface IAddPlace {
-        fun getPosition(view: View)
-        fun openImagePicker(view: View)
-        fun addNewPlace(view: View)
-        fun resetFields(view: View)
-        fun showCategories(view: View)
-        fun handleTitleChanged(editable: Editable?)
-        fun handleAddressChanged(editable: Editable?)
-    }

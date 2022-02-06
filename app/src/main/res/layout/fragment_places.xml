@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ContentDescription">
 
     <data class="FragmentPlacesBinding">
 
@@ -27,9 +29,7 @@
                 android:background="@color/mainBackGroundColor"
                 android:elevation="8dp"
                 app:title="@string/places_title"
-                app:titleTextColor="@android:color/black">
-
-            </androidx.appcompat.widget.Toolbar>
+                app:titleTextColor="@android:color/black" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/categoriesRecycler"
@@ -38,42 +38,36 @@
                 android:background="@color/mainBackGroundColor" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/placesRefresher"
+                android:id="@+id/refresher"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/placesRecycler"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/mainBackGroundColor" />
+                    android:layout_height="wrap_content">
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/placesRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/mainBackGroundColor"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <include
+                        android:id="@+id/emptyList"
+                        layout="@layout/v_empty_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+
+                    <include
+                        android:id="@+id/emptyResults"
+                        layout="@layout/v_empty_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </FrameLayout>
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/emptyListViewRefresher"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <include
-                    android:id="@+id/emptyListView"
-                    layout="@layout/v_empty_state"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/emptyResultsViewRefresher"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <include
-                    android:id="@+id/emptyResultsView"
-                    layout="@layout/v_empty_state"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

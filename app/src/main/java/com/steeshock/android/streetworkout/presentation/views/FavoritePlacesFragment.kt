@@ -5,37 +5,36 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.FavoritePlacesViewModelFactory
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: FavoritePlacesViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
-    private val favoritePlacesViewModel: FavoritePlacesViewModel by viewModels { factory }
+    private val viewModel: FavoritePlacesViewModel by viewModels { factory }
 
-    private var _fragmentFavoritePlacesBinding: FragmentFavoritePlacesBinding? = null
-    private val fragmentFavoritePlacesBinding get() = _fragmentFavoritePlacesBinding!!
-
-    private var lastSearchString: String? = null
+    private var _binding: FragmentFavoritePlacesBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var placesAdapter: PlaceAdapter
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.provideFavoritePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(
@@ -43,16 +42,9 @@ class FavoritePlacesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _fragmentFavoritePlacesBinding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
-
-        fragmentFavoritePlacesBinding.viewmodel = favoritePlacesViewModel
-
-        fragmentFavoritePlacesBinding.lifecycleOwner = this
-
-        (container?.context as MainActivity).setSupportActionBar(fragmentFavoritePlacesBinding.toolbar)
-
-        return fragmentFavoritePlacesBinding.root
+        _binding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
+        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,77 +53,56 @@ class FavoritePlacesFragment : BaseFragment() {
         placesAdapter =
             PlaceAdapter(object :
                 PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: Place) {
-                    showBottomSheet()
+                override fun onPlaceClicked(place: Place) {}
+
+                override fun onLikeClicked(place: Place) {
+                    viewModel.onFavoriteStateChanged(place)
+                    showRollbackSnack(place)
                 }
 
-                override fun onLikeClicked(item: Place) {
-                    favoritePlacesViewModel.removePlaceFromFavorites(item)
-                    showRollbackSnack(item)
-                }
-
-                override fun onPlaceLocationClicked(item: Place) {
-                    val placeUUID = item.place_uuid
-
-                    val action =
-                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
-                            placeUUID)
-                    view.findNavController().navigate(action)
-                }
-
-                override fun setEmptyListState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
-                    }
-                }
-
-                override fun setEmptyResultsState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyListView.root.visibility = View.GONE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentFavoritePlacesBinding.placesRecycler.visibility = View.VISIBLE
-                        fragmentFavoritePlacesBinding.emptyResultsView.root.visibility = View.GONE
-                    }
+                override fun onPlaceLocationClicked(place: Place) {
+                    view.findNavController().navigate(
+                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(place.place_uuid)
+                    )
                 }
             })
 
-        favoritePlacesViewModel.favoritePlacesLive.observe(viewLifecycleOwner) {
-            val sortedData = sortDataByCreatedDate(it)
-            placesAdapter.setPlaces(sortedData)
+        binding.placesRecycler.adapter = placesAdapter
+        setupEmptyViews()
+        initData()
+    }
 
-            if (!lastSearchString.isNullOrEmpty()) {
-                filterDataBySearchString(lastSearchString)
+    private fun initData() {
+        with(viewModel) {
+            observablePlaces.observe(viewLifecycleOwner) {
+                placesAdapter.setPlaces(it)
+            }
+
+            viewState.observe(viewLifecycleOwner) {
+                renderViewState(it)
             }
         }
-
-        fragmentFavoritePlacesBinding.placesRecycler.adapter = placesAdapter
-        fragmentFavoritePlacesBinding.placesRecycler.layoutManager =
-            LinearLayoutManager(fragmentFavoritePlacesBinding.root.context)
-
-        setupEmptyViews()
     }
 
-    // region Filtering
-    private fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(lastSearchString)
+    private fun renderViewState(viewState: PlacesViewState?) {
+        when (viewState?.emptyState) {
+            EmptyViewState.EMPTY_PLACES -> {
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.VISIBLE
+            }
+            EmptyViewState.EMPTY_SEARCH_RESULTS -> {
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.VISIBLE
+            }
+            EmptyViewState.NOT_EMPTY -> {
+                binding.placesRecycler.visibility = View.VISIBLE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
+            }
+        }
     }
-    // endregion
-
-    // region Sorting
-    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
-        return list.sortedByDescending { i -> i.created }
-    }
-    // endregion
 
     // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -151,7 +122,7 @@ class FavoritePlacesFragment : BaseFragment() {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                filterDataBySearchString(s)
+                viewModel.filterDataBySearchString(s)
                 return false
             }
         })
@@ -183,7 +154,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction(R.string.rollback_place) {
-            favoritePlacesViewModel.returnPlaceToFavorites(item)
+            viewModel.returnPlaceToFavorites(item)
         }
 
         rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
@@ -191,22 +162,16 @@ class FavoritePlacesFragment : BaseFragment() {
         rollbackSnack?.show()
     }
 
-    private fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30)
-            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
-    }
-
     private fun setupEmptyViews() {
-        fragmentFavoritePlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
-        fragmentFavoritePlacesBinding.emptyListView.title.setText(R.string.empty_favorites_list_state_message)
+        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
+        binding.emptyList.title.setText(R.string.empty_favorites_list_state_message)
 
-        fragmentFavoritePlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
-        fragmentFavoritePlacesBinding.emptyResultsView.title.setText(R.string.empty_favorites_state_message)
+        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
+        binding.emptyResults.title.setText(R.string.empty_favorites_state_message)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        _fragmentFavoritePlacesBinding = null
+        _binding = null
     }
 }

@@ -8,7 +8,6 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 import java.util.*
@@ -16,8 +15,6 @@ import java.util.*
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
     private var items = emptyList<Place>()
-    private var allItems = emptyList<Place>()
-    private var filteredItems = emptyList<Place>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -30,13 +27,8 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
     @SuppressLint("NotifyDataSetChanged")
     internal fun setPlaces(places: List<Place>) {
-        items = places
-        allItems = places.toList()
-        filteredItems = places.toList()
-
+        this.items = places
         notifyDataSetChanged()
-
-        setupEmptyListState()
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -101,56 +93,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         })
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun filterItemsByCategory(filterList: MutableList<Category>) {
-
-        if (allItems.isNotEmpty()) {
-
-            items = if (filterList.isEmpty())
-                allItems
-            else {
-                allItems.filter { it.categories!!.containsAll(filterList.map { i -> i.category_id })}
-            }
-
-            filteredItems = items
-
-            notifyDataSetChanged()
-
-            setupEmptyFilterResultsState()
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun filterItemsBySearchString(searchString: String?) {
-
-        items = if (searchString.isNullOrEmpty())
-            filteredItems
-        else {
-            filteredItems.filter { it.title.lowercase(Locale.ROOT).contains(searchString)}
-        }
-
-        notifyDataSetChanged()
-
-        setupEmptyFilterResultsState()
-
-        if (searchString.isNullOrEmpty() && allItems.isEmpty())
-            setupEmptyListState()
-    }
-
-    private fun setupEmptyListState() {
-        callback.setEmptyListState(items.isEmpty())
-    }
-
-    private fun setupEmptyFilterResultsState() {
-        callback.setEmptyResultsState(items.isEmpty())
-    }
-
     interface Callback {
-        fun onPlaceClicked(item: Place)
-        fun onLikeClicked(item: Place)
-        fun onPlaceLocationClicked(item: Place)
-
-        fun setEmptyListState(isEmpty: Boolean)
-        fun setEmptyResultsState(isEmpty: Boolean)
+        fun onPlaceClicked(place: Place)
+        fun onLikeClicked(place: Place)
+        fun onPlaceLocationClicked(place: Place)
     }
 }

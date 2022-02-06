@@ -2,7 +2,6 @@ package com.steeshock.android.streetworkout.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 
 

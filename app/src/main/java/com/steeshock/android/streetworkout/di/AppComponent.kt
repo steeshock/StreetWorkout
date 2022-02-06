@@ -1,23 +1,25 @@
 package com.steeshock.android.streetworkout.di
 
+import com.steeshock.android.streetworkout.di.common.ViewModelModule
+import com.steeshock.android.streetworkout.di.components.*
 import com.steeshock.android.streetworkout.di.modules.DatabaseModule
 import com.steeshock.android.streetworkout.di.modules.NetworkModule
-import com.steeshock.android.streetworkout.presentation.views.*
 import dagger.Component
+import javax.inject.Singleton
 
 @Component(modules = [
     DatabaseModule::class,
     NetworkModule::class,
+    ViewModelModule::class,
 ])
+@Singleton
 interface AppComponent {
 
-    fun inject(placesFragment: PlacesFragment)
+    fun providePlacesComponent(): PlacesComponent
 
-    fun inject(mapFragment: MapFragment)
+    fun provideMapComponent(): MapComponent
 
-    fun inject(favoritePlacesFragment: FavoritePlacesFragment)
+    fun provideFavoritePlacesComponent(): FavoritePlacesComponent
 
-    fun inject(profileFragment: ProfileFragment)
-
-    fun inject(addPlaceFragment: AddPlaceFragment)
+    fun provideProfileComponent(): ProfileComponent
 }

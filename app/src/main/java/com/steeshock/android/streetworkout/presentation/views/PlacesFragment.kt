@@ -4,39 +4,38 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
-import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
-import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
-import com.steeshock.android.streetworkout.data.factories.PlacesViewModelFactory
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
+import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
+import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
 
     @Inject
-    lateinit var factory: PlacesViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
-    private val placesViewModel: PlacesViewModel by viewModels { factory }
+    private val viewModel: PlacesViewModel by viewModels { factory }
 
     private lateinit var placesAdapter: PlaceAdapter
     private lateinit var categoriesAdapter: CategoryAdapter
 
-    private var _fragmentPlacesBinding: FragmentPlacesBinding? = null
-    private val fragmentPlacesBinding get() = _fragmentPlacesBinding!!
-
-    private var filterList: MutableList<Category> = mutableListOf()
-    private var lastSearchString: String? = null
+    private var _binding: FragmentPlacesBinding? = null
+    private val binding get() = _binding!!
 
     override fun injectComponent() {
-        context?.appComponent?.inject(this)
+        context?.appComponent?.providePlacesComponent()?.inject(this)
     }
 
     override fun onCreateView(
@@ -44,121 +43,90 @@ class PlacesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _fragmentPlacesBinding = FragmentPlacesBinding.inflate(inflater, container, false)
-
-        fragmentPlacesBinding.lifecycleOwner = this
-
-        (container?.context as MainActivity).setSupportActionBar(_fragmentPlacesBinding?.toolbar)
-
-        return fragmentPlacesBinding.root
+        _binding = FragmentPlacesBinding.inflate(inflater, container, false)
+        (container?.context as MainActivity).setSupportActionBar(_binding?.toolbar)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        placesAdapter =
-            PlaceAdapter(object :
-                PlaceAdapter.Callback {
-                override fun onPlaceClicked(item: Place) {
-                    showBottomSheet()
+        placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
+                override fun onPlaceClicked(place: Place) {}
+
+                override fun onLikeClicked(place: Place) {
+                    viewModel.onLikeClicked(place)
                 }
 
-                override fun onLikeClicked(item: Place) {
-                    addPlaceToFavorites(item)
-                }
-
-                override fun onPlaceLocationClicked(item: Place) {
-                    val placeUUID = item.place_uuid
-
-                    val action =
-                        PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(
-                            placeUUID)
-                    view.findNavController().navigate(action)
-                }
-
-                override fun setEmptyListState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                    }
-                }
-
-                override fun setEmptyResultsState(isEmpty: Boolean) {
-                    if (isEmpty) {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyListViewRefresher.visibility = View.GONE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.VISIBLE
-                    }
-                    else {
-                        fragmentPlacesBinding.placesRefresher.visibility = View.VISIBLE
-                        fragmentPlacesBinding.emptyResultsViewRefresher.visibility = View.GONE
-                    }
+                override fun onPlaceLocationClicked(place: Place) {
+                    navigateToMap(place)
                 }
             })
 
-        categoriesAdapter =
-            CategoryAdapter(object :
-                CategoryAdapter.Callback {
-                override fun onClicked(item: Category) {
-                    filterByCategory(item)
-                }
-            })
+        categoriesAdapter = CategoryAdapter {
+            viewModel.onFilterByCategory(it)
+        }
 
-        fragmentPlacesBinding.fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             showAddPlaceFragment(it)
         }
 
-        fragmentPlacesBinding.placesRecycler.setHasFixedSize(true)
-        fragmentPlacesBinding.placesRecycler.adapter = placesAdapter
-        fragmentPlacesBinding.placesRecycler.layoutManager =
-            LinearLayoutManager(fragmentPlacesBinding.root.context)
+        binding.placesRecycler.setHasFixedSize(true)
+        binding.placesRecycler.adapter = placesAdapter
 
-        fragmentPlacesBinding.categoriesRecycler.adapter = categoriesAdapter
-        fragmentPlacesBinding.categoriesRecycler.layoutManager =
-            LinearLayoutManager(fragmentPlacesBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.categoriesRecycler.adapter = categoriesAdapter
+        binding.categoriesRecycler.layoutManager =
+            LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
         setupEmptyViews()
-
         initData()
     }
 
+    private fun navigateToMap(place: Place) {
+        val placeUUID = place.place_uuid
+        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
+        this.findNavController().navigate(action)
+    }
+
     private fun initData() {
-        with(placesViewModel) {
+        with(viewModel) {
 
-            placesLiveData.observe(viewLifecycleOwner) {
-                val sortedData = sortDataByCreatedDate(it)
-                placesAdapter.setPlaces(sortedData)
-                filterData()
+            observablePlaces.observe(viewLifecycleOwner) {
+                placesAdapter.setPlaces(it)
             }
 
-            categoriesLiveData.observe(viewLifecycleOwner) {
+            observableCategories.observe(viewLifecycleOwner) {
                 categoriesAdapter.setCategories(it)
-                updateFilterList()
-                filterData()
             }
 
-            isLoading.observe(viewLifecycleOwner) {
-                fragmentPlacesBinding.placesRefresher.isRefreshing = it
-                fragmentPlacesBinding.emptyListViewRefresher.isRefreshing = it
-                fragmentPlacesBinding.emptyResultsViewRefresher.isRefreshing = it
+            viewState.observe(viewLifecycleOwner) {
+                renderViewState(it)
             }
 
-            fragmentPlacesBinding.placesRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+            binding.refresher.setOnRefreshListener {
+                fetchData(viewModel)
             }
+        }
+    }
 
-            fragmentPlacesBinding.emptyListViewRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+    private fun renderViewState(viewState: PlacesViewState) {
+        binding.refresher.isRefreshing = viewState.isLoading
+
+        when (viewState.emptyState) {
+            EMPTY_PLACES -> {
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.VISIBLE
             }
-
-            fragmentPlacesBinding.emptyResultsViewRefresher.setOnRefreshListener {
-                fetchData(placesViewModel)
+            EMPTY_SEARCH_RESULTS -> {
+                binding.placesRecycler.visibility = View.GONE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.VISIBLE
+            }
+            NOT_EMPTY -> {
+                binding.placesRecycler.visibility = View.VISIBLE
+                binding.emptyList.mainLayout.visibility = View.GONE
+                binding.emptyResults.mainLayout.visibility = View.GONE
             }
         }
     }
@@ -167,52 +135,6 @@ class PlacesFragment : BaseFragment() {
         placesViewModel.fetchPlaces()
         placesViewModel.fetchCategories()
     }
-
-    private fun addPlaceToFavorites(place: Place) {
-        place.changeFavoriteState()
-        placesViewModel.updatePlace(place)
-    }
-
-    // region Filtering
-
-    private fun filterByCategory(category: Category) {
-
-        category.changeSelectedState()
-
-        if (filterList.contains(category)) filterList.remove(category) else filterList.add(category)
-
-        filterData()
-
-        placesViewModel.updateCategory(category)
-    }
-
-    private fun updateFilterList() {
-        filterList = categoriesAdapter.getSelectedCategories()
-    }
-
-    private fun filterData() {
-        
-        placesAdapter.filterItemsByCategory(filterList)
-
-        if (!lastSearchString.isNullOrEmpty()){
-            filterDataBySearchString(lastSearchString)
-        }
-    }
-
-    private fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        placesAdapter.filterItemsBySearchString(lastSearchString)
-    }
-
-    // endregion
-
-    // region Sorting
-
-    private fun sortDataByCreatedDate(list: List<Place>): List<Place> {
-        return list.sortedByDescending { i -> i.created }
-    }
-
-    // endregion
 
     // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -232,7 +154,7 @@ class PlacesFragment : BaseFragment() {
             }
 
             override fun onQueryTextChange(s: String?): Boolean {
-                filterDataBySearchString(s)
+                viewModel.filterDataBySearchString(s)
                 return false
             }
         })
@@ -246,7 +168,7 @@ class PlacesFragment : BaseFragment() {
                 true
             }
             R.id.action_map -> {
-                placesViewModel.clearDatabase()
+                viewModel.clearDatabase()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -254,26 +176,20 @@ class PlacesFragment : BaseFragment() {
     }
     // endregion
 
-    private fun showBottomSheet() {
-        ItemListDialogFragment.newInstance(30)
-            .show((requireActivity() as MainActivity).supportFragmentManager, "detail_place_tag")
-    }
-
     private fun showAddPlaceFragment(it: View) {
         it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
     }
 
     private fun setupEmptyViews() {
-        fragmentPlacesBinding.emptyListView.image.setImageResource(R.drawable.ic_rage_face)
-        fragmentPlacesBinding.emptyListView.title.setText(R.string.empty_places_list_state_message)
+        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
+        binding.emptyList.title.setText(R.string.empty_places_list_state_message)
 
-        fragmentPlacesBinding.emptyResultsView.image.setImageResource(R.drawable.ic_jackie_face)
-        fragmentPlacesBinding.emptyResultsView.title.setText(R.string.empty_state_message)
+        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
+        binding.emptyResults.title.setText(R.string.empty_state_message)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        _fragmentPlacesBinding = null
+        _binding = null
     }
 }

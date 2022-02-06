@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.databinding.CategoryItemBinding
 
-class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+class CategoryAdapter(val callback: (Category) -> Unit) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
     private var items = emptyList<Category>()
 
@@ -32,7 +32,7 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
         init {
             binding.setItemClickListener {
                 binding.category?.let { category ->
-                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onClicked(category)
+                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.invoke(category)
                 }
             }
         }
@@ -43,13 +43,5 @@ class CategoryAdapter(val callback: Callback) : RecyclerView.Adapter<CategoryAda
                 executePendingBindings()
             }
         }
-    }
-
-    fun getSelectedCategories(): MutableList<Category> {
-        return items.filter { it.isSelected == true }.toMutableList()
-    }
-
-    interface Callback {
-        fun onClicked(item: Category)
     }
 }
