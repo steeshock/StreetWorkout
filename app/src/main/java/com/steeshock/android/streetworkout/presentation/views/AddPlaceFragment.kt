@@ -64,13 +64,9 @@ class AddPlaceFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentAddPlaceBinding.inflate(inflater, container, false)
-        binding.viewmodel = viewModel
-
         resultReceiver = AddressResultReceiver(Handler())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
         return binding.root
     }
 

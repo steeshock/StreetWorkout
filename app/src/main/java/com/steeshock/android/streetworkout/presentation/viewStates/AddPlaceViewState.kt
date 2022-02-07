@@ -1,8 +1,5 @@
 package com.steeshock.android.streetworkout.presentation.viewStates
 
-import androidx.databinding.ObservableBoolean
-import androidx.lifecycle.MutableLiveData
-
 /**
  * Describes UI state of Add Place screen
  */

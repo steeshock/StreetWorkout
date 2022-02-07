@@ -1,243 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/mainBackGroundColor"
     tools:ignore="ContentDescription, Autofill">
 
-    <data class="FragmentAddPlaceBinding">
-
-        <variable
-            name="viewmodel"
-            type="com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel" />
-
-    </data>
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/mainBackGroundColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:navigationIcon="@drawable/ic_arrow_back_24dp"
+            app:title="@string/add_place_title"
+            app:titleTextColor="@android:color/black" />
+
+        <ProgressBar
+            android:id="@+id/progress_sending"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:progressTint="@color/greenColor"
+            android:visibility="gone" />
+
+        <!--Название-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/place_title_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_item_spacing"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/place_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_place_name"
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--Краткое описание-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/place_description_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/list_item_spacing"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/place_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_place_description"
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--Адрес-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/place_address_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/list_item_spacing"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/place_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_place_address"
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--Координаты-->
+        <LinearLayout
+            android:id="@+id/place_position_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/place_position"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/hint_place_position"
+                android:inputType="textPersonName"
+                android:maxLines="1" />
+
+            <ImageButton
+                android:id="@+id/myPositionButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_map_location_36dp"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/progress_location_bar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:orientation="horizontal"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!--Категории-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/place_categories"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/mainBackGroundColor"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:navigationIcon="@drawable/ic_arrow_back_24dp"
-                app:title="@string/add_place_title"
-                app:titleTextColor="@android:color/black" />
+                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/hint_place_categories"
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/categoryButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_add_circle_36dp" />
+        </LinearLayout>
+
+        <!--Фотографии-->
+        <LinearLayout
+            android:id="@+id/images_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/place_images"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
+                android:layout_weight="1"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/hint_place_images"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                tools:text="@string/hint_images_loading" />
+
+            <ImageButton
+                android:id="@+id/takeImageButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/list_item_spacing"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_add_image"
+                android:visibility="visible" />
 
             <ProgressBar
-                android:id="@+id/progress_sending"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:progressTint="@color/greenColor"
-                android:visibility="gone" />
-
-            <!--Название-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/place_title_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/place_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/hint_place_name"
-                    android:inputType="textCapSentences"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--Краткое описание-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/place_description_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/progress_image_bar"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="@dimen/list_item_spacing"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/place_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/hint_place_description"
-                    android:inputType="textCapSentences"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--Адрес-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/place_address_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/place_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="@string/hint_place_address"
-                    android:inputType="textCapSentences"
-                    android:maxLines="1" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--Координаты-->
-            <LinearLayout
-                android:id="@+id/place_position_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/place_position"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginVertical="@dimen/list_item_spacing"
-                    android:layout_marginStart="@dimen/list_item_spacing"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/hint_place_position"
-                    android:inputType="textPersonName"
-                    android:maxLines="1" />
-
-                <ImageButton
-                    android:id="@+id/myPositionButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_map_location_36dp"
-                    android:visibility="visible" />
-
-                <ProgressBar
-                    android:id="@+id/progress_location_bar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:orientation="horizontal"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <!--Категории-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/place_categories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/list_item_spacing"
-                    android:layout_weight="1"
-                    android:focusable="false"
-                    android:hint="@string/hint_place_categories"
-                    android:inputType="text" />
-
-                <ImageButton
-                    android:id="@+id/categoryButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_add_circle_36dp" />
-            </LinearLayout>
-
-            <!--Фотографии-->
-            <LinearLayout
-                android:id="@+id/images_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/place_images"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/list_item_spacing"
-                    android:layout_marginVertical="@dimen/list_item_spacing"
-                    android:layout_marginStart="@dimen/list_item_spacing"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:focusable="false"
-                    android:hint="@string/hint_place_images"
-                    android:inputType="textPersonName"
-                    android:maxLines="1"
-                    tools:text="@string/hint_images_loading" />
-
-                <ImageButton
-                    android:id="@+id/takeImageButton"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_add_image"
-                    android:visibility="visible" />
-
-                <ProgressBar
-                    android:id="@+id/progress_image_bar"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="@dimen/list_item_spacing"
-                    android:orientation="horizontal"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/clear_button"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="30dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorPrimary"
-                    android:minWidth="120dp"
-                    android:text="@string/clear_place_btn"
-                    android:textColor="@android:color/white"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/send_button"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="30dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorPrimary"
-                    android:minWidth="120dp"
-                    android:text="@string/add_place_btn"
-                    android:textColor="@android:color/white"
-                    tools:ignore="ButtonStyle" />
-            </LinearLayout>
-
+                android:orientation="horizontal"
+                android:visibility="gone" />
         </LinearLayout>
-    </ScrollView>
-</layout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/clear_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="30dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:minWidth="120dp"
+                android:text="@string/clear_place_btn"
+                android:textColor="@android:color/white"
+                tools:ignore="ButtonStyle" />
+
+            <Button
+                android:id="@+id/send_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="30dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:minWidth="120dp"
+                android:text="@string/add_place_btn"
+                android:textColor="@android:color/white"
+                tools:ignore="ButtonStyle" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

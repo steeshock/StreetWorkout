@@ -35,41 +35,34 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.setItemClickListener {
-                binding.place?.let { place ->
-                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onPlaceClicked(place)
-                }
+            binding.cardView.setOnClickListener {
+                callback.onPlaceClicked(items[layoutPosition])
             }
-            binding.setLikeClickListener {
-                binding.place?.let { place ->
-                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onLikeClicked(place)
-                }
+            binding.likeImageView.setOnClickListener {
+                callback.onLikeClicked(items[layoutPosition])
             }
-
-            binding.setPlaceLocationClickListener {
-                binding.place?.let { place ->
-                    if (absoluteAdapterPosition != RecyclerView.NO_POSITION) callback.onPlaceLocationClicked(place)
-                }
+            binding.likeImageView.setOnClickListener {
+                callback.onLikeClicked(items[layoutPosition])
             }
         }
 
         fun bind(item: Place) {
             binding.apply {
-                place = item
-                setupImagesSlider(this)
-                executePendingBindings()
+                placeAddressTextView.text = item.address
+                setupImagesSlider(this,item)
+                setupLikeImage(this,item)
             }
         }
     }
 
-    private fun setupImagesSlider(binding: PlaceItemBinding) {
+    private fun setupImagesSlider(binding: PlaceItemBinding, item: Place) {
 
         val imageList = ArrayList<SlideModel>()
 
-        for ((index, image) in binding.place?.images!!.withIndex()){
+        for ((index, image) in item.images!!.withIndex()){
 
             if (index == 0){
-                imageList.add(SlideModel(image, binding.place?.title, ScaleTypes.FIT))
+                imageList.add(SlideModel(image, item.title, ScaleTypes.FIT))
             }
             else{
                 imageList.add(SlideModel(image, null, ScaleTypes.FIT))
@@ -77,7 +70,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
 
         if (imageList.isEmpty()){
-            imageList.add(SlideModel(R.drawable.place_mock, binding.place?.title, ScaleTypes.FIT))
+            imageList.add(SlideModel(R.drawable.place_mock, item.title, ScaleTypes.FIT))
         }
 
         binding.imageSlider.setImageList(imageList)
@@ -86,11 +79,19 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             override fun onItemSelected(position: Int) {
 
                 // ToDo Здесь можно заложить логику на нажатие на конкретное изображение
-                binding.place?.let { place ->
+                item.let { place ->
                     callback.onPlaceClicked(place)
                 }
             }
         })
+    }
+
+    private fun setupLikeImage(binding: PlaceItemBinding, item: Place) {
+        if (item.isFavorite == true) {
+            binding.likeImageView.setImageResource(R.drawable.ic_heart_red_36dp)
+        } else {
+            binding.likeImageView.setImageResource(R.drawable.ic_heart_gray_36dp)
+        }
     }
 
     interface Callback {
