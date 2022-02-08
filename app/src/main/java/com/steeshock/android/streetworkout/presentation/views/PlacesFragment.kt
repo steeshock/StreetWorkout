@@ -19,6 +19,8 @@ import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
+import com.steeshock.android.streetworkout.utils.extensions.gone
+import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -114,19 +116,19 @@ class PlacesFragment : BaseFragment() {
 
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
-                binding.placesRecycler.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.GONE
-                binding.emptyList.mainLayout.visibility = View.VISIBLE
+                binding.placesRecycler.gone()
+                binding.emptyList.mainLayout.visible()
+                binding.emptyResults.mainLayout.gone()
             }
             EMPTY_SEARCH_RESULTS -> {
-                binding.placesRecycler.visibility = View.GONE
-                binding.emptyList.mainLayout.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.VISIBLE
+                binding.placesRecycler.gone()
+                binding.emptyList.mainLayout.gone()
+                binding.emptyResults.mainLayout.visible()
             }
             NOT_EMPTY -> {
-                binding.placesRecycler.visibility = View.VISIBLE
-                binding.emptyList.mainLayout.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.GONE
+                binding.placesRecycler.visible()
+                binding.emptyList.mainLayout.gone()
+                binding.emptyResults.mainLayout.gone()
             }
         }
     }

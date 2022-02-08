@@ -16,9 +16,11 @@ import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
-import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
+import com.steeshock.android.streetworkout.utils.extensions.gone
+import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class FavoritePlacesFragment : BaseFragment() {
@@ -86,20 +88,20 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun renderViewState(viewState: PlacesViewState?) {
         when (viewState?.emptyState) {
-            EmptyViewState.EMPTY_PLACES -> {
-                binding.placesRecycler.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.GONE
-                binding.emptyList.mainLayout.visibility = View.VISIBLE
+            EMPTY_PLACES -> {
+                binding.placesRecycler.gone()
+                binding.emptyList.mainLayout.visible()
+                binding.emptyResults.mainLayout.gone()
             }
-            EmptyViewState.EMPTY_SEARCH_RESULTS -> {
-                binding.placesRecycler.visibility = View.GONE
-                binding.emptyList.mainLayout.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.VISIBLE
+            EMPTY_SEARCH_RESULTS -> {
+                binding.placesRecycler.gone()
+                binding.emptyList.mainLayout.gone()
+                binding.emptyResults.mainLayout.visible()
             }
-            EmptyViewState.NOT_EMPTY -> {
-                binding.placesRecycler.visibility = View.VISIBLE
-                binding.emptyList.mainLayout.visibility = View.GONE
-                binding.emptyResults.mainLayout.visibility = View.GONE
+            NOT_EMPTY -> {
+                binding.placesRecycler.visible()
+                binding.emptyList.mainLayout.gone()
+                binding.emptyResults.mainLayout.gone()
             }
         }
     }

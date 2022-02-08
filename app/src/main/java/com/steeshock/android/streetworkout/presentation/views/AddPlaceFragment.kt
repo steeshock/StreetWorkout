@@ -38,6 +38,8 @@ import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.AddPlaceViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
+import com.steeshock.android.streetworkout.utils.extensions.gone
+import com.steeshock.android.streetworkout.utils.extensions.visible
 import java.util.*
 import javax.inject.Inject
 
@@ -62,7 +64,7 @@ class AddPlaceFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAddPlaceBinding.inflate(inflater, container, false)
         resultReceiver = AddressResultReceiver(Handler())
@@ -140,51 +142,39 @@ class AddPlaceFragment : BaseFragment() {
             resetFields()
         }
         if (viewState.isImagePickingInProgress) {
-            binding.takeImageButton.visibility = View.GONE
-            binding.progressImageBar.visibility = View.VISIBLE
+            binding.takeImageButton.gone()
+            binding.progressImageBar.visible()
             binding.placeImages.setText(R.string.hint_images_loading)
         } else {
-            binding.takeImageButton.visibility = View.VISIBLE
-            binding.progressImageBar.visibility = View.GONE
+            binding.takeImageButton.visible()
+            binding.progressImageBar.gone()
             binding.placeImages.setText(viewState.selectedImagesMessage)
         }
         if (viewState.isLocationInProgress) {
-            binding.myPositionButton.visibility = View.GONE
-            binding.progressLocationBar.visibility = View.VISIBLE
+            binding.myPositionButton.gone()
+            binding.progressLocationBar.visible()
         } else {
-            binding.myPositionButton.visibility = View.VISIBLE
-            binding.progressLocationBar.visibility = View.GONE
+            binding.myPositionButton.visible()
+            binding.progressLocationBar.gone()
         }
         if (viewState.isSendingInProgress) {
-            binding.placeCategories.isEnabled = false
-            binding.placeTitle.isEnabled = false
-            binding.placeDescription.isEnabled = false
-            binding.placePosition.isEnabled = false
-            binding.placeAddress.isEnabled = false
-            binding.placeImages.isEnabled = false
-            binding.categoryButton.isClickable = false
-            binding.placeImages.isClickable = false
-            binding.takeImageButton.isClickable = false
-            binding.clearButton.isClickable = false
-            binding.sendButton.isClickable = false
-            binding.myPositionButton.isClickable = false
-            binding.progressSending.visibility = View.VISIBLE
+            binding.progressSending.visible()
         } else {
-            binding.placeCategories.isEnabled = true
-            binding.placeTitle.isEnabled = true
-            binding.placeDescription.isEnabled = true
-            binding.placePosition.isEnabled = true
-            binding.placeAddress.isEnabled = true
-            binding.placeImages.isEnabled = true
-            binding.categoryButton.isClickable = true
-            binding.placeImages.isClickable = true
-            binding.takeImageButton.isClickable = true
-            binding.clearButton.isClickable = true
-            binding.sendButton.isClickable = true
-            binding.myPositionButton.isClickable = true
-            binding.progressSending.visibility = View.GONE
+            binding.progressSending.gone()
         }
 
+        binding.placeCategories.isEnabled = !viewState.isSendingInProgress
+        binding.placeTitle.isEnabled = !viewState.isSendingInProgress
+        binding.placeDescription.isEnabled = !viewState.isSendingInProgress
+        binding.placePosition.isEnabled = !viewState.isSendingInProgress
+        binding.placeAddress.isEnabled = !viewState.isSendingInProgress
+        binding.placeImages.isEnabled = !viewState.isSendingInProgress
+        binding.categoryButton.isClickable = !viewState.isSendingInProgress
+        binding.placeImages.isClickable = !viewState.isSendingInProgress
+        binding.takeImageButton.isClickable = !viewState.isSendingInProgress
+        binding.clearButton.isClickable = !viewState.isSendingInProgress
+        binding.sendButton.isClickable = !viewState.isSendingInProgress
+        binding.myPositionButton.isClickable = !viewState.isSendingInProgress
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
     }
@@ -300,8 +290,8 @@ class AddPlaceFragment : BaseFragment() {
             it.placePosition.text.clear()
             it.placeImages.text.clear()
             it.placeCategories.text.clear()
-            it.progressLocationBar.visibility = View.GONE
-            it.myPositionButton.visibility = View.VISIBLE
+            it.progressLocationBar.gone()
+            it.myPositionButton.visible()
             it.myPositionButton.isEnabled = true
             it.placeTitleInput.error = null
             it.placeAddressInput.error = null
@@ -439,7 +429,7 @@ class AddPlaceFragment : BaseFragment() {
      * Receiver for data sent from FetchAddressIntentService.
      */
     private inner class AddressResultReceiver(
-        handler: Handler
+        handler: Handler,
     ) : ResultReceiver(handler) {
 
         /**
@@ -511,7 +501,7 @@ class AddPlaceFragment : BaseFragment() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         Log.i(TAG, "onRequestPermissionResult")
 

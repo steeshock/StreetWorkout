@@ -5,13 +5,10 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.CategoryItemBinding
-import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 
 class CategoryAdapter(val callback: (Category) -> Unit) :
     RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
