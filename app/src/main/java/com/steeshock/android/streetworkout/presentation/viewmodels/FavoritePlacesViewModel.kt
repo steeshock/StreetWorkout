@@ -56,13 +56,11 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun onFavoriteStateChanged(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        place.changeFavoriteState()
-        insertPlace(place)
+        insertPlace(place.copy(isFavorite = false))
     }
 
     fun returnPlaceToFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        place.changeFavoriteState()
-        insertPlace(place)
+        insertPlace(place.copy(isFavorite = true))
     }
 
     private fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {

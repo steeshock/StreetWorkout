@@ -36,10 +36,10 @@ data class Place(
     @ColumnInfo(name = "images")
     var images: ArrayList<String>? = null,
 
-    ) {
     @ColumnInfo(name = "isFavorite")
-    var isFavorite: Boolean? = null
+    var isFavorite: Boolean = false,
 
+    ) {
     init {
         if (title.isEmpty()) title = "Случайное место"
         if (description.isEmpty()) description =
@@ -50,14 +50,6 @@ data class Place(
             "Улица Пушкина, дом Колотушкина Квартира Петрова, спросить Вольнова"
         if (categories.isNullOrEmpty()) categories = arrayListOf()
         if (images.isNullOrEmpty()) images = arrayListOf()
-    }
-
-    fun changeFavoriteState() {
-        if (this.isFavorite == null) {
-            this.isFavorite = true
-        } else {
-            this.isFavorite = !this.isFavorite!!
-        }
     }
 
     companion object {

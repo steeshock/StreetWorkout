@@ -23,11 +23,7 @@ open class FirebaseCategoriesRepository(
         fun getInstance(categoriesDao: CategoriesDao) =
             instance
                 ?: synchronized(this) {
-                    instance
-                        ?: FirebaseCategoriesRepository(
-                            categoriesDao,
-                        )
-                            .also { instance = it }
+                    instance ?: FirebaseCategoriesRepository(categoriesDao).also { instance = it }
                 }
     }
 

@@ -1,8 +1,8 @@
 package com.steeshock.android.streetworkout.presentation.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
@@ -25,10 +25,20 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         holder.bind(items[position])
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    override fun onBindViewHolder(holder: PlaceHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            if (payloads[0] == true) {
+                holder.bindFavoriteState(items[position])
+            }
+        }
+    }
+
     internal fun setPlaces(places: List<Place>) {
+        val result = DiffUtil.calculateDiff(PlacesDiffUtilCallback(this.items, places), false)
         this.items = places
-        notifyDataSetChanged()
+        result.dispatchUpdatesTo(this)
     }
 
     inner class PlaceHolder(private val binding: PlaceItemBinding) :
@@ -41,56 +51,56 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             binding.likeImageView.setOnClickListener {
                 callback.onLikeClicked(items[layoutPosition])
             }
-            binding.likeImageView.setOnClickListener {
-                callback.onLikeClicked(items[layoutPosition])
+            binding.locationImageView.setOnClickListener {
+                callback.onPlaceLocationClicked(items[layoutPosition])
             }
         }
 
         fun bind(item: Place) {
             binding.apply {
                 placeAddressTextView.text = item.address
-                setupImagesSlider(this,item)
-                setupLikeImage(this,item)
-            }
-        }
-    }
-
-    private fun setupImagesSlider(binding: PlaceItemBinding, item: Place) {
-
-        val imageList = ArrayList<SlideModel>()
-
-        for ((index, image) in item.images!!.withIndex()){
-
-            if (index == 0){
-                imageList.add(SlideModel(image, item.title, ScaleTypes.FIT))
-            }
-            else{
-                imageList.add(SlideModel(image, null, ScaleTypes.FIT))
+                bindImageSlider(item)
+                bindFavoriteState(item)
             }
         }
 
-        if (imageList.isEmpty()){
-            imageList.add(SlideModel(R.drawable.place_mock, item.title, ScaleTypes.FIT))
-        }
+        fun bindImageSlider(item: Place) {
 
-        binding.imageSlider.setImageList(imageList)
-        binding.imageSlider.stopSliding()
-        binding.imageSlider.setItemClickListener(object : ItemClickListener {
-            override fun onItemSelected(position: Int) {
+            val imageList = ArrayList<SlideModel>()
 
-                // ToDo Здесь можно заложить логику на нажатие на конкретное изображение
-                item.let { place ->
-                    callback.onPlaceClicked(place)
+            for ((index, image) in item.images!!.withIndex()){
+
+                if (index == 0){
+                    imageList.add(SlideModel(image, item.title, ScaleTypes.FIT))
+                }
+                else{
+                    imageList.add(SlideModel(image, null, ScaleTypes.FIT))
                 }
             }
-        })
-    }
 
-    private fun setupLikeImage(binding: PlaceItemBinding, item: Place) {
-        if (item.isFavorite == true) {
-            binding.likeImageView.setImageResource(R.drawable.ic_heart_red_36dp)
-        } else {
-            binding.likeImageView.setImageResource(R.drawable.ic_heart_gray_36dp)
+            if (imageList.isEmpty()){
+                imageList.add(SlideModel(R.drawable.place_mock, item.title, ScaleTypes.FIT))
+            }
+
+            binding.imageSlider.setImageList(imageList)
+            binding.imageSlider.stopSliding()
+            binding.imageSlider.setItemClickListener(object : ItemClickListener {
+                override fun onItemSelected(position: Int) {
+
+                    // ToDo Здесь можно заложить логику на нажатие на конкретное изображение
+                    item.let { place ->
+                        callback.onPlaceClicked(place)
+                    }
+                }
+            })
+        }
+
+        fun bindFavoriteState(item: Place) {
+            if (item.isFavorite) {
+                binding.likeImageView.setImageResource(R.drawable.ic_heart_red_36dp)
+            } else {
+                binding.likeImageView.setImageResource(R.drawable.ic_heart_gray_36dp)
+            }
         }
     }
 

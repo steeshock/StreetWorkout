@@ -28,11 +28,7 @@ open class FirebasePlacesRepository(
         fun getInstance(placesDao: PlacesDao) =
             instance
                 ?: synchronized(this) {
-                    instance
-                        ?: FirebasePlacesRepository(
-                            placesDao,
-                        )
-                            .also { instance = it }
+                    instance ?: FirebasePlacesRepository(placesDao).also { instance = it }
                 }
     }
 
@@ -44,14 +40,9 @@ open class FirebasePlacesRepository(
         database.getReference("places").get().addOnSuccessListener {
 
             for (child in it.children) {
-
                 val place = child.getValue<Place>()
-
-                val isFavorite =
-                    allPlaces.value?.find { p -> p.place_uuid == place?.place_uuid }?.isFavorite
-
-                place?.isFavorite = isFavorite
-
+                val isFavorite = allPlaces.value?.find { p -> p.place_uuid == place?.place_uuid }?.isFavorite
+                place?.isFavorite = isFavorite == true
                 place?.let { p -> places.add(p) }
             }
 

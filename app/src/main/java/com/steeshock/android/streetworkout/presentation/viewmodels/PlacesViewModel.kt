@@ -126,8 +126,7 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun onLikeClicked(place: Place) {
-        place.changeFavoriteState()
-        updatePlace(place)
+        updatePlace(place.copy(isFavorite = !place.isFavorite))
     }
 
     fun onFilterByCategory(category: Category) {
