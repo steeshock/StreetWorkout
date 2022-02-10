@@ -10,6 +10,7 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
+import com.steeshock.android.streetworkout.presentation.adapters.PlacePayloadType.*
 import java.util.*
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
@@ -29,8 +30,23 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads)
         } else {
-            if (payloads[0] == true) {
-                holder.bindFavoriteState(items[position])
+            val payloadList = payloads[0] as? MutableList<*>
+            payloadList?.let {
+                for (payload in it) {
+                    when (payload) {
+                        FAVORITE_PAYLOAD -> {
+                            holder.bindFavoriteState(items[position])
+                        }
+                        ADDRESS_PAYLOAD -> {
+                            holder.bindAddress(items[position])
+                        }
+                        IMAGES_PAYLOAD,
+                        TITLE_PAYLOAD,
+                        -> {
+                            holder.bindImageSlider(items[position])
+                        }
+                    }
+                }
             }
         }
     }
@@ -58,27 +74,30 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
 
         fun bind(item: Place) {
             binding.apply {
-                placeAddressTextView.text = item.address
+                bindAddress(item)
                 bindImageSlider(item)
                 bindFavoriteState(item)
             }
+        }
+
+        fun bindAddress(item: Place) {
+            binding.placeAddressTextView.text = item.address
         }
 
         fun bindImageSlider(item: Place) {
 
             val imageList = ArrayList<SlideModel>()
 
-            for ((index, image) in item.images!!.withIndex()){
+            for ((index, image) in item.images!!.withIndex()) {
 
-                if (index == 0){
+                if (index == 0) {
                     imageList.add(SlideModel(image, item.title, ScaleTypes.FIT))
-                }
-                else{
+                } else {
                     imageList.add(SlideModel(image, null, ScaleTypes.FIT))
                 }
             }
 
-            if (imageList.isEmpty()){
+            if (imageList.isEmpty()) {
                 imageList.add(SlideModel(R.drawable.place_mock, item.title, ScaleTypes.FIT))
             }
 
