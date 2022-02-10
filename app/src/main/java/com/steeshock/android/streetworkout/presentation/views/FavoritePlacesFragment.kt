@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -28,7 +29,7 @@ class FavoritePlacesFragment : BaseFragment() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: FavoritePlacesViewModel by viewModels { factory }
+    private val viewModel: FavoritePlacesViewModel by activityViewModels { factory }
 
     private var _binding: FragmentFavoritePlacesBinding? = null
     private val binding get() = _binding!!
