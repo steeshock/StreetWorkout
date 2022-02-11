@@ -9,6 +9,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.ICategorie
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 /**
  * Repository for work with REST endpoints
@@ -42,10 +43,15 @@ open class MockApiCategoriesRepository(
     }
 
     override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
-        val response = placesAPI.getCategories()
+        var result: Response<List<Category>>? = null
+        try {
+            result = placesAPI.getCategories()
+        } catch (t: Throwable) {
+            onResponse.onError(t)
+        }
         withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                onResponse.onSuccess(response.body())
+            if (result?.isSuccessful == true) {
+                onResponse.onSuccess(result.body())
             }
         }
         /**

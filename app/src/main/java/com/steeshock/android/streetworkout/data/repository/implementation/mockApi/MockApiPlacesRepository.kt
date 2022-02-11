@@ -9,12 +9,14 @@ import com.steeshock.android.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
+import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import java.util.*
 
 /**
@@ -51,10 +53,15 @@ open class MockApiPlacesRepository(
     }
 
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
-        val response = placesAPI.getPlaces()
+        var result: Response<List<Place>>? = null
+        try {
+            result = placesAPI.getPlaces()
+        } catch (t: Throwable) {
+            onResponse.onError(t)
+        }
         withContext(Dispatchers.Main) {
-            if (response.isSuccessful) {
-                onResponse.onSuccess(response.body())
+            if (result?.isSuccessful == true) {
+                onResponse.onSuccess(result.body())
             }
         }
         /**

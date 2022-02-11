@@ -69,7 +69,7 @@ class PlacesViewModel @Inject constructor(
 
     fun fetchPlaces() {
         mutableViewState.setNewState { copy(isLoading = true) }
-        (viewModelScope + exceptionHandler).launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             placesRepository.fetchPlaces(object :
                 APIResponse<List<Place>> {
                 override fun onSuccess(result: List<Place>?) {
@@ -89,7 +89,7 @@ class PlacesViewModel @Inject constructor(
 
     fun fetchCategories() {
         mutableViewState.setNewState { copy(isLoading = true) }
-        (viewModelScope + exceptionHandler).launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             categoriesRepository.fetchCategories(object :
                 APIResponse<List<Category>> {
                 override fun onSuccess(result: List<Category>?) {
@@ -174,10 +174,7 @@ class PlacesViewModel @Inject constructor(
         }
     }
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        handleError(throwable)
-    }
-    // TODO Work with errors
+    // TODO Handle errors on UI
     private fun handleError(throwable: Throwable) {
         mutableViewState.setNewState(postValue = true) {
             copy(isLoading = false)
