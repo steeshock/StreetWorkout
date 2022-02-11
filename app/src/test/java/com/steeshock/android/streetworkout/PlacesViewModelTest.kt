@@ -2,8 +2,8 @@ package com.steeshock.android.streetworkout
 
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
-import com.steeshock.android.streetworkout.data.repository.implementation.rxjava.RxJavaCategoriesRepository
-import com.steeshock.android.streetworkout.data.repository.implementation.rxjava.RxJavaPlacesRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiCategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -12,10 +12,10 @@ import org.mockito.Mockito.*
 
 class PlacesViewModelTest {
 
-    private val mockPlacesViewModelRepository: RxJavaPlacesRepository =
-        mock(RxJavaPlacesRepository::class.java)
-    private val mockCategoriesViewModelRepository: RxJavaCategoriesRepository =
-        mock(RxJavaCategoriesRepository::class.java)
+    private val mockPlacesViewModelRepository: MockApiPlacesRepository =
+        mock(MockApiPlacesRepository::class.java)
+    private val mockCategoriesViewModelRepository: MockApiCategoriesRepository =
+        mock(MockApiCategoriesRepository::class.java)
 
     private lateinit var places: MutableList<Place>
     private lateinit var categories: MutableList<Category>

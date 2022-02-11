@@ -1,21 +1,26 @@
-package com.steeshock.android.streetworkout.data.repository.implementation.rxjava
+package com.steeshock.android.streetworkout.data.repository.implementation.mockApi
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.steeshock.android.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
 
-open class RxJavaPlacesRepository(
+/**
+ * Repository for work with REST endpoints
+ */
+open class MockApiPlacesRepository(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {
@@ -28,7 +33,7 @@ open class RxJavaPlacesRepository(
     companion object {
 
         @Volatile
-        private var instance: RxJavaPlacesRepository? = null
+        private var instance: MockApiPlacesRepository? = null
 
         fun getInstance(
             placesDao: PlacesDao,
@@ -37,7 +42,7 @@ open class RxJavaPlacesRepository(
             instance
                 ?: synchronized(this) {
                     instance
-                        ?: RxJavaPlacesRepository(
+                        ?: MockApiPlacesRepository(
                             placesDao,
                             placesAPI
                         )
@@ -46,6 +51,16 @@ open class RxJavaPlacesRepository(
     }
 
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
+        val response = placesAPI.getPlaces()
+        withContext(Dispatchers.Main) {
+            if (response.isSuccessful) {
+                onResponse.onSuccess(response.body())
+            }
+        }
+        /**
+         * Obsolete RxJava approach
+         */
+        /*
         placesAPI.getPlaces()
             .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -56,8 +71,13 @@ open class RxJavaPlacesRepository(
             }).also {
                 compositeDisposable.add(it)
             }
+
+         */
     }
 
+    /**
+     * Firebase realization because of none implementation on Mock API
+     */
     override suspend fun uploadImage(uri: Uri, placeUUID: String): Uri? {
         val reference = Firebase.storage.reference.child("${placeUUID}/image-${Date().time}.jpg")
         val uploadTask = reference.putFile(uri)
@@ -70,12 +90,12 @@ open class RxJavaPlacesRepository(
         placesDao.insertPlace(newPlace)
     }
 
+    /**
+     * Firebase realization because of none implementation on Mock API
+     */
     override suspend fun insertPlaceRemote(newPlace: Place) {
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-
+        val database = Firebase.database(FIREBASE_PATH)
         val myRef = database.getReference("places").child(newPlace.place_uuid)
-
         myRef.setValue(newPlace).await()
     }
 
