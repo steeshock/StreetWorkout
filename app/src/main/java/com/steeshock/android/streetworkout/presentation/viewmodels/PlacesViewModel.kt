@@ -8,8 +8,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.ICategorie
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -74,12 +73,14 @@ class PlacesViewModel @Inject constructor(
             placesRepository.fetchPlaces(object :
                 APIResponse<List<Place>> {
                 override fun onSuccess(result: List<Place>?) {
-                    mutableViewState.setNewState { copy(isLoading = false) }
+                    mutableViewState.setNewState(postValue = true) {
+                        copy(isLoading = false)
+                    }
                     result?.let { insertPlaces(it) }
                 }
 
                 override fun onError(t: Throwable) {
-                    mutableViewState.setNewState { copy(isLoading = false) }
+                    handleError(t)
                     t.printStackTrace()
                 }
             })
@@ -92,12 +93,14 @@ class PlacesViewModel @Inject constructor(
             categoriesRepository.fetchCategories(object :
                 APIResponse<List<Category>> {
                 override fun onSuccess(result: List<Category>?) {
-                    mutableViewState.setNewState {copy(isLoading = false) }
+                    mutableViewState.setNewState(postValue = true) {
+                        copy(isLoading = false)
+                    }
                     result?.let { insertCategories(it) }
                 }
 
                 override fun onError(t: Throwable) {
-                    mutableViewState.setNewState { copy(isLoading = false) }
+                    handleError(t)
                     t.printStackTrace()
                 }
             })
@@ -145,7 +148,7 @@ class PlacesViewModel @Inject constructor(
             actualPlaces.value = if (filterList.isEmpty()) {
                 it
             } else {
-                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true}
+                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true }
             }
 
             filteredPlaces.value = actualPlaces.value
@@ -165,15 +168,30 @@ class PlacesViewModel @Inject constructor(
         actualPlaces.value = if (lastSearchString.isNullOrEmpty())
             filteredPlaces.value
         else {
-            filteredPlaces.value?.filter { it.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+            filteredPlaces.value?.filter {
+                it.title.lowercase(Locale.ROOT).contains(lastSearchString)
+            }
+        }
+    }
+
+    // TODO Handle errors on UI
+    private fun handleError(throwable: Throwable) {
+        mutableViewState.setNewState(postValue = true) {
+            copy(isLoading = false)
         }
     }
 
     private fun MutableLiveData<PlacesViewState>.setNewState(
+        postValue: Boolean = false,
         block: PlacesViewState.() -> PlacesViewState,
     ) {
         val currentState = value ?: PlacesViewState()
         val newState = currentState.run { block() }
-        value = newState
+
+        if (postValue) {
+            postValue(newState)
+        } else {
+            value = newState
+        }
     }
 }

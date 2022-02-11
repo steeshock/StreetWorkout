@@ -6,13 +6,18 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.steeshock.android.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
+/**
+ * Repository for work with Firebase Realtime Database
+ */
 open class FirebasePlacesRepository(
     private val placesDao: PlacesDao
 ) : IPlacesRepository {
@@ -33,8 +38,7 @@ open class FirebasePlacesRepository(
     }
 
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+        val database = Firebase.database(FIREBASE_PATH)
         val places: MutableList<Place> = mutableListOf()
 
         database.getReference("places").get().addOnSuccessListener {
@@ -66,11 +70,8 @@ open class FirebasePlacesRepository(
     }
 
     override suspend fun insertPlaceRemote(newPlace: Place) {
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
-
+        val database = Firebase.database(FIREBASE_PATH)
         val myRef = database.getReference("places").child(newPlace.place_uuid)
-
         myRef.setValue(newPlace).await()
     }
 

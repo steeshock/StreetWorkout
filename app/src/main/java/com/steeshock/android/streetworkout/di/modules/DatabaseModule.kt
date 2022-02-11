@@ -7,6 +7,8 @@ import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.database.PlacesDatabase
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiCategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiPlacesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import dagger.Module
@@ -24,8 +26,8 @@ class DatabaseModule(private val appContext: Context) {
         // Реализация для работы с Firebase Realtime Database
         return FirebasePlacesRepository.getInstance(placesDao)
 
-        // Реализация для работы с API на сервере
-        //return RxJavaPlacesRepository.getInstance(placesDao, placesAPI)
+        // Реализация для работы с Mock API на сервере
+        //return MockApiPlacesRepository.getInstance(placesDao, placesAPI)
     }
 
     @Provides
@@ -37,8 +39,8 @@ class DatabaseModule(private val appContext: Context) {
         // Реализация для работы с Firebase Realtime Database
         return FirebaseCategoriesRepository.getInstance(categoriesDao)
 
-        // Реализация для работы с API на сервере
-        //return RxJavaCategoriesRepository.getInstance(categoriesDao, placesAPI)
+        // Реализация для работы с Mock API на сервере
+        //return MockApiCategoriesRepository.getInstance(categoriesDao, placesAPI)
     }
 
     @Provides

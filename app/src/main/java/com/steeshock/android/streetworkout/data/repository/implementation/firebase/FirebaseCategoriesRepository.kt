@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.steeshock.android.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.database.CategoriesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Repository for work with Firebase Realtime Database
+ */
 open class FirebaseCategoriesRepository(
     private val categoriesDao: CategoriesDao
 ) : ICategoriesRepository {
@@ -28,8 +33,7 @@ open class FirebaseCategoriesRepository(
     }
 
     override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
-        val database =
-            Firebase.database("https://test-projects-b523c-default-rtdb.europe-west1.firebasedatabase.app/")
+        val database = Firebase.database(FIREBASE_PATH)
         val categories: MutableList<Category> = mutableListOf()
 
         database.getReference("categories").get().addOnSuccessListener {
