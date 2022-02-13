@@ -38,6 +38,7 @@ search conditions"</string>
     <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Determine my geolocation</u></string>
     <string name="add_place_btn">Publish</string>
+    <string name="auth_btn">Authorization</string>
     <string name="clear_place_btn">Clear</string>
     <string name="success_message">Success</string>
     <string name="failed_message">Sending failed</string>

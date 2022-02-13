@@ -31,13 +31,19 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.steeshock.android.streetworkout.common.MainActivity"
-            android:exported="true">
+            android:name=".presentation.views.AuthActivity"
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.steeshock.android.streetworkout.presentation.views.HomeActivity"
+            android:exported="true">
         </activity>
 
         <!-- Service to asynchronously fetch a location address using a Geocoder. Setting the

@@ -22,4 +22,6 @@ interface AppComponent {
     fun provideFavoritePlacesComponent(): FavoritePlacesComponent
 
     fun provideProfileComponent(): ProfileComponent
+
+    fun provideAuthComponent(): AuthComponent
 }

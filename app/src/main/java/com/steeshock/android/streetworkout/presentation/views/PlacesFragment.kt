@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
@@ -46,7 +45,7 @@ class PlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlacesBinding.inflate(inflater, container, false)
-        (container?.context as MainActivity).setSupportActionBar(_binding?.toolbar)
+        (container?.context as HomeActivity).setSupportActionBar(_binding?.toolbar)
         return binding.root
     }
 

@@ -5,14 +5,12 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
@@ -46,7 +44,7 @@ class FavoritePlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
-        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
+        (container?.context as HomeActivity).setSupportActionBar(binding.toolbar)
         return binding.root
     }
 
@@ -150,8 +148,8 @@ class FavoritePlacesFragment : BaseFragment() {
 
         val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" ${resources.getString(R.string.place_removed)}", Snackbar.LENGTH_LONG) }
 
-        if (activity is MainActivity) {
-            val baseline = (activity as MainActivity).baseline
+        if (activity is HomeActivity) {
+            val baseline = (activity as HomeActivity).baseline
             rollbackSnack?.anchorView = baseline
         }
 

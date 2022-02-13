@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place
@@ -48,7 +47,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
+        (container?.context as HomeActivity).setSupportActionBar(binding.toolbar)
         mapFragment?.getMapAsync(this)
         return binding.root
     }
