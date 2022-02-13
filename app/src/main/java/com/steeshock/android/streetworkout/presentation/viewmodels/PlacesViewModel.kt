@@ -169,7 +169,7 @@ class PlacesViewModel @Inject constructor(
             filteredPlaces.value
         else {
             filteredPlaces.value?.filter {
-                it.title.lowercase(Locale.ROOT).contains(lastSearchString)
+                it.title.lowercase(Locale.ROOT).contains(lastSearchString.lowercase())
             }
         }
     }
