@@ -1,7 +1,6 @@
 package com.steeshock.android.streetworkout.presentation.views
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.AuthViewModel
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
-import java.util.*
 import javax.inject.Inject
 
 class AuthActivity : AppCompatActivity() {
@@ -60,9 +58,13 @@ class AuthActivity : AppCompatActivity() {
                 showSnackbar(viewEvent.userEmail)
                 startActivity(Intent(this, HomeActivity::class.java, ))
             }
+            is SuccessAuthorization -> {
+                startActivity(Intent(this, HomeActivity::class.java, ))
+            }
         }
     }
 
+    // TODO("Показывать другой вью элемент")
     private fun showSnackbar(message: String?) {
         Snackbar.make(
             binding.root,

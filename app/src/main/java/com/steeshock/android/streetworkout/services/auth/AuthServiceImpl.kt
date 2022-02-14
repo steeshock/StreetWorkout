@@ -26,8 +26,6 @@ class AuthServiceImpl : IAuthService {
         onSuccess: (String?) -> Unit,
         onError: () -> Unit,
     ) {
-        // TODO("Убрать задержку")
-        delay(2000)
         auth.createUserWithEmailAndPassword(
             userCredentials.email,
             userCredentials.password,

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mainBackGroundColor"
-    tools:ignore="ContentDescription, Autofill">
+    tools:ignore="ContentDescription, Autofill, ButtonStyle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,16 +35,17 @@
         <!--Название-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_title_input"
+            style="@style/AuthTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
+            android:layout_marginTop="@dimen/list_item_spacing"
+            android:layout_marginHorizontal="@dimen/list_item_spacing"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/place_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="@string/hint_place_name"
                 android:inputType="textCapSentences"
                 android:maxLines="1" />
@@ -54,6 +55,7 @@
         <!--Краткое описание-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_description_input"
+            style="@style/AuthTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/list_item_spacing"
@@ -63,7 +65,6 @@
                 android:id="@+id/place_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="@string/hint_place_description"
                 android:inputType="textCapSentences"
                 android:maxLines="1" />
@@ -73,16 +74,16 @@
         <!--Адрес-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_address_input"
+            style="@style/AuthTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_spacing"
+            android:layout_marginHorizontal="@dimen/list_item_spacing"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/place_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:hint="@string/hint_place_address"
                 android:inputType="textCapSentences"
                 android:maxLines="1" />
@@ -96,18 +97,23 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/place_position"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/AuthTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:layout_marginBottom="@dimen/list_item_spacing"
                 android:layout_marginStart="@dimen/list_item_spacing"
                 android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/hint_place_position"
-                android:inputType="textPersonName"
-                android:maxLines="1" />
+                android:hint="@string/hint_place_position">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/myPositionButton"
@@ -135,15 +141,23 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/place_categories"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/AuthTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/list_item_spacing"
+                android:layout_marginVertical="@dimen/list_item_spacing"
+                android:layout_marginStart="@dimen/list_item_spacing"
                 android:layout_weight="1"
-                android:focusable="false"
-                android:hint="@string/hint_place_categories"
-                android:inputType="text" />
+                android:hint="@string/hint_place_categories">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_categories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <ImageButton
                 android:id="@+id/categoryButton"
@@ -162,21 +176,24 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/place_images"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/AuthTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/list_item_spacing"
                 android:layout_marginVertical="@dimen/list_item_spacing"
                 android:layout_marginStart="@dimen/list_item_spacing"
                 android:layout_weight="1"
-                android:ems="10"
-                android:focusable="false"
-                android:hint="@string/hint_place_images"
-                android:inputType="textPersonName"
-                android:maxLines="1"
-                tools:text="@string/hint_images_loading" />
+                android:hint="@string/hint_place_images">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/place_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:focusable="false"
+                    android:inputType="textPersonName"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/takeImageButton"
@@ -199,6 +216,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -206,26 +224,23 @@
                 android:id="@+id/clear_button"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_margin="30dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_weight="1"
+                android:layout_marginTop="10dp"
                 android:background="@color/colorPrimary"
-                android:minWidth="120dp"
                 android:text="@string/clear_place_btn"
-                android:textColor="@android:color/white"
-                tools:ignore="ButtonStyle" />
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/send_button"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:layout_margin="30dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:minWidth="120dp"
                 android:text="@string/add_place_btn"
-                android:textColor="@android:color/white"
-                tools:ignore="ButtonStyle" />
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
     </LinearLayout>

@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 class AuthViewModel @Inject constructor(
@@ -26,9 +27,16 @@ class AuthViewModel @Inject constructor(
     val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
 
     fun requestAuthState() = viewModelScope.launch(Dispatchers.IO) {
-        val isAuthorized = authService.isUserAuthorized()
-        mutableViewState.setNewState(postValue = true) {
-            copy(isUserAuthorized = isAuthorized)
+        if (authService.isUserAuthorized()) {
+            mutableViewState.setNewState(postValue = true) { copy(isLoading = true) }
+
+            // TODO("Delay for more smooth UX")
+            delay(1500)
+
+            sendViewEvent(
+                postValue = true,
+                event = SuccessAuthorization,
+            )
         }
     }
 
@@ -46,7 +54,7 @@ class AuthViewModel @Inject constructor(
                 mutableViewState.setNewState(postValue = true) {
                     copy(isLoading = false)
                 }
-                sendViewEvent(AuthViewEvent.SuccessSignUp(userEmail = email))
+                sendViewEvent(SuccessSignUp(userEmail = email))
             },
             onError = {
                 mutableViewState.setNewState(postValue = true) { copy(isLoading = false) }
@@ -68,7 +76,14 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun sendViewEvent(event: AuthViewEvent) {
-        mutableViewEvent.value = event
+    private fun sendViewEvent(
+        event: AuthViewEvent,
+        postValue: Boolean = false,
+    ) {
+        if (postValue) {
+            mutableViewEvent.postValue(event)
+        } else {
+            mutableViewEvent.value = event
+        }
     }
 }

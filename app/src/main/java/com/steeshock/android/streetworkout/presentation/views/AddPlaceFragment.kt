@@ -217,18 +217,18 @@ class AddPlaceFragment : BaseFragment() {
 
     private fun addCategories() {
         if (viewModel.selectedCategories.isEmpty()) {
-            binding.placeCategories.text.clear()
+            binding.placeCategories.text?.clear()
             return
         }
 
-        binding.placeCategories.text.clear()
+        binding.placeCategories.text?.clear()
 
         viewModel.selectedCategories.forEach { i ->
             run {
                 val category = allCategories.find { j -> j.category_id == i }?.category_name
 
                 if (!category.isNullOrEmpty()) {
-                    binding.placeCategories.text.append(
+                    binding.placeCategories.text?.append(
                         category,
                         "; "
                     )
@@ -287,9 +287,9 @@ class AddPlaceFragment : BaseFragment() {
             it.placeTitle.text?.clear()
             it.placeDescription.text?.clear()
             it.placeAddress.text?.clear()
-            it.placePosition.text.clear()
-            it.placeImages.text.clear()
-            it.placeCategories.text.clear()
+            it.placePosition.text?.clear()
+            it.placeImages.text?.clear()
+            it.placeCategories.text?.clear()
             it.progressLocationBar.gone()
             it.myPositionButton.visible()
             it.myPositionButton.isEnabled = true
@@ -453,8 +453,8 @@ class AddPlaceFragment : BaseFragment() {
 
     private fun displayAddressOutput() {
         binding.placeAddress.setText(addressOutput)
-        binding.placePosition.text.clear()
-        binding.placePosition.text.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
+        binding.placePosition.text?.clear()
+        binding.placePosition.text?.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
     }
 
     private fun checkPermissions(): Boolean {

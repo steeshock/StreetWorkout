@@ -8,4 +8,9 @@ sealed class AuthViewEvent {
      * Success registration of new user
      */
     data class SuccessSignUp(val userEmail: String?): AuthViewEvent()
+
+    /**
+     * Current user is authorized
+     */
+    object SuccessAuthorization: AuthViewEvent()
 }
