@@ -37,7 +37,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>
-    <string name="auth_btn">Авторизоваться</string>
+    <string name="sign_in_button_title">Авторизоваться</string>
+    <string name="sign_up_button_title">Регистрация</string>
     <string name="clear_place_btn">Очистить</string>
     <string name="success_message">Успешно</string>
     <string name="failed_message">Ошибка при отправке</string>

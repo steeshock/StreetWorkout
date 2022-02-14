@@ -7,7 +7,25 @@ interface IAuthService {
     suspend fun isUserAuthorized(): Boolean
 
     /**
-     * Authorization with credentials
+     * Get current authorized user email
      */
-    suspend fun authorize(userCredentials: AuthCredentials)
+    suspend fun getUserEmail(): String?
+
+    /**
+     * Sign up new user (registration)
+     */
+    suspend fun signUp(
+        userCredentials: UserCredentials,
+        onSuccess: (String?) -> Unit,
+        onError: () -> Unit,
+    )
+
+    /**
+     * Sign in existing user (authorization)
+     */
+    suspend fun signIn(
+        userCredentials: UserCredentials,
+        onSuccess: () -> Unit,
+        onError: () -> Unit,
+    )
 }

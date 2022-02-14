@@ -1,6 +1,5 @@
 package com.steeshock.android.streetworkout.presentation.views
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +9,6 @@ import com.steeshock.android.streetworkout.databinding.ActivityAuthBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.AuthViewModel
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
-import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class AuthActivity : AppCompatActivity() {
@@ -29,8 +27,9 @@ class AuthActivity : AppCompatActivity() {
         _binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.authButton.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java, ))
+        binding.signUpButton.setOnClickListener {
+            viewModel.signUpNewUser()
+            //startActivity(Intent(this, HomeActivity::class.java, ))
         }
 
         viewModel.viewState.observe(this) {
@@ -39,14 +38,12 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun renderViewState(viewState: AuthViewState) {
-        //binding.progress.visibility = viewState.isLoading.toVisibility()
-        if (viewState.isUserAuthorized) {
-            binding.authButton.visible()
-        }
+        binding.progress.visibility = viewState.isLoading.toVisibility()
+        binding.emailEditText.setText(viewState.userEmail)
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.onRequestAuthState()
+        viewModel.requestAuthState()
     }
 }
