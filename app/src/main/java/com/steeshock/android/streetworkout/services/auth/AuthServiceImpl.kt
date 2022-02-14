@@ -3,6 +3,7 @@ package com.steeshock.android.streetworkout.services.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 
 class AuthServiceImpl : IAuthService {
 
@@ -16,11 +17,17 @@ class AuthServiceImpl : IAuthService {
         return auth.currentUser?.email
     }
 
+    override suspend fun getUsername(): String? {
+        return auth.currentUser?.displayName
+    }
+
     override suspend fun signUp(
         userCredentials: UserCredentials,
         onSuccess: (String?) -> Unit,
         onError: () -> Unit,
     ) {
+        // TODO("Убрать задержку")
+        delay(2000)
         auth.createUserWithEmailAndPassword(
             userCredentials.email,
             userCredentials.password,

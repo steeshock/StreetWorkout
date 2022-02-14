@@ -7,8 +7,6 @@ data class AuthViewState(
     val isLoading: Boolean = false,
 
     val isUserAuthorized: Boolean = false,
-
-    val userEmail: String? = null,
 )
 
 

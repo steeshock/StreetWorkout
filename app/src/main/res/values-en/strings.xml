@@ -53,6 +53,11 @@ search conditions"</string>
     <string name="address_found">Address found</string>
     <string name="place_removed">removed from favorites</string>
     <string name="rollback_place">Abort…</string>
+    <string name="email_hint">Enter email</string>
+    <string name="password_hint">Enter password</string>
+    <string name="email_input_hint">Email</string>
+    <string name="password_input_hint">Password</string>
+    <string name="success_sign_up">User %s successfully sign up</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>

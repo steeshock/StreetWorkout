@@ -52,6 +52,11 @@
     <string name="address_found">Адрес найден</string>
     <string name="place_removed">удалено из избранного</string>
     <string name="rollback_place">Вернуть…</string>
+    <string name="email_hint">Введите email</string>
+    <string name="password_hint">Введите пароль</string>
+    <string name="email_input_hint">Email</string>
+    <string name="password_input_hint">Пароль</string>
+    <string name="success_sign_up">Пользователь %s успешно зарегистрирован</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>

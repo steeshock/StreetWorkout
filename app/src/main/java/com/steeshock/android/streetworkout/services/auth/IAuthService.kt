@@ -12,6 +12,11 @@ interface IAuthService {
     suspend fun getUserEmail(): String?
 
     /**
+     * Get current authorized user name
+     */
+    suspend fun getUsername(): String?
+
+    /**
      * Sign up new user (registration)
      */
     suspend fun signUp(

@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
@@ -15,38 +17,36 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authService: IAuthService,
 ) : ViewModel() {
+
     private val mutableViewState: MutableLiveData<AuthViewState> = MutableLiveData()
     val viewState: LiveData<AuthViewState>
         get() = mutableViewState
 
+    private val mutableViewEvent = SingleLiveEvent<AuthViewEvent>()
+    val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
+
     fun requestAuthState() = viewModelScope.launch(Dispatchers.IO) {
         val isAuthorized = authService.isUserAuthorized()
-        var userEmail: String? = null
-        if (isAuthorized) {
-            userEmail = authService.getUserEmail()
-        }
         mutableViewState.setNewState(postValue = true) {
-            copy(
-                isUserAuthorized = isAuthorized,
-                userEmail = userEmail,
-            )
+            copy(isUserAuthorized = isAuthorized)
         }
     }
 
-    fun signUpNewUser() = viewModelScope.launch(Dispatchers.IO) {
+    fun signUpNewUser(
+        email: String,
+        password: String,
+    ) = viewModelScope.launch(Dispatchers.IO) {
         mutableViewState.setNewState(postValue = true) { copy(isLoading = true) }
         authService.signUp(
             userCredentials = UserCredentials(
-                email = "${UUID.randomUUID().toString().subSequence(0..5)}@gmail.com",
-                password = "12345678",
+                email = email,
+                password = password,
             ),
             onSuccess = { email ->
                 mutableViewState.setNewState(postValue = true) {
-                    copy(
-                        isLoading = false,
-                        userEmail = email,
-                    )
+                    copy(isLoading = false)
                 }
+                sendViewEvent(AuthViewEvent.SuccessSignUp(userEmail = email))
             },
             onError = {
                 mutableViewState.setNewState(postValue = true) { copy(isLoading = false) }
@@ -66,5 +66,9 @@ class AuthViewModel @Inject constructor(
         } else {
             value = newState
         }
+    }
+
+    private fun sendViewEvent(event: AuthViewEvent) {
+        mutableViewEvent.value = event
     }
 }
