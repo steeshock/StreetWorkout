@@ -11,7 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.steeshock.android.streetworkout.R
 
 @OptIn(NavigationUiSaveStateControl::class)
-class HomeActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     var baseline: View? = null
 

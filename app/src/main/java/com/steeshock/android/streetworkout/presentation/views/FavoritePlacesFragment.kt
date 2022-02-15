@@ -44,7 +44,7 @@ class FavoritePlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
-        (container?.context as HomeActivity).setSupportActionBar(binding.toolbar)
+        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
         return binding.root
     }
 
@@ -152,19 +152,12 @@ class FavoritePlacesFragment : BaseFragment() {
                 Snackbar.LENGTH_LONG
             )
         }
-
-        if (activity is HomeActivity) {
-            val baseline = (activity as HomeActivity).baseline
-            rollbackSnack?.anchorView = baseline
-        }
-
+        rollbackSnack?.anchorView = getBaseline()
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction(R.string.rollback_place) {
             viewModel.returnPlaceToFavorites(item)
         }
-
         rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-
         rollbackSnack?.show()
     }
 

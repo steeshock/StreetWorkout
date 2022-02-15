@@ -47,7 +47,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        (container?.context as HomeActivity).setSupportActionBar(binding.toolbar)
+        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
         mapFragment?.getMapAsync(this)
         return binding.root
     }

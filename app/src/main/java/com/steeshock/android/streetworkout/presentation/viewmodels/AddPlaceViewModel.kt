@@ -40,7 +40,7 @@ class AddPlaceViewModel @Inject constructor(
         onSuccessValidation: () -> Unit = {},
     ) {
         sendingPlace = place
-        mutableViewState.setNewState {
+        mutableViewState.updateState {
             copy(
                 isSendingInProgress = true,
                 sendingProgress = 0,
@@ -62,7 +62,7 @@ class AddPlaceViewModel @Inject constructor(
         val result = placesRepository.uploadImage(uri, placeUUID)
         downloadedImagesLinks.add(result.toString())
 
-        mutableViewState.setNewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
+        mutableViewState.updateState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
         delay(500)
 
         if (downloadedImagesLinks.size == selectedImages.size) {
@@ -79,7 +79,7 @@ class AddPlaceViewModel @Inject constructor(
             placesRepository.insertPlaceRemote(it)
         }
 
-        mutableViewState.setNewState(postValue = true) {
+        mutableViewState.updateState(postValue = true) {
             copy(
                 sendingProgress = ++sendingProgress
             )
@@ -87,7 +87,7 @@ class AddPlaceViewModel @Inject constructor(
 
         delay(300)
 
-        mutableViewState.setNewState(postValue = true) {
+        mutableViewState.updateState(postValue = true) {
             copy(
                 loadCompleted = true,
                 isSendingInProgress = false,
@@ -101,7 +101,7 @@ class AddPlaceViewModel @Inject constructor(
         selectedCategories.clear()
         downloadedImagesLinks.clear()
         checkedCategoriesArray = BooleanArray(allCategories.value?.size!!)
-        mutableViewState.setNewState(postValue = true) {
+        mutableViewState.updateState(postValue = true) {
             copy(
                 loadCompleted = false,
                 selectedImagesMessage = "",
@@ -111,7 +111,7 @@ class AddPlaceViewModel @Inject constructor(
 
     fun onImagePicked(data: Intent?) {
         selectedImages.add(data?.data!!)
-        mutableViewState.setNewState {
+        mutableViewState.updateState {
             copy(
                 isImagePickingInProgress = false,
                 selectedImagesMessage = "Прикреплено фотографий: ${selectedImages.size}",
@@ -120,7 +120,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     fun onOpenedImagePicker(isPickerVisible: Boolean) {
-        mutableViewState.setNewState {
+        mutableViewState.updateState {
             copy(
                 isImagePickingInProgress = isPickerVisible,
             )
@@ -128,14 +128,14 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     fun onLocationProgressChanged(isLocationInProgress: Boolean) {
-        mutableViewState.setNewState {
+        mutableViewState.updateState {
             copy(
                 isLocationInProgress = isLocationInProgress,
             )
         }
     }
 
-    private fun MutableLiveData<AddPlaceViewState>.setNewState(
+    private fun MutableLiveData<AddPlaceViewState>.updateState(
         postValue: Boolean = false,
         block: AddPlaceViewState.() -> AddPlaceViewState,
     ) {

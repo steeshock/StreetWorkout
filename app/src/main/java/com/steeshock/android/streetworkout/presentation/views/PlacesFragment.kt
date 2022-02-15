@@ -45,7 +45,7 @@ class PlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlacesBinding.inflate(inflater, container, false)
-        (container?.context as HomeActivity).setSupportActionBar(_binding?.toolbar)
+        (container?.context as MainActivity).setSupportActionBar(_binding?.toolbar)
         return binding.root
     }
 
