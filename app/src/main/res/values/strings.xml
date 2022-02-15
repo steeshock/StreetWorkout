@@ -37,7 +37,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>
-    <string name="sign_in_button_title">Авторизоваться</string>
+    <string name="sign_in_button_title">Авторизация</string>
     <string name="sign_up_button_title">Регистрация</string>
     <string name="clear_place_btn">Очистить</string>
     <string name="success_message">Успешно</string>
@@ -57,6 +57,7 @@
     <string name="email_input_hint">Email</string>
     <string name="password_input_hint">Пароль</string>
     <string name="success_sign_up">Пользователь %s успешно зарегистрирован</string>
+    <string name="success_sign_in">Добро пожаловать %s!</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>

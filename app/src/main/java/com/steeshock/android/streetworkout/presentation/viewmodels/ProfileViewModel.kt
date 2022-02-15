@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.SuccessAuthorization
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.SuccessSignUp
+import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.services.auth.IAuthService
@@ -29,9 +28,31 @@ class ProfileViewModel @Inject constructor(
         if (authService.isUserAuthorized()) {
             sendViewEvent(
                 postValue = true,
-                event = SuccessAuthorization,
+                event = SuccessSignIn(authService.getUserEmail()),
             )
         }
+    }
+
+    fun signInUser(
+        email: String,
+        password: String,
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        authService.signIn(
+            userCredentials = UserCredentials(
+                email = email,
+                password = password,
+            ),
+            onSuccess = { email ->
+                mutableViewState.updateState(postValue = true) {
+                    copy(isLoading = false)
+                }
+                sendViewEvent(SuccessSignIn(userEmail = email))
+            },
+            onError = {
+                mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+            }
+        )
     }
 
     fun signUpNewUser(

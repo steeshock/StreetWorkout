@@ -12,5 +12,5 @@ sealed class AuthViewEvent {
     /**
      * Current user is authorized
      */
-    object SuccessAuthorization: AuthViewEvent()
+    data class SuccessSignIn(val userEmail: String?): AuthViewEvent()
 }

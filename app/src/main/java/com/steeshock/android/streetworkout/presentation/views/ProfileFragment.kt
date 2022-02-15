@@ -12,8 +12,7 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.SuccessAuthorization
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.SuccessSignUp
+import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
@@ -53,6 +52,13 @@ class ProfileFragment : BaseFragment() {
             )
         }
 
+        binding.signInButton.setOnClickListener {
+            viewModel.signInUser(
+                email = getEmail(),
+                password = getPassword(),
+            )
+        }
+
         viewModel.viewState.observe(this) {
             renderViewState(it)
         }
@@ -69,29 +75,31 @@ class ProfileFragment : BaseFragment() {
 
     private fun renderViewEvent(viewEvent: AuthViewEvent) {
         when(viewEvent) {
-            is SuccessSignUp -> {
-                showSnackbar(viewEvent.userEmail)
-            }
-            is SuccessAuthorization -> {
-
+            is SuccessSignUp,
+            is SuccessSignIn -> {
+                showSnackbar(viewEvent)
             }
         }
     }
 
     // TODO("Показывать другой вью элемент")
-    private fun showSnackbar(message: String?) {
-        val snackbar = Snackbar.make(
-            binding.root,
-            if (message != null) getString(R.string.success_sign_up, message) else getString(R.string.failed_message),
-            Snackbar.LENGTH_LONG
-        )
+    private fun showSnackbar(viewEvent: AuthViewEvent) {
+        val message = when(viewEvent) {
+            is SuccessSignUp -> {
+                getString(R.string.success_sign_up, viewEvent.userEmail)
+            }
+            is SuccessSignIn -> {
+                getString(R.string.success_sign_in, viewEvent.userEmail)
+            }
+        }
+        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
         snackbar.anchorView = getBaseline()
         snackbar.show()
     }
 
     private fun getEmail() = binding.emailEditText.text.toString()
 
-    private fun getPassword() = binding.emailEditText.text.toString()
+    private fun getPassword() = binding.passwordEditText.text.toString()
 
     override fun onDestroyView() {
         super.onDestroyView()

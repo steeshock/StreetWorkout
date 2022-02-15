@@ -8,6 +8,7 @@ import com.steeshock.android.streetworkout.data.repository.interfaces.ICategorie
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class PlacesViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     private val categoriesRepository: ICategoriesRepository,
+    private val authService: IAuthService,
 ) : ViewModel() {
 
     private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
@@ -142,6 +144,12 @@ class PlacesViewModel @Inject constructor(
         }
         filterData(filterList)
         updateCategory(category)
+    }
+
+    fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized()) {
+            // TODO("Добавить обработку добавления мест только для авторизованных пользователей")
+        }
     }
 
     private fun filterData(filterList: MutableList<Category>) {

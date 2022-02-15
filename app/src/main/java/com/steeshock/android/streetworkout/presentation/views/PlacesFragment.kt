@@ -69,6 +69,7 @@ class PlacesFragment : BaseFragment() {
         }
 
         binding.fab.setOnClickListener {
+            viewModel.onAddNewPlaceClicked()
             showAddPlaceFragment(it)
         }
 

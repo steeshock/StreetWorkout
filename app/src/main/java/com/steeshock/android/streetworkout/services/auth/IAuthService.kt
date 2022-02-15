@@ -30,7 +30,7 @@ interface IAuthService {
      */
     suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: () -> Unit,
+        onSuccess: (String?) -> Unit,
         onError: () -> Unit,
     )
 }

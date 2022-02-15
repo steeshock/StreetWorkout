@@ -42,9 +42,20 @@ class AuthServiceImpl : IAuthService {
 
     override suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: () -> Unit,
+        onSuccess: (String?) -> Unit,
         onError: () -> Unit,
     ) {
-        TODO("Добавить авторизацию пользователей")
+        auth.signInWithEmailAndPassword(
+            userCredentials.email,
+            userCredentials.password,
+        )
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onSuccess.invoke(auth.currentUser?.email)
+                } else {
+                    // TODO("Обработать ошибки авторизации пользователя")
+                    onError.invoke()
+                }
+            }
     }
 }
