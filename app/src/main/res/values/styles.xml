@@ -1,15 +1,13 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/navigationMainColor</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- Customize for snackbar. -->
-        <item name="colorSurface">@color/snackbarColor</item>
-        <item name="colorOnSurface">@color/snackbarColor</item>
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
 
     </style>
@@ -19,8 +17,11 @@
         <item name="android:layout_margin">12dp</item>
     </style>
 
-    <style name="Widget.App.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textSize">24sp</item>
+    <style name="AuthTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">?colorAccent</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
 </resources>

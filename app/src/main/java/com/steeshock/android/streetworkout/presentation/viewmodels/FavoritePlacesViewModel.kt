@@ -38,17 +38,17 @@ class FavoritePlacesViewModel @Inject constructor(
     private fun setupEmptyState() {
         when {
             allFavoritePlaces.value.isNullOrEmpty() -> {
-                mutableViewState.setNewState {
+                mutableViewState.updateState {
                     copy(emptyState = EmptyViewState.EMPTY_PLACES)
                 }
             }
             actualPlaces.value.isNullOrEmpty() -> {
-                mutableViewState.setNewState {
+                mutableViewState.updateState {
                     copy(emptyState = EmptyViewState.EMPTY_SEARCH_RESULTS)
                 }
             }
             else -> {
-                mutableViewState.setNewState {
+                mutableViewState.updateState {
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
@@ -82,7 +82,7 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    private fun MutableLiveData<PlacesViewState>.setNewState(
+    private fun MutableLiveData<PlacesViewState>.updateState(
         block: PlacesViewState.() -> PlacesViewState,
     ) {
         val currentState = value ?: PlacesViewState()

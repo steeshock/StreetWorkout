@@ -2,21 +2,22 @@ package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentPlacesBinding
 import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.android.streetworkout.utils.extensions.gone
@@ -70,7 +71,7 @@ class PlacesFragment : BaseFragment() {
         }
 
         binding.fab.setOnClickListener {
-            showAddPlaceFragment(it)
+            viewModel.onAddNewPlaceClicked()
         }
 
         binding.placesRecycler.setHasFixedSize(true)
@@ -82,12 +83,6 @@ class PlacesFragment : BaseFragment() {
 
         setupEmptyViews()
         initData()
-    }
-
-    private fun navigateToMap(place: Place) {
-        val placeUUID = place.place_uuid
-        val action = PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeUUID)
-        this.findNavController().navigate(action)
     }
 
     private fun initData() {
@@ -103,6 +98,10 @@ class PlacesFragment : BaseFragment() {
 
             viewState.observe(viewLifecycleOwner) {
                 renderViewState(it)
+            }
+
+            viewEvent.observe(viewLifecycleOwner) {
+                renderViewEvent(it)
             }
 
             binding.refresher.setOnRefreshListener {
@@ -133,9 +132,54 @@ class PlacesFragment : BaseFragment() {
         }
     }
 
+    private fun renderViewEvent(viewEvent: PlacesViewEvent) {
+        when(viewEvent) {
+            ShowAddPlaceFragment -> {
+                showAddPlaceFragment()
+            }
+            ShowAuthenticationAlert -> {
+                showAuthenticationAlert()
+            }
+        }
+    }
+
     private fun fetchData(placesViewModel: PlacesViewModel) {
         placesViewModel.fetchPlaces()
         placesViewModel.fetchCategories()
+    }
+
+    private fun showAddPlaceFragment() {
+        findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
+    }
+
+    private fun showAuthenticationAlert() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.clear_fields_alert))
+            .setMessage(getString(R.string.sign_in_alert_dialog_message))
+            .setPositiveButton(getString(R.string.sign_in_button_title)) { _, _ -> navigateToProfile() }
+            .setNegativeButton(getString(R.string.cancel_item), null)
+            .create()
+            .show()
+    }
+
+    private fun navigateToMap(place: Place) {
+        findNavController().navigate(
+            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.place_uuid)
+        )
+    }
+
+    private fun navigateToProfile() {
+        findNavController().navigate(
+            PlacesFragmentDirections.actionNavigationPlacesToNavigationProfile()
+        )
+    }
+
+    private fun setupEmptyViews() {
+        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
+        binding.emptyList.title.setText(R.string.empty_places_list_state_message)
+
+        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
+        binding.emptyResults.title.setText(R.string.empty_state_message)
     }
 
     // region Menu
@@ -177,18 +221,6 @@ class PlacesFragment : BaseFragment() {
         }
     }
     // endregion
-
-    private fun showAddPlaceFragment(it: View) {
-        it.findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
-    }
-
-    private fun setupEmptyViews() {
-        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
-        binding.emptyList.title.setText(R.string.empty_places_list_state_message)
-
-        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
-        binding.emptyResults.title.setText(R.string.empty_state_message)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

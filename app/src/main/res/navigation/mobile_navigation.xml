@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_navigation_places_to_navigation_map"
             app:destination="@id/navigation_map" />
+        <action
+            android:id="@+id/action_navigation_places_to_navigation_profile"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
     <fragment

@@ -5,14 +5,12 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentFavoritePlacesBinding
@@ -148,20 +146,18 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun showRollbackSnack(item: Place) {
 
-        val rollbackSnack = view?.let { Snackbar.make(it, "\"${item.title}\" ${resources.getString(R.string.place_removed)}", Snackbar.LENGTH_LONG) }
-
-        if (activity is MainActivity) {
-            val baseline = (activity as MainActivity).baseline
-            rollbackSnack?.anchorView = baseline
+        val rollbackSnack = view?.let {
+            Snackbar.make(it,
+                "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
+                Snackbar.LENGTH_LONG
+            )
         }
-
+        rollbackSnack?.anchorView = getBaseline()
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction(R.string.rollback_place) {
             viewModel.returnPlaceToFavorites(item)
         }
-
         rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-
         rollbackSnack?.show()
     }
 

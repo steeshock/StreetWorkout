@@ -53,11 +53,11 @@ dependencies {
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
 
-    // Firebase Realtime Database (Java)
-    implementation 'com.google.firebase:firebase-database'
-
-    // Firebase Realtime Database (Kotlin)
+    // Firebase Realtime Database
     implementation 'com.google.firebase:firebase-database-ktx'
+
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Declare the dependency for the Cloud Storage library
     implementation 'com.google.firebase:firebase-storage-ktx'

@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
-import com.steeshock.android.streetworkout.common.MainActivity
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.CustomMarker
 import com.steeshock.android.streetworkout.data.model.Place

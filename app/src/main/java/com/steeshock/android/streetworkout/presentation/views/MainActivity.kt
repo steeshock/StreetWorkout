@@ -1,4 +1,4 @@
-package com.steeshock.android.streetworkout.common
+package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.View
