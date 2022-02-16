@@ -6,8 +6,11 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +26,9 @@ class PlacesViewModel @Inject constructor(
     private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
     val viewState: LiveData<PlacesViewState>
         get() = mutableViewState
+
+    private val mutableViewEvent = SingleLiveEvent<PlacesViewEvent>()
+    val viewEvent get() = mutableViewEvent as LiveData<PlacesViewEvent>
 
     val observablePlaces = MediatorLiveData<List<Place>>()
     val observableCategories = categoriesRepository.allCategories
@@ -148,7 +154,9 @@ class PlacesViewModel @Inject constructor(
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
         if (authService.isUserAuthorized()) {
-            // TODO("Добавить обработку добавления мест только для авторизованных пользователей")
+            sendViewEvent(ShowAddPlaceFragment)
+        } else {
+            sendViewEvent(ShowAuthenticationAlert)
         }
     }
 
@@ -201,6 +209,17 @@ class PlacesViewModel @Inject constructor(
             postValue(newState)
         } else {
             value = newState
+        }
+    }
+
+    private fun sendViewEvent(
+        event: PlacesViewEvent,
+        postValue: Boolean = true,
+    ) {
+        if (postValue) {
+            mutableViewEvent.postValue(event)
+        } else {
+            mutableViewEvent.value = event
         }
     }
 }

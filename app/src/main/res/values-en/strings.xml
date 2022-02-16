@@ -59,6 +59,7 @@ search conditions"</string>
     <string name="password_input_hint">Password</string>
     <string name="success_sign_up">User %s successfully sign up</string>
     <string name="success_sign_in">Welcome %s!</string>
+    <string name="sign_in_alert_dialog_message">Please sign in to add new places</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>

@@ -58,6 +58,7 @@
     <string name="password_input_hint">Пароль</string>
     <string name="success_sign_up">Пользователь %s успешно зарегистрирован</string>
     <string name="success_sign_in">Добро пожаловать %s!</string>
+    <string name="sign_in_alert_dialog_message">Авторизуйтесь в приложении, чтобы добавлять новые места</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>
