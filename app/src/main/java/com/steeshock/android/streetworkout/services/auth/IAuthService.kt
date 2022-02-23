@@ -22,7 +22,7 @@ interface IAuthService {
     suspend fun signUp(
         userCredentials: UserCredentials,
         onSuccess: (String?) -> Unit,
-        onError: () -> Unit,
+        onError: (Exception) -> Unit,
     )
 
     /**
@@ -31,6 +31,6 @@ interface IAuthService {
     suspend fun signIn(
         userCredentials: UserCredentials,
         onSuccess: (String?) -> Unit,
-        onError: () -> Unit,
+        onError: (Exception) -> Unit,
     )
 }

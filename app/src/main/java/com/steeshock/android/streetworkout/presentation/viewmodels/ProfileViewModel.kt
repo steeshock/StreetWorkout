@@ -4,11 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.steeshock.android.streetworkout.presentation.viewStates.*
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
-import com.steeshock.android.streetworkout.presentation.viewStates.EmailValidationResult.*
-import com.steeshock.android.streetworkout.presentation.viewStates.PasswordValidationResult.*
-import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignUpResponse.SuccessSignUp
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignUpResponse.UserCollisionError
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.SIGN_IN_VALIDATION
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.SIGN_UP_VALIDATION
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.utils.extensions.isEmailValid
@@ -35,7 +45,9 @@ class ProfileViewModel @Inject constructor(
         if (authService.isUserAuthorized()) {
             sendViewEvent(
                 postValue = true,
-                event = SuccessSignIn(authService.getUserEmail()),
+                event = SignInResult(
+                    result = SuccessSignIn(authService.getUserEmail())
+                ),
             )
         }
     }
@@ -48,12 +60,17 @@ class ProfileViewModel @Inject constructor(
         password: String,
         validationPurpose: ValidationPurpose,
     ) {
-        val isSuccessValidation = validateEmail(email) and validatePassword(password)
+        val isSuccessValidation =
+            validateEmail(email) and validatePassword(password, validationPurpose)
 
         if (isSuccessValidation) {
             when (validationPurpose) {
-                SIGN_UP_VALIDATION -> { signUpUser(email, password) }
-                SIGN_IN_VALIDATION -> { signInUser(email, password) }
+                SIGN_UP_VALIDATION -> {
+                    signUpUser(email, password)
+                }
+                SIGN_IN_VALIDATION -> {
+                    signInUser(email, password)
+                }
             }
         }
     }
@@ -77,15 +94,19 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Check password length only for Sign Up
+     */
     private fun validatePassword(
         password: String,
+        validationPurpose: ValidationPurpose,
     ): Boolean {
         return when {
             password.isEmpty() -> {
                 sendViewEvent(PasswordValidation(EMPTY_PASSWORD))
                 false
             }
-            password.length < MIN_PASSWORD_LENGTH -> {
+            validationPurpose == SIGN_UP_VALIDATION && password.length < MIN_PASSWORD_LENGTH -> {
                 sendViewEvent(PasswordValidation(NOT_VALID_PASSWORD))
                 false
             }
@@ -110,10 +131,11 @@ class ProfileViewModel @Inject constructor(
                 mutableViewState.updateState(postValue = true) {
                     copy(isLoading = false)
                 }
-                sendViewEvent(SuccessSignIn(userEmail = email))
+                sendViewEvent(SignInResult(SuccessSignIn(email)))
             },
             onError = {
                 mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+                handleException(it)
             }
         )
     }
@@ -132,12 +154,30 @@ class ProfileViewModel @Inject constructor(
                 mutableViewState.updateState(postValue = true) {
                     copy(isLoading = false)
                 }
-                sendViewEvent(SuccessSignUp(userEmail = email))
+                sendViewEvent(SignUpResult(SuccessSignUp(email)))
             },
             onError = {
                 mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+                handleException(it)
             }
         )
+    }
+
+    private fun handleException(exception: Exception) {
+        when (exception) {
+            is FirebaseAuthUserCollisionException -> {
+                sendViewEvent(SignUpResult(UserCollisionError))
+            }
+            is FirebaseAuthInvalidUserException -> {
+                sendViewEvent(SignInResult(InvalidUserError))
+            }
+            is FirebaseAuthInvalidCredentialsException -> {
+                sendViewEvent(SignInResult(InvalidCredentialsError))
+            }
+            else -> {
+                sendViewEvent(UnknownError)
+            }
+        }
     }
 
     private fun MutableLiveData<AuthViewState>.updateState(
@@ -167,7 +207,7 @@ class ProfileViewModel @Inject constructor(
 
     /**
      * For security reasons, we should not check
-     * the email by mask and password length while user Sing In
+     * the password length while user Sing In
      *
      * That's why we should separate validation for Sign Up and Sing In
      */

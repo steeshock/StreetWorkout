@@ -20,7 +20,11 @@ abstract class BaseFragment : Fragment() {
         super.onAttach(context)
     }
 
-    fun getBaseline(): View? {
-        return (activity as? MainActivity)?.baseline
+    fun getBottomBaseline(): View? {
+        return (activity as? MainActivity)?.getBottomBaseline()
+    }
+
+    fun getTopBaseline(): View? {
+        return (activity as? MainActivity)?.getTopBaseline()
     }
 }
