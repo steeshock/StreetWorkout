@@ -13,4 +13,14 @@ sealed class AuthViewEvent {
      * Current user is authorized
      */
     data class SuccessSignIn(val userEmail: String?): AuthViewEvent()
+
+    /**
+     * Local email validation result
+     */
+    data class EmailValidation(val isSuccessValidation: Boolean): AuthViewEvent()
+
+    /**
+     * Local password validation result
+     */
+    data class PasswordValidation(val isSuccessValidation: Boolean): AuthViewEvent()
 }

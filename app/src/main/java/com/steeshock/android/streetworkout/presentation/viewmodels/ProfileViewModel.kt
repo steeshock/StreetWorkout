@@ -8,6 +8,7 @@ import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,11 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
 ) : ViewModel() {
+
+    private companion object {
+        private const val MIN_PASSWORD_LENGTH = 8
+    }
+
     private val mutableViewState: MutableLiveData<AuthViewState> = MutableLiveData()
     val viewState: LiveData<AuthViewState>
         get() = mutableViewState
@@ -33,7 +39,49 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun signInUser(
+    /**
+     * Local validation for email and password
+     */
+    fun validateFields(
+        email: String,
+        password: String,
+        validationPurpose: ValidationPurpose,
+    ) {
+        val isSuccessValidation = validateEmail(email) and validatePassword(password)
+
+        if (isSuccessValidation) {
+            when (validationPurpose) {
+                SIGN_UP_VALIDATION -> { signUpUser(email, password) }
+                SIGN_IN_VALIDATION -> { signInUser(email, password) }
+            }
+        }
+    }
+
+    private fun validateEmail(
+        email: String,
+    ): Boolean {
+        return if (email.isEmpty()) {
+            sendViewEvent(EmailValidation(isSuccessValidation = false))
+            false
+        } else {
+            sendViewEvent(EmailValidation(isSuccessValidation = true))
+            true
+        }
+    }
+
+    private fun validatePassword(
+        password: String,
+    ): Boolean {
+        return if (password.length < MIN_PASSWORD_LENGTH) {
+            sendViewEvent(PasswordValidation(isSuccessValidation = false))
+            false
+        } else {
+            sendViewEvent(PasswordValidation(isSuccessValidation = true))
+            true
+        }
+    }
+
+    private fun signInUser(
         email: String,
         password: String,
     ) = viewModelScope.launch(Dispatchers.IO) {
@@ -55,7 +103,7 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
-    fun signUpNewUser(
+    private fun signUpUser(
         email: String,
         password: String,
     ) = viewModelScope.launch(Dispatchers.IO) {
@@ -100,5 +148,16 @@ class ProfileViewModel @Inject constructor(
         } else {
             mutableViewEvent.value = event
         }
+    }
+
+    /**
+     * For security reasons, we should not check
+     * the email by mask and password length while user Sing In
+     *
+     * That's why we should separate validation for Sign Up and Sing In
+     */
+    enum class ValidationPurpose {
+        SIGN_UP_VALIDATION,
+        SIGN_IN_VALIDATION,
     }
 }

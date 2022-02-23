@@ -71,4 +71,8 @@
     <string name="permission_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
     <string name="permission_rationale">Для работы необходимо предоставить разрешения</string>
 
+    <!--Local Sign In/Sign Up validation-->
+    <string name="email_error">Проверьте правильность ввода email</string>
+    <string name="password_error">Пароль не может быть короче 8-ми символов</string>
+
 </resources>
