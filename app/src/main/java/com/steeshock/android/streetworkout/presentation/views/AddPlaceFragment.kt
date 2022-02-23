@@ -248,6 +248,7 @@ class AddPlaceFragment : BaseFragment() {
         }
     //endregion
 
+    // TODO Need refactoring
     private fun validatePlace(): Boolean {
 
         var validationResult = true
@@ -338,6 +339,7 @@ class AddPlaceFragment : BaseFragment() {
         _binding = null
     }
 
+    // TODO Need refactoring
     //region GPS
     private val TAG = "LocationTag"
 

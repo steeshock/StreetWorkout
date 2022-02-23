@@ -24,7 +24,7 @@ class AuthServiceImpl : IAuthService {
     override suspend fun signUp(
         userCredentials: UserCredentials,
         onSuccess: (String?) -> Unit,
-        onError: () -> Unit,
+        onError: (Exception) -> Unit,
     ) {
         auth.createUserWithEmailAndPassword(
             userCredentials.email,
@@ -33,17 +33,17 @@ class AuthServiceImpl : IAuthService {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onSuccess.invoke(auth.currentUser?.email)
-                } else {
-                    // TODO("Обработать ошибки создания нового пользователя")
-                    onError.invoke()
                 }
+            }
+            .addOnFailureListener {
+                onError.invoke(it)
             }
     }
 
     override suspend fun signIn(
         userCredentials: UserCredentials,
         onSuccess: (String?) -> Unit,
-        onError: () -> Unit,
+        onError: (Exception) -> Unit,
     ) {
         auth.signInWithEmailAndPassword(
             userCredentials.email,
@@ -52,10 +52,10 @@ class AuthServiceImpl : IAuthService {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onSuccess.invoke(auth.currentUser?.email)
-                } else {
-                    // TODO("Обработать ошибки авторизации пользователя")
-                    onError.invoke()
                 }
+            }
+            .addOnFailureListener {
+                onError.invoke(it)
             }
     }
 }

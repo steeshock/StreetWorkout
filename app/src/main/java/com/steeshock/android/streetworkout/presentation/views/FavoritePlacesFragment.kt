@@ -152,7 +152,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 Snackbar.LENGTH_LONG
             )
         }
-        rollbackSnack?.anchorView = getBaseline()
+        rollbackSnack?.anchorView = getBottomBaseline()
         rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
         rollbackSnack?.setAction(R.string.rollback_place) {
             viewModel.returnPlaceToFavorites(item)

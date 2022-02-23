@@ -71,4 +71,16 @@
     <string name="permission_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
     <string name="permission_rationale">Для работы необходимо предоставить разрешения</string>
 
+    <!--Local Sign In/Sign Up validation-->
+    <string name="empty_email_error">Введите email</string>
+    <string name="not_valid_email_error">Введённая строка не является email</string>
+    <string name="existing_user_email_error">Пользователь с таким именем уже существует</string>
+    <string name="invalid_user_email_error">Пользователь не найден</string>
+    <string name="empty_password_error">Введите пароль</string>
+    <string name="not_valid_password_error">Пароль не может быть короче 8-ми символов</string>
+    <string name="wrong_password_error">Проверьте правильность пароля</string>
+    <string name="wrong_email_error">Проверьте правильность email</string>
+    <string name="sign_error">Пожалуйста, исправьте ошибки</string>
+    <string name="unknown_error">Произошла неизвестная ошибка</string>
+
 </resources>

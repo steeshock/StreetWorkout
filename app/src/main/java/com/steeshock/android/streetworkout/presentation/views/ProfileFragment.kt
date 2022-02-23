@@ -11,10 +11,13 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
 import javax.inject.Inject
 
@@ -46,16 +49,18 @@ class ProfileFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.signUpButton.setOnClickListener {
-            viewModel.signUpNewUser(
+            viewModel.validateFields(
                 email = getEmail(),
                 password = getPassword(),
+                validationPurpose = SIGN_UP_VALIDATION,
             )
         }
 
         binding.signInButton.setOnClickListener {
-            viewModel.signInUser(
+            viewModel.validateFields(
                 email = getEmail(),
                 password = getPassword(),
+                validationPurpose = SIGN_IN_VALIDATION,
             )
         }
 
@@ -75,9 +80,16 @@ class ProfileFragment : BaseFragment() {
 
     private fun renderViewEvent(viewEvent: AuthViewEvent) {
         when(viewEvent) {
-            is SuccessSignUp,
-            is SuccessSignIn -> {
+            is SignUpResult,
+            is SignInResult,
+            UnknownError -> {
                 showSnackbar(viewEvent)
+            }
+            is EmailValidation -> {
+                showEmailValidationError(viewEvent.result)
+            }
+            is PasswordValidation -> {
+                showPasswordValidationError(viewEvent.result)
             }
         }
     }
@@ -85,16 +97,70 @@ class ProfileFragment : BaseFragment() {
     // TODO("Показывать другой вью элемент")
     private fun showSnackbar(viewEvent: AuthViewEvent) {
         val message = when(viewEvent) {
-            is SuccessSignUp -> {
-                getString(R.string.success_sign_up, viewEvent.userEmail)
+            is SignUpResult -> {
+                handleSignUpResult(viewEvent)
             }
-            is SuccessSignIn -> {
-                getString(R.string.success_sign_in, viewEvent.userEmail)
+            is SignInResult -> {
+                handleSignInResult(viewEvent)
+            }
+            else -> {
+                getString(R.string.unknown_error)
             }
         }
         val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
-        snackbar.anchorView = getBaseline()
+        snackbar.anchorView = getBottomBaseline()
         snackbar.show()
+    }
+
+    private fun handleSignUpResult(
+        viewEvent: SignUpResult,
+    ) = when (viewEvent.result) {
+        is SignUpResponse.SuccessSignUp -> {
+            getString(R.string.success_sign_up, viewEvent.result.email)
+        }
+        is SignUpResponse.UserCollisionError -> {
+            showEmailValidationError(EXISTING_EMAIL)
+            getString(R.string.sign_error)
+        }
+    }
+
+    private fun handleSignInResult(
+        viewEvent: SignInResult,
+    ) = when (viewEvent.result) {
+        is SignInResponse.SuccessSignIn -> {
+            getString(R.string.success_sign_in, viewEvent.result.email)
+        }
+        is SignInResponse.InvalidUserError -> {
+            showEmailValidationError(INVALID_EMAIL)
+            getString(R.string.sign_error)
+        }
+        is SignInResponse.InvalidCredentialsError -> {
+            showCredentialsError()
+            getString(R.string.sign_error)
+        }
+    }
+
+    private fun showPasswordValidationError(result: PasswordValidationResult) {
+        binding.passwordInput.error = when (result) {
+            EMPTY_PASSWORD -> resources.getString(R.string.empty_password_error)
+            NOT_VALID_PASSWORD -> resources.getString(R.string.not_valid_password_error)
+            SUCCESS_PASSWORD_VALIDATION -> null
+        }
+    }
+
+    private fun showEmailValidationError(result: EmailValidationResult) {
+        binding.emailInput.error = when (result) {
+            EMPTY_EMAIL -> resources.getString(R.string.empty_email_error)
+            NOT_VALID_EMAIL -> resources.getString(R.string.not_valid_email_error)
+            EXISTING_EMAIL -> resources.getString(R.string.existing_user_email_error)
+            INVALID_EMAIL -> resources.getString(R.string.invalid_user_email_error)
+            SUCCESS_EMAIL_VALIDATION -> null
+        }
+    }
+
+    private fun showCredentialsError() {
+        binding.emailInput.error = resources.getString(R.string.wrong_email_error)
+        binding.passwordInput.error = resources.getString(R.string.wrong_password_error)
     }
 
     private fun getEmail() = binding.emailEditText.text.toString()
