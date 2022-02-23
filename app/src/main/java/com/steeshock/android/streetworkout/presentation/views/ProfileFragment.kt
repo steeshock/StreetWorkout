@@ -14,6 +14,8 @@ import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
+import com.steeshock.android.streetworkout.presentation.viewStates.EmailValidationResult
+import com.steeshock.android.streetworkout.presentation.viewStates.PasswordValidationResult
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
@@ -83,15 +85,17 @@ class ProfileFragment : BaseFragment() {
                 showSnackbar(viewEvent)
             }
             is EmailValidation -> {
-                binding.emailInput.error = when {
-                    viewEvent.isSuccessValidation -> null
-                    else -> resources.getString(R.string.email_error)
+                binding.emailInput.error = when(viewEvent.result)  {
+                    EmailValidationResult.EMPTY_EMAIL -> resources.getString(R.string.empty_email_error)
+                    EmailValidationResult.NOT_VALID_EMAIL -> resources.getString(R.string.not_valid_email_error)
+                    EmailValidationResult.SUCCESS_EMAIL_VALIDATION -> null
                 }
             }
             is PasswordValidation -> {
-                binding.passwordInput.error = when {
-                    viewEvent.isSuccessValidation -> null
-                    else -> resources.getString(R.string.password_error)
+                binding.passwordInput.error = when(viewEvent.result)  {
+                    PasswordValidationResult.EMPTY_PASSWORD -> resources.getString(R.string.empty_password_error)
+                    PasswordValidationResult.NOT_VALID_PASSWORD -> resources.getString(R.string.not_valid_password_error)
+                    PasswordValidationResult.SUCCESS_PASSWORD_VALIDATION -> null
                 }
             }
         }

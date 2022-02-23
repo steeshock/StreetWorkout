@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewEvent.*
-import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
-import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.EmailValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.PasswordValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
+import com.steeshock.android.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,24 +61,38 @@ class ProfileViewModel @Inject constructor(
     private fun validateEmail(
         email: String,
     ): Boolean {
-        return if (email.isEmpty()) {
-            sendViewEvent(EmailValidation(isSuccessValidation = false))
-            false
-        } else {
-            sendViewEvent(EmailValidation(isSuccessValidation = true))
-            true
+        return when {
+            email.isEmpty() -> {
+                sendViewEvent(EmailValidation(EMPTY_EMAIL))
+                false
+            }
+            email.isEmailValid().not() -> {
+                sendViewEvent(EmailValidation(NOT_VALID_EMAIL))
+                false
+            }
+            else -> {
+                sendViewEvent(EmailValidation(SUCCESS_EMAIL_VALIDATION))
+                true
+            }
         }
     }
 
     private fun validatePassword(
         password: String,
     ): Boolean {
-        return if (password.length < MIN_PASSWORD_LENGTH) {
-            sendViewEvent(PasswordValidation(isSuccessValidation = false))
-            false
-        } else {
-            sendViewEvent(PasswordValidation(isSuccessValidation = true))
-            true
+        return when {
+            password.isEmpty() -> {
+                sendViewEvent(PasswordValidation(EMPTY_PASSWORD))
+                false
+            }
+            password.length < MIN_PASSWORD_LENGTH -> {
+                sendViewEvent(PasswordValidation(NOT_VALID_PASSWORD))
+                false
+            }
+            else -> {
+                sendViewEvent(PasswordValidation(SUCCESS_PASSWORD_VALIDATION))
+                true
+            }
         }
     }
 

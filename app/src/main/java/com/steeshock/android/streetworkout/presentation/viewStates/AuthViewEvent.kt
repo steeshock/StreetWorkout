@@ -17,10 +17,22 @@ sealed class AuthViewEvent {
     /**
      * Local email validation result
      */
-    data class EmailValidation(val isSuccessValidation: Boolean): AuthViewEvent()
+    data class EmailValidation(val result: EmailValidationResult): AuthViewEvent()
 
     /**
      * Local password validation result
      */
-    data class PasswordValidation(val isSuccessValidation: Boolean): AuthViewEvent()
+    data class PasswordValidation(val result: PasswordValidationResult): AuthViewEvent()
+}
+
+enum class EmailValidationResult {
+    EMPTY_EMAIL,
+    NOT_VALID_EMAIL,
+    SUCCESS_EMAIL_VALIDATION,
+}
+
+enum class PasswordValidationResult {
+    EMPTY_PASSWORD,
+    NOT_VALID_PASSWORD,
+    SUCCESS_PASSWORD_VALIDATION,
 }
