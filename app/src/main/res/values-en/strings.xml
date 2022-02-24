@@ -82,6 +82,8 @@ search conditions"</string>
     <string name="wrong_password_error">Check password</string>
     <string name="wrong_email_error">Check email</string>
     <string name="sign_error">Please fix errors</string>
+    <string name="sign_prompt_message">Please sign in</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="logout_title">Logout</string>
 
 </resources>

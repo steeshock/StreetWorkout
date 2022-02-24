@@ -16,9 +16,12 @@ import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
+import com.steeshock.android.streetworkout.utils.extensions.gone
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
+import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
@@ -47,22 +50,6 @@ class ProfileFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.signUpButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_UP_VALIDATION,
-            )
-        }
-
-        binding.signInButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_IN_VALIDATION,
-            )
-        }
 
         viewModel.viewState.observe(this) {
             renderViewState(it)
@@ -127,21 +114,26 @@ class ProfileFragment : BaseFragment() {
     private fun handleSignInResult(
         viewEvent: SignInResult,
     ) = when (viewEvent.result) {
-        is SignInResponse.SuccessSignIn -> {
+        is SuccessSignIn -> {
+            setupProfilePage()
             getString(R.string.success_sign_in, viewEvent.result.email)
         }
-        is SignInResponse.InvalidUserError -> {
+        is InvalidUserError -> {
             showEmailValidationError(INVALID_EMAIL)
             getString(R.string.sign_error)
         }
-        is SignInResponse.InvalidCredentialsError -> {
+        is InvalidCredentialsError -> {
             showCredentialsError()
             getString(R.string.sign_error)
+        }
+        is UserNotAuthorized -> {
+            setupLoginPage()
+            getString(R.string.sign_prompt_message)
         }
     }
 
     private fun showPasswordValidationError(result: PasswordValidationResult) {
-        binding.passwordInput.error = when (result) {
+        binding.loginLayout.passwordInput.error = when (result) {
             EMPTY_PASSWORD -> resources.getString(R.string.empty_password_error)
             NOT_VALID_PASSWORD -> resources.getString(R.string.not_valid_password_error)
             SUCCESS_PASSWORD_VALIDATION -> null
@@ -149,7 +141,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun showEmailValidationError(result: EmailValidationResult) {
-        binding.emailInput.error = when (result) {
+        binding.loginLayout.emailInput.error = when (result) {
             EMPTY_EMAIL -> resources.getString(R.string.empty_email_error)
             NOT_VALID_EMAIL -> resources.getString(R.string.not_valid_email_error)
             EXISTING_EMAIL -> resources.getString(R.string.existing_user_email_error)
@@ -159,13 +151,39 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun showCredentialsError() {
-        binding.emailInput.error = resources.getString(R.string.wrong_email_error)
-        binding.passwordInput.error = resources.getString(R.string.wrong_password_error)
+        binding.loginLayout.emailInput.error = resources.getString(R.string.wrong_email_error)
+        binding.loginLayout.passwordInput.error = resources.getString(R.string.wrong_password_error)
     }
 
-    private fun getEmail() = binding.emailEditText.text.toString()
+    private fun setupLoginPage() {
+        binding.profileLayout.root.gone()
+        binding.loginLayout.root.visible()
 
-    private fun getPassword() = binding.passwordEditText.text.toString()
+        binding.loginLayout.signUpButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+                validationPurpose = SIGN_UP_VALIDATION,
+            )
+        }
+
+        binding.loginLayout.signInButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+                validationPurpose = SIGN_IN_VALIDATION,
+            )
+        }
+    }
+
+    private fun setupProfilePage() {
+        binding.loginLayout.root.gone()
+        binding.profileLayout.root.visible()
+    }
+
+    private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
+
+    private fun getPassword() = binding.loginLayout.passwordEditText.text.toString()
 
     override fun onDestroyView() {
         super.onDestroyView()

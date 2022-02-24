@@ -23,6 +23,7 @@ import com.steeshock.android.streetworkout.services.auth.IAuthService
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -42,14 +43,20 @@ class ProfileViewModel @Inject constructor(
     val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
 
     fun requestAuthState() = viewModelScope.launch(Dispatchers.IO) {
+        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        delay(500)
         if (authService.isUserAuthorized()) {
             sendViewEvent(
                 postValue = true,
-                event = SignInResult(
-                    result = SuccessSignIn(authService.getUserEmail())
-                ),
+                event = SignInResult(SuccessSignIn(authService.getUserEmail())),
+            )
+        } else {
+            sendViewEvent(
+                postValue = true,
+                event = SignInResult(UserNotAuthorized),
             )
         }
+        mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
     }
 
     /**

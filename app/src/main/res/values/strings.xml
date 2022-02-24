@@ -71,7 +71,7 @@
     <string name="permission_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
     <string name="permission_rationale">Для работы необходимо предоставить разрешения</string>
 
-    <!--Local Sign In/Sign Up validation-->
+    <!--Sign In/Sign Up-->
     <string name="empty_email_error">Введите email</string>
     <string name="not_valid_email_error">Введённая строка не является email</string>
     <string name="existing_user_email_error">Пользователь с таким именем уже существует</string>
@@ -81,6 +81,8 @@
     <string name="wrong_password_error">Проверьте правильность пароля</string>
     <string name="wrong_email_error">Проверьте правильность email</string>
     <string name="sign_error">Пожалуйста, исправьте ошибки</string>
+    <string name="sign_prompt_message">Пожалуйста, авторизуйтесь</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
+    <string name="logout_title">Выход</string>
 
 </resources>
