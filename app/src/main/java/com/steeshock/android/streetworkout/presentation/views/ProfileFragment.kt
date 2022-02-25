@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.model.User
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
@@ -50,6 +51,32 @@ class ProfileFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.loginLayout.signUpButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+                validationPurpose = SIGN_UP_VALIDATION,
+            )
+        }
+
+        binding.loginLayout.signInButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+                validationPurpose = SIGN_IN_VALIDATION,
+            )
+        }
+
+        binding.profileLayout.logoutButton.setOnClickListener {
+            showModalDialog(
+                title = getString(R.string.action_confirm_title),
+                message = getString(R.string.logout_description),
+                positiveText = getString(R.string.logout_button),
+                negativeText = getString(R.string.cancel_item),
+                onPositiveAction = { viewModel.signOut() },
+            )
+        }
 
         viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
@@ -103,7 +130,7 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignUpResult,
     ) = when (viewEvent.result) {
         is SignUpResponse.SuccessSignUp -> {
-            getString(R.string.success_sign_up, viewEvent.result.email)
+            getString(R.string.success_sign_up, viewEvent.result.user?.email)
         }
         is SignUpResponse.UserCollisionError -> {
             showEmailValidationError(EXISTING_EMAIL)
@@ -115,8 +142,8 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignInResult,
     ) = when (viewEvent.result) {
         is SuccessSignIn -> {
-            showProfilePage()
-            getString(R.string.success_sign_in, viewEvent.result.email)
+            showProfilePage(viewEvent.result.user)
+            getString(R.string.success_sign_in, viewEvent.result.user?.email)
         }
         is InvalidUserError -> {
             showEmailValidationError(INVALID_EMAIL)
@@ -158,36 +185,14 @@ class ProfileFragment : BaseFragment() {
     private fun showLoginPage() {
         binding.profileLayout.root.gone()
         binding.loginLayout.root.visible()
-
-        binding.loginLayout.signUpButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_UP_VALIDATION,
-            )
-        }
-
-        binding.loginLayout.signInButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_IN_VALIDATION,
-            )
-        }
     }
 
-    private fun showProfilePage() {
+    private fun showProfilePage(user: User?) {
         binding.loginLayout.root.gone()
         binding.profileLayout.root.visible()
 
-        binding.profileLayout.logoutButton.setOnClickListener {
-            showModalDialog(
-                message = getString(R.string.logout_description),
-                positiveText = getString(R.string.logout_title),
-                negativeText = getString(R.string.cancel_item),
-                onPositiveAction = { viewModel.logout() },
-            )
-        }
+        binding.profileLayout.displayNameTextView.text = user?.displayName
+        binding.profileLayout.emailTextView.text = user?.email
     }
 
     private fun getEmail() = binding.loginLayout.emailEditText.text.toString()

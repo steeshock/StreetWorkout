@@ -83,7 +83,11 @@
     <string name="sign_error">Пожалуйста, исправьте ошибки</string>
     <string name="sign_prompt_message">Пожалуйста, авторизуйтесь</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
-    <string name="logout_title">Выход</string>
+    <string name="logout_button"><u>Выход</u></string>
     <string name="logout_description">Выйти из текущего пользователя?</string>
+    <string name="welcome_title">Добро пожаловать!</string>
+    <string name="profile_name">Ваше имя:</string>
+    <string name="profile_email">Ваш email:</string>
+    <string name="action_confirm_title">Подтвердите действие</string>
 
 </resources>

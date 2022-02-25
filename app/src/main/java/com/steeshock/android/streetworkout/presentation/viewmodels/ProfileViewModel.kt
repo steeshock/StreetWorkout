@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.steeshock.android.streetworkout.data.model.User
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent
@@ -22,7 +23,6 @@ import com.steeshock.android.streetworkout.services.auth.IAuthService
 import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,11 +43,17 @@ class ProfileViewModel @Inject constructor(
 
     fun requestAuthState() = viewModelScope.launch(Dispatchers.IO) {
         mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
-        delay(500)
         if (authService.isUserAuthorized()) {
             sendViewEvent(
                 postValue = true,
-                event = SignInResult(SuccessSignIn(authService.getUserEmail())),
+                event = SignInResult(
+                    SuccessSignIn(
+                        User(
+                            displayName = authService.getDisplayName(),
+                            email = authService.getUserEmail(),
+                        )
+                    )
+                ),
             )
         } else {
             sendViewEvent(
@@ -133,11 +139,20 @@ class ProfileViewModel @Inject constructor(
                 email = email,
                 password = password,
             ),
-            onSuccess = { email ->
+            onSuccess = { user ->
                 mutableViewState.updateState(postValue = true) {
                     copy(isLoading = false)
                 }
-                sendViewEvent(SignInResult(SuccessSignIn(email)))
+                sendViewEvent(
+                    SignInResult(
+                        SuccessSignIn(
+                            User(
+                                displayName = user?.displayName,
+                                email = user?.email,
+                            )
+                        )
+                    ),
+                )
             },
             onError = {
                 mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
@@ -156,11 +171,20 @@ class ProfileViewModel @Inject constructor(
                 email = email,
                 password = password,
             ),
-            onSuccess = { email ->
+            onSuccess = { user ->
                 mutableViewState.updateState(postValue = true) {
                     copy(isLoading = false)
                 }
-                sendViewEvent(SignUpResult(SuccessSignUp(email)))
+                sendViewEvent(
+                    SignUpResult(
+                        SuccessSignUp(
+                            User(
+                                displayName = user?.displayName,
+                                email = user?.email,
+                            )
+                        )
+                    ),
+                )
             },
             onError = {
                 mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
@@ -211,8 +235,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    // TODO Logout
-    fun logout() {
+    fun signOut() = viewModelScope.launch(Dispatchers.IO) {
+        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        authService.signOut()
+        mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
         sendViewEvent(
             postValue = true,
             event = SignInResult(UserNotAuthorized),

@@ -11,8 +11,8 @@
     <color name="snackbarActionTextColor">#a97ae3</color>
     <color name="snackbarColor">#323232</color>
 
-    <color name="grayIconColor">#878080</color>
-    <color name="redIconColor">#FF3347</color>
-    <color name="chipsColor">#ABABAB</color>
+    <color name="grayColor">#878080</color>
+    <color name="redColor">#FF3347</color>
+    <color name="lightGrayColor">#ABABAB</color>
     <color name="greenColor">#8bf70a</color>
 </resources>
