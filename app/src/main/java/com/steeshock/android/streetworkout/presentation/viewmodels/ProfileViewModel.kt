@@ -13,7 +13,6 @@ import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthView
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
-import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignUpResponse.SuccessSignUp
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignUpResponse.UserCollisionError
@@ -210,6 +209,14 @@ class ProfileViewModel @Inject constructor(
         } else {
             mutableViewEvent.value = event
         }
+    }
+
+    // TODO Logout
+    fun logout() {
+        sendViewEvent(
+            postValue = true,
+            event = SignInResult(UserNotAuthorized),
+        )
     }
 
     /**

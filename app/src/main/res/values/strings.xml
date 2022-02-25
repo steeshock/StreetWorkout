@@ -84,5 +84,6 @@
     <string name="sign_prompt_message">Пожалуйста, авторизуйтесь</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
     <string name="logout_title">Выход</string>
+    <string name="logout_description">Выйти из текущего пользователя?</string>
 
 </resources>

@@ -58,4 +58,8 @@ class AuthServiceImpl : IAuthService {
                 onError.invoke(it)
             }
     }
+
+    // TODO Logout
+    override suspend fun logout() {
+    }
 }

@@ -33,4 +33,9 @@ interface IAuthService {
         onSuccess: (String?) -> Unit,
         onError: (Exception) -> Unit,
     )
+
+    /**
+     * Logout current authorized user
+     */
+    suspend fun logout()
 }

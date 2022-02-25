@@ -51,11 +51,11 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.viewState.observe(this) {
+        viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
         }
 
-        viewModel.viewEvent.observe(this) {
+        viewModel.viewEvent.observe(viewLifecycleOwner) {
             renderViewEvent(it)
         }
         viewModel.requestAuthState()
@@ -69,7 +69,7 @@ class ProfileFragment : BaseFragment() {
         when(viewEvent) {
             is SignUpResult,
             is SignInResult,
-            UnknownError -> {
+            is UnknownError, -> {
                 showSnackbar(viewEvent)
             }
             is EmailValidation -> {
@@ -115,7 +115,7 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignInResult,
     ) = when (viewEvent.result) {
         is SuccessSignIn -> {
-            setupProfilePage()
+            showProfilePage()
             getString(R.string.success_sign_in, viewEvent.result.email)
         }
         is InvalidUserError -> {
@@ -127,7 +127,7 @@ class ProfileFragment : BaseFragment() {
             getString(R.string.sign_error)
         }
         is UserNotAuthorized -> {
-            setupLoginPage()
+            showLoginPage()
             getString(R.string.sign_prompt_message)
         }
     }
@@ -155,7 +155,7 @@ class ProfileFragment : BaseFragment() {
         binding.loginLayout.passwordInput.error = resources.getString(R.string.wrong_password_error)
     }
 
-    private fun setupLoginPage() {
+    private fun showLoginPage() {
         binding.profileLayout.root.gone()
         binding.loginLayout.root.visible()
 
@@ -176,9 +176,18 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    private fun setupProfilePage() {
+    private fun showProfilePage() {
         binding.loginLayout.root.gone()
         binding.profileLayout.root.visible()
+
+        binding.profileLayout.logoutButton.setOnClickListener {
+            showModalDialog(
+                message = getString(R.string.logout_description),
+                positiveText = getString(R.string.logout_title),
+                negativeText = getString(R.string.cancel_item),
+                onPositiveAction = { viewModel.logout() },
+            )
+        }
     }
 
     private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
