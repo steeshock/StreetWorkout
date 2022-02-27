@@ -3,7 +3,7 @@ package com.steeshock.android.streetworkout.services.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.delay
+import com.steeshock.android.streetworkout.data.model.User
 
 class AuthServiceImpl : IAuthService {
 
@@ -17,13 +17,13 @@ class AuthServiceImpl : IAuthService {
         return auth.currentUser?.email
     }
 
-    override suspend fun getUsername(): String? {
+    override suspend fun getDisplayName(): String? {
         return auth.currentUser?.displayName
     }
 
     override suspend fun signUp(
         userCredentials: UserCredentials,
-        onSuccess: (String?) -> Unit,
+        onSuccess: (User?) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.createUserWithEmailAndPassword(
@@ -32,7 +32,12 @@ class AuthServiceImpl : IAuthService {
         )
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    onSuccess.invoke(auth.currentUser?.email)
+                    onSuccess.invoke(
+                        User(
+                            displayName = auth.currentUser?.displayName,
+                            email = auth.currentUser?.email,
+                        )
+                    )
                 }
             }
             .addOnFailureListener {
@@ -42,7 +47,7 @@ class AuthServiceImpl : IAuthService {
 
     override suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: (String?) -> Unit,
+        onSuccess: (User?) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.signInWithEmailAndPassword(
@@ -51,11 +56,20 @@ class AuthServiceImpl : IAuthService {
         )
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    onSuccess.invoke(auth.currentUser?.email)
+                    onSuccess.invoke(
+                        User(
+                            displayName = auth.currentUser?.displayName,
+                            email = auth.currentUser?.email,
+                        )
+                    )
                 }
             }
             .addOnFailureListener {
                 onError.invoke(it)
             }
+    }
+
+    override suspend fun signOut() {
+        auth.signOut()
     }
 }

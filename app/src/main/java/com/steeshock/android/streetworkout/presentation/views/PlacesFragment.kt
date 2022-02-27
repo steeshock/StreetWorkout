@@ -153,13 +153,13 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun showAuthenticationAlert() {
-        AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.clear_fields_alert))
-            .setMessage(getString(R.string.sign_in_alert_dialog_message))
-            .setPositiveButton(getString(R.string.sign_in_button_title)) { _, _ -> navigateToProfile() }
-            .setNegativeButton(getString(R.string.cancel_item), null)
-            .create()
-            .show()
+        showModalDialog(
+            title = getString(R.string.clear_fields_alert),
+            message = getString(R.string.sign_in_alert_dialog_message),
+            positiveText = getString(R.string.sign_in_button_title),
+            negativeText = getString(R.string.cancel_item),
+            onPositiveAction = { navigateToProfile() },
+        )
     }
 
     private fun navigateToMap(place: Place) {

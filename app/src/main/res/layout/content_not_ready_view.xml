@@ -17,6 +17,6 @@
         android:layout_margin="28dp"
         android:text="@string/page_not_ready_title"
         android:textAlignment="center"
-        android:textColor="@color/grayIconColor"
+        android:textColor="@color/grayColor"
         android:textSize="28sp" />
 </LinearLayout>

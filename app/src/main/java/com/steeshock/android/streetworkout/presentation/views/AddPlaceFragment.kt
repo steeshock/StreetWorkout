@@ -102,12 +102,24 @@ class AddPlaceFragment : BaseFragment() {
         }
 
         binding.clearButton.setOnClickListener {
-            getClearFieldsDialog().show()
+            showModalDialog(
+                title = getString(R.string.clear_fields_alert),
+                message = getString(R.string.clear_fields_message),
+                positiveText = getString(R.string.ok_item),
+                negativeText = getString(R.string.cancel_item),
+                onPositiveAction = { resetFields() },
+            )
         }
 
         binding.sendButton.setOnClickListener {
             if (validatePlace()) {
-                getPublishPermissionDialog().show()
+                showModalDialog(
+                    title = getString(R.string.clear_fields_alert),
+                    message = getString(R.string.publish_permission_message),
+                    positiveText = getString(R.string.ok_item),
+                    negativeText = getString(R.string.cancel_item),
+                    onPositiveAction = { viewModel.onAddNewPlace(place = getNewPlace()) },
+                )
             }
         }
         binding.placeTitle.addTextChangedListener {
@@ -179,17 +191,6 @@ class AddPlaceFragment : BaseFragment() {
         binding.progressSending.max = viewState.maxProgressValue
     }
 
-    //region Categories
-    private fun getClearFieldsDialog(): Dialog {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
-        return builder
-            .setTitle(getString(R.string.clear_fields_alert))
-            .setMessage(getString(R.string.clear_fields_message))
-            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> resetFields() }
-            .setNegativeButton(getString(R.string.cancel_item), null)
-            .create()
-    }
-
     private fun getCategoriesDialog(): Dialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
         return builder
@@ -214,7 +215,6 @@ class AddPlaceFragment : BaseFragment() {
             .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
             .create()
     }
-
     private fun addCategories() {
         if (viewModel.selectedCategories.isEmpty()) {
             binding.placeCategories.text?.clear()
@@ -236,7 +236,6 @@ class AddPlaceFragment : BaseFragment() {
             }
         }
     }
-    //endregion
 
     //region Image picking
     private val startForProfileImageResult =
@@ -298,18 +297,6 @@ class AddPlaceFragment : BaseFragment() {
             it.placeAddressInput.error = null
         }
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun getPublishPermissionDialog(): Dialog {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
-        return builder
-            .setTitle(getString(R.string.clear_fields_alert))
-            .setMessage(getString(R.string.publish_permission_message))
-            .setPositiveButton(getString(R.string.ok_item)) { _, _ ->
-                viewModel.onAddNewPlace(place = getNewPlace())
-            }
-            .setNegativeButton(getString(R.string.cancel_item), null)
-            .create()
     }
 
     private fun getPosition() {

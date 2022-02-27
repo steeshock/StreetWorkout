@@ -1,6 +1,8 @@
 package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +12,22 @@ import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
+import com.steeshock.android.streetworkout.data.model.User
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
-import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
+import com.steeshock.android.streetworkout.utils.extensions.gone
+import com.steeshock.android.streetworkout.utils.extensions.setLinkSpan
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
+import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
@@ -48,41 +57,80 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.signUpButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_UP_VALIDATION,
-            )
-        }
+        initLoginPage()
+        initProfilePage()
 
-        binding.signInButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_IN_VALIDATION,
-            )
-        }
-
-        viewModel.viewState.observe(this) {
+        viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
         }
 
-        viewModel.viewEvent.observe(this) {
+        viewModel.viewEvent.observe(viewLifecycleOwner) {
             renderViewEvent(it)
         }
         viewModel.requestAuthState()
     }
 
+    private fun initLoginPage() {
+        binding.loginLayout.signButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+            )
+        }
+    }
+
+    private fun initProfilePage() {
+        binding.profileLayout.logoutButton.setOnClickListener {
+            showModalDialog(
+                title = getString(R.string.action_confirm_title),
+                message = getString(R.string.logout_description),
+                positiveText = getString(R.string.logout_button),
+                negativeText = getString(R.string.cancel_item),
+                onPositiveAction = { viewModel.signOut() },
+            )
+        }
+    }
+
     private fun renderViewState(viewState: AuthViewState) {
-        binding.progress.visibility = viewState.isLoading.toVisibility()
+        binding.progress.root.visibility = viewState.isLoading.toVisibility()
+        setupSignButtonState(viewState.signPurpose)
+    }
+
+    private fun setupSignButtonState(signPurpose: SignPurpose) {
+        var promptText = ""
+        var promptLink = ""
+
+        when(signPurpose) {
+            SIGN_UP -> {
+                binding.loginLayout.signButton.text = getString(R.string.sign_up_button_title)
+                promptText = getString(R.string.authorization_prompt_message)
+                promptLink = getString(R.string.authorization_link)
+            }
+            SIGN_IN -> {
+                binding.loginLayout.signButton.text = getString(R.string.sign_in_button_title)
+                promptText = getString(R.string.registration_prompt_message)
+                promptLink = getString(R.string.registration_link)
+            }
+        }
+        binding.loginLayout.signPromptTextView.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            val textWithLink = SpannableString(promptText).apply {
+                setLinkSpan(
+                    link = promptLink,
+                    onClick = {
+                        viewModel.changeSignPurpose(signPurpose)
+                    }
+                )
+            }
+            text = textWithLink
+        }
     }
 
     private fun renderViewEvent(viewEvent: AuthViewEvent) {
         when(viewEvent) {
             is SignUpResult,
             is SignInResult,
-            UnknownError -> {
+            is UnknownError, -> {
                 showSnackbar(viewEvent)
             }
             is EmailValidation -> {
@@ -116,7 +164,7 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignUpResult,
     ) = when (viewEvent.result) {
         is SignUpResponse.SuccessSignUp -> {
-            getString(R.string.success_sign_up, viewEvent.result.email)
+            getString(R.string.success_sign_up, viewEvent.result.user?.email)
         }
         is SignUpResponse.UserCollisionError -> {
             showEmailValidationError(EXISTING_EMAIL)
@@ -127,21 +175,26 @@ class ProfileFragment : BaseFragment() {
     private fun handleSignInResult(
         viewEvent: SignInResult,
     ) = when (viewEvent.result) {
-        is SignInResponse.SuccessSignIn -> {
-            getString(R.string.success_sign_in, viewEvent.result.email)
+        is SuccessSignIn -> {
+            showProfilePage(viewEvent.result.user)
+            getString(R.string.success_sign_in, viewEvent.result.user?.email)
         }
-        is SignInResponse.InvalidUserError -> {
+        is InvalidUserError -> {
             showEmailValidationError(INVALID_EMAIL)
             getString(R.string.sign_error)
         }
-        is SignInResponse.InvalidCredentialsError -> {
+        is InvalidCredentialsError -> {
             showCredentialsError()
             getString(R.string.sign_error)
+        }
+        is UserNotAuthorized -> {
+            showLoginPage()
+            getString(R.string.sign_prompt_message)
         }
     }
 
     private fun showPasswordValidationError(result: PasswordValidationResult) {
-        binding.passwordInput.error = when (result) {
+        binding.loginLayout.passwordInput.error = when (result) {
             EMPTY_PASSWORD -> resources.getString(R.string.empty_password_error)
             NOT_VALID_PASSWORD -> resources.getString(R.string.not_valid_password_error)
             SUCCESS_PASSWORD_VALIDATION -> null
@@ -149,7 +202,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun showEmailValidationError(result: EmailValidationResult) {
-        binding.emailInput.error = when (result) {
+        binding.loginLayout.emailInput.error = when (result) {
             EMPTY_EMAIL -> resources.getString(R.string.empty_email_error)
             NOT_VALID_EMAIL -> resources.getString(R.string.not_valid_email_error)
             EXISTING_EMAIL -> resources.getString(R.string.existing_user_email_error)
@@ -159,13 +212,26 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun showCredentialsError() {
-        binding.emailInput.error = resources.getString(R.string.wrong_email_error)
-        binding.passwordInput.error = resources.getString(R.string.wrong_password_error)
+        binding.loginLayout.emailInput.error = resources.getString(R.string.wrong_email_error)
+        binding.loginLayout.passwordInput.error = resources.getString(R.string.wrong_password_error)
     }
 
-    private fun getEmail() = binding.emailEditText.text.toString()
+    private fun showLoginPage() {
+        binding.profileLayout.root.gone()
+        binding.loginLayout.root.visible()
+    }
 
-    private fun getPassword() = binding.passwordEditText.text.toString()
+    private fun showProfilePage(user: User?) {
+        binding.loginLayout.root.gone()
+        binding.profileLayout.root.visible()
+
+        binding.profileLayout.displayNameTextView.text = user?.displayName
+        binding.profileLayout.emailTextView.text = user?.email
+    }
+
+    private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
+
+    private fun getPassword() = binding.loginLayout.passwordEditText.text.toString()
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -31,14 +31,14 @@
 
         <include
             android:id="@+id/emptyList"
-            layout="@layout/v_empty_state"
+            layout="@layout/empty_state_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />
 
         <include
             android:id="@+id/emptyResults"
-            layout="@layout/v_empty_state"
+            layout="@layout/empty_state_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />

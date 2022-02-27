@@ -1,5 +1,7 @@
 package com.steeshock.android.streetworkout.services.auth
 
+import com.steeshock.android.streetworkout.data.model.User
+
 interface IAuthService {
     /**
      * Check if current user is authorized
@@ -14,14 +16,14 @@ interface IAuthService {
     /**
      * Get current authorized user name
      */
-    suspend fun getUsername(): String?
+    suspend fun getDisplayName(): String?
 
     /**
      * Sign up new user (registration)
      */
     suspend fun signUp(
         userCredentials: UserCredentials,
-        onSuccess: (String?) -> Unit,
+        onSuccess: (User?) -> Unit,
         onError: (Exception) -> Unit,
     )
 
@@ -30,7 +32,12 @@ interface IAuthService {
      */
     suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: (String?) -> Unit,
+        onSuccess: (User?) -> Unit,
         onError: (Exception) -> Unit,
     )
+
+    /**
+     * Logout current authorized user
+     */
+    suspend fun signOut()
 }

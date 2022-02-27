@@ -58,7 +58,7 @@ class CategoryAdapter(val callback: (Category) -> Unit) :
                 ColorStateList.valueOf(resources.getColor(android.R.color.black, null))
         } else {
             binding.categoryCardView.backgroundTintList =
-                ColorStateList.valueOf(resources.getColor(R.color.chipsColor, null))
+                ColorStateList.valueOf(resources.getColor(R.color.lightGrayColor, null))
         }
     }
 }
