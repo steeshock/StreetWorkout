@@ -90,5 +90,9 @@ search conditions"</string>
     <string name="profile_name">Your name:</string>
     <string name="profile_email">Your email:</string>
     <string name="action_confirm_title">Action confirm</string>
+    <string name="authorization_prompt_message">Already have an account? Login</string>
+    <string name="registration_prompt_message">Don\'t have an account yet? Register</string>
+    <string name="authorization_link">Login</string>
+    <string name="registration_link">Register</string>
 
 </resources>

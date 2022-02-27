@@ -1,6 +1,8 @@
 package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +21,11 @@ import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailVal
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
-import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.ValidationPurpose.*
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
+import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
 import com.steeshock.android.streetworkout.utils.extensions.gone
+import com.steeshock.android.streetworkout.utils.extensions.setLinkSpan
 import com.steeshock.android.streetworkout.utils.extensions.toVisibility
 import com.steeshock.android.streetworkout.utils.extensions.visible
 import javax.inject.Inject
@@ -52,31 +57,8 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.loginLayout.signUpButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_UP_VALIDATION,
-            )
-        }
-
-        binding.loginLayout.signInButton.setOnClickListener {
-            viewModel.validateFields(
-                email = getEmail(),
-                password = getPassword(),
-                validationPurpose = SIGN_IN_VALIDATION,
-            )
-        }
-
-        binding.profileLayout.logoutButton.setOnClickListener {
-            showModalDialog(
-                title = getString(R.string.action_confirm_title),
-                message = getString(R.string.logout_description),
-                positiveText = getString(R.string.logout_button),
-                negativeText = getString(R.string.cancel_item),
-                onPositiveAction = { viewModel.signOut() },
-            )
-        }
+        initLoginPage()
+        initProfilePage()
 
         viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
@@ -88,8 +70,60 @@ class ProfileFragment : BaseFragment() {
         viewModel.requestAuthState()
     }
 
+    private fun initLoginPage() {
+        binding.loginLayout.signButton.setOnClickListener {
+            viewModel.validateFields(
+                email = getEmail(),
+                password = getPassword(),
+            )
+        }
+    }
+
+    private fun initProfilePage() {
+        binding.profileLayout.logoutButton.setOnClickListener {
+            showModalDialog(
+                title = getString(R.string.action_confirm_title),
+                message = getString(R.string.logout_description),
+                positiveText = getString(R.string.logout_button),
+                negativeText = getString(R.string.cancel_item),
+                onPositiveAction = { viewModel.signOut() },
+            )
+        }
+    }
+
     private fun renderViewState(viewState: AuthViewState) {
         binding.progress.visibility = viewState.isLoading.toVisibility()
+        setupSignButtonState(viewState.signPurpose)
+    }
+
+    private fun setupSignButtonState(signPurpose: SignPurpose) {
+        var promptText = ""
+        var promptLink = ""
+
+        when(signPurpose) {
+            SIGN_UP -> {
+                binding.loginLayout.signButton.text = getString(R.string.sign_up_button_title)
+                promptText = getString(R.string.authorization_prompt_message)
+                promptLink = getString(R.string.authorization_link)
+            }
+            SIGN_IN -> {
+                binding.loginLayout.signButton.text = getString(R.string.sign_in_button_title)
+                promptText = getString(R.string.registration_prompt_message)
+                promptLink = getString(R.string.registration_link)
+            }
+        }
+        binding.loginLayout.signPromptTextView.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            val textWithLink = SpannableString(promptText).apply {
+                setLinkSpan(
+                    link = promptLink,
+                    onClick = {
+                        viewModel.changeSignPurpose(signPurpose)
+                    }
+                )
+            }
+            text = textWithLink
+        }
     }
 
     private fun renderViewEvent(viewEvent: AuthViewEvent) {

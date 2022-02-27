@@ -89,5 +89,9 @@
     <string name="profile_name">Ваше имя:</string>
     <string name="profile_email">Ваш email:</string>
     <string name="action_confirm_title">Подтвердите действие</string>
+    <string name="authorization_prompt_message">Уже есть аккаунт? Авторизуйтесь</string>
+    <string name="registration_prompt_message">Еще нет аккаунта? Зарегистрируйтесь</string>
+    <string name="authorization_link">Авторизуйтесь</string>
+    <string name="registration_link">Зарегистрируйтесь</string>
 
 </resources>
