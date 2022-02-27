@@ -92,7 +92,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun renderViewState(viewState: AuthViewState) {
-        binding.progress.visibility = viewState.isLoading.toVisibility()
+        binding.progress.root.visibility = viewState.isLoading.toVisibility()
         setupSignButtonState(viewState.signPurpose)
     }
 
