@@ -19,7 +19,7 @@ interface IPlacesRepository {
      * Upload image with file [uri] to Firebase Storage
      * @return Uri with uploaded file
      */
-    suspend fun uploadImage(uri: Uri, placeUUID: String): Uri?
+    suspend fun uploadImage(uri: Uri, placeId: String?): Uri?
 
     /**
      * Insert new place in local Places table

@@ -19,6 +19,11 @@ interface IAuthService {
     suspend fun getDisplayName(): String?
 
     /**
+     * Get current authorized user ID
+     */
+    fun getCurrentUserId(): String?
+
+    /**
      * Sign up new user (registration)
      */
     suspend fun signUp(
