@@ -21,6 +21,10 @@ class AuthServiceImpl : IAuthService {
         return auth.currentUser?.displayName
     }
 
+    override fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
+    }
+
     override suspend fun signUp(
         userCredentials: UserCredentials,
         onSuccess: (User?) -> Unit,

@@ -10,7 +10,10 @@ data class Place(
 
     @PrimaryKey
     @ColumnInfo(name = "place_id")
-    var place_uuid: String = "",
+    var place_id: String = "",
+
+    @ColumnInfo(name = "user_id")
+    var user_id: String = "",
 
     @ColumnInfo(name = "title")
     var title: String = "",

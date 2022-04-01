@@ -9,7 +9,6 @@ import com.steeshock.android.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.PlacesDao
-import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -85,8 +84,8 @@ open class MockApiPlacesRepository(
     /**
      * Firebase realization because of none implementation on Mock API
      */
-    override suspend fun uploadImage(uri: Uri, placeUUID: String): Uri? {
-        val reference = Firebase.storage.reference.child("${placeUUID}/image-${Date().time}.jpg")
+    override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
+        val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
         val uploadTask = reference.putFile(uri)
 
         uploadTask.await()
@@ -102,7 +101,7 @@ open class MockApiPlacesRepository(
      */
     override suspend fun insertPlaceRemote(newPlace: Place) {
         val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlace.place_uuid)
+        val myRef = database.getReference("places").child(newPlace.place_id)
         myRef.setValue(newPlace).await()
     }
 

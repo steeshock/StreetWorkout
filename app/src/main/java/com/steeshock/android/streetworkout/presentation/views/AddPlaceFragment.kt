@@ -118,7 +118,12 @@ class AddPlaceFragment : BaseFragment() {
                     message = getString(R.string.publish_permission_message),
                     positiveText = getString(R.string.ok_item),
                     negativeText = getString(R.string.cancel_item),
-                    onPositiveAction = { viewModel.onAddNewPlace(place = getNewPlace()) },
+                    onPositiveAction = { viewModel.onAddNewPlace(
+                        title = binding.placeTitle.text.toString(),
+                        description = binding.placeDescription.text.toString(),
+                        position = binding.placePosition.text.toString(),
+                        address = binding.placeAddress.text.toString(),
+                    )},
                 )
             }
         }
@@ -265,20 +270,6 @@ class AddPlaceFragment : BaseFragment() {
         }
 
         return validationResult
-    }
-
-    private fun getNewPlace(): Place {
-        val placeUUID = UUID.randomUUID().toString()
-        val position = binding.placePosition.text.toString().split(" ")
-        return Place(
-            place_uuid = placeUUID,
-            title = binding.placeTitle.text.toString(),
-            description = binding.placeDescription.text.toString(),
-            latitude = if (position.size > 1) position[0].toDouble() else 54.513845,
-            longitude = if (position.size > 1) position[1].toDouble() else 36.261215,
-            address = binding.placeAddress.text.toString(),
-            categories = viewModel.selectedCategories
-        )
     }
 
     private fun resetFields() {

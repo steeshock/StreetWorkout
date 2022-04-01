@@ -2,7 +2,6 @@ package com.steeshock.android.streetworkout.presentation.views
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -164,7 +163,7 @@ class PlacesFragment : BaseFragment() {
 
     private fun navigateToMap(place: Place) {
         findNavController().navigate(
-            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.place_uuid)
+            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.place_id)
         )
     }
 

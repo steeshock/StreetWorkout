@@ -66,7 +66,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
         if (!movedCameraToInitialPoint && placeUUID != null && placeUUID != -1 && placeUUID is String){
 
-            val place = viewModel.observablePlaces.value?.find { i -> i.place_uuid == placeUUID }
+            val place = viewModel.observablePlaces.value?.find { i -> i.place_id == placeUUID }
 
             if (place != null){
                 
@@ -94,7 +94,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 pin = LatLng(place.latitude, place.longitude)
                 val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)
-                place.place_uuid.let { markers.add(CustomMarker(it, marker)) }
+                place.place_id.let { markers.add(CustomMarker(it, marker)) }
             }
 
             for (position in pinsPositions) {

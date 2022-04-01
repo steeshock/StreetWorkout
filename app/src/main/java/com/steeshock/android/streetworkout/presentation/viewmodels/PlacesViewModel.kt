@@ -50,7 +50,7 @@ class PlacesViewModel @Inject constructor(
         }
         observablePlaces.addSource(actualPlaces) {
             setupEmptyState()
-            observablePlaces.value = it.sortedBy { i -> i.created }
+            observablePlaces.value = it.sortedByDescending { i -> i.created }
         }
     }
 

@@ -11,14 +11,18 @@ import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.AddPlaceViewState
+import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AddPlaceViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     private val categoriesRepository: ICategoriesRepository,
+    private val authService: IAuthService,
 ) : ViewModel() {
 
     private val mutableViewState: MutableLiveData<AddPlaceViewState> = MutableLiveData()
@@ -33,13 +37,16 @@ class AddPlaceViewModel @Inject constructor(
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var downloadedImagesLinks: ArrayList<String> = arrayListOf()
 
-    var sendingPlace: Place? = null
+    private var sendingPlace: Place? = null
 
     fun onAddNewPlace(
-        place: Place,
-        onSuccessValidation: () -> Unit = {},
+        title: String,
+        description: String,
+        position: String,
+        address: String,
     ) {
-        sendingPlace = place
+        sendingPlace = getNewPlace(title, description, position, address)
+
         mutableViewState.updateState {
             copy(
                 isSendingInProgress = true,
@@ -50,16 +57,38 @@ class AddPlaceViewModel @Inject constructor(
 
         if (selectedImages.size > 0) {
             selectedImages.forEach { uri ->
-                uploadDataToFirebase(uri, place.place_uuid)
+                uploadDataToFirebase(uri, sendingPlace?.place_id)
             }
         } else {
             createAndPublishNewPlace()
         }
     }
 
-    private fun uploadDataToFirebase(uri: Uri, placeUUID: String) = viewModelScope.launch() {
+    private fun getNewPlace(
+        title: String,
+        description: String,
+        position: String,
+        address: String,
+    ): Place {
+        val placeId = UUID.randomUUID().toString()
+        val userId = authService.getCurrentUserId().toString()
+        val positionValues = position.split(" ")
 
-        val result = placesRepository.uploadImage(uri, placeUUID)
+        return Place(
+            place_id = placeId,
+            user_id = userId,
+            title = title,
+            description = description,
+            latitude = if (positionValues.size > 1) position[0].code.toDouble() else 54.513845,
+            longitude = if (positionValues.size > 1) position[1].code.toDouble() else 36.261215,
+            address = address,
+            categories = selectedCategories
+        )
+    }
+
+    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch() {
+
+        val result = placesRepository.uploadImage(uri, placeId)
         downloadedImagesLinks.add(result.toString())
 
         mutableViewState.updateState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
