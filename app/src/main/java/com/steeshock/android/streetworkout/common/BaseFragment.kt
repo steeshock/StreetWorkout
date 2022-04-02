@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.presentation.views.MainActivity
 
 abstract class BaseFragment : Fragment() {

@@ -11,7 +11,6 @@ import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.PlaceItemBinding
 import com.steeshock.android.streetworkout.presentation.adapters.PlacePayloadType.*
-import java.util.*
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 

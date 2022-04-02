@@ -9,7 +9,6 @@ import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.database.CategoriesDao
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * Repository for work with Firebase Realtime Database

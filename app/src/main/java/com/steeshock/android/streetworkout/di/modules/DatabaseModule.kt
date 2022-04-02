@@ -7,8 +7,6 @@ import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.database.PlacesDatabase
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
-import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiCategoriesRepository
-import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiPlacesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import dagger.Module

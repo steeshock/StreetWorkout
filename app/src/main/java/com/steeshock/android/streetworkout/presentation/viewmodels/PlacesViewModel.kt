@@ -6,9 +6,10 @@ import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAddPlaceFragment
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.services.auth.IAuthService

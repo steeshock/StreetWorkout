@@ -6,9 +6,10 @@ import com.steeshock.android.streetworkout.data.repository.implementation.mockAp
 import com.steeshock.android.streetworkout.data.repository.implementation.mockApi.MockApiPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
 import org.junit.Before
-import org.mockito.Mockito.*
+import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class PlacesViewModelTest {
 

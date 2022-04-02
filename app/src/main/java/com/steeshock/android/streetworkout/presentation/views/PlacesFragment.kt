@@ -16,7 +16,8 @@ import com.steeshock.android.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.android.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent
-import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.*
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAddPlaceFragment
+import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.android.streetworkout.utils.extensions.gone

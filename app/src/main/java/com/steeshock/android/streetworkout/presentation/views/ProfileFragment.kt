@@ -14,12 +14,15 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.User
 import com.steeshock.android.streetworkout.databinding.FragmentProfileBinding
-import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
-import com.steeshock.android.streetworkout.presentation.viewStates.auth.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignInResponse.*
+import com.steeshock.android.streetworkout.presentation.viewStates.auth.SignUpResponse
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
