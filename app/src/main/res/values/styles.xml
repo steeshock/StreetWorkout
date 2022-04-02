@@ -9,19 +9,24 @@
 
         <!-- Customize for snackbar. -->
         <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
+        <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>
 
     </style>
 
     <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
-        <item name="animationMode">slide</item>
         <item name="android:layout_margin">12dp</item>
+        <item name="actionTextColorAlpha">1</item>
+    </style>
+
+    <style name="Widget.App.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textColor">@color/snackbarActionTextColor</item>
     </style>
 
     <style name="AuthTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">?colorAccent</item>
         <item name="boxStrokeWidth">1dp</item>
         <item name="boxStrokeWidthFocused">1dp</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

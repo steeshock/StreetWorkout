@@ -41,7 +41,7 @@ class FavoritePlacesFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentFavoritePlacesBinding.inflate(inflater, container, false)
         (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
@@ -63,7 +63,8 @@ class FavoritePlacesFragment : BaseFragment() {
 
                 override fun onPlaceLocationClicked(place: Place) {
                     view.findNavController().navigate(
-                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(place.place_id)
+                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
+                            place.place_id)
                     )
                 }
             })
@@ -145,20 +146,11 @@ class FavoritePlacesFragment : BaseFragment() {
     // endregion
 
     private fun showRollbackSnack(item: Place) {
-
-        val rollbackSnack = view?.let {
-            Snackbar.make(it,
-                "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
-                Snackbar.LENGTH_LONG
-            )
-        }
-        rollbackSnack?.anchorView = getBottomBaseline()
-        rollbackSnack?.setActionTextColor(ContextCompat.getColor(requireContext(), R.color.snackbarActionTextColor))
-        rollbackSnack?.setAction(R.string.rollback_place) {
-            viewModel.returnPlaceToFavorites(item)
-        }
-        rollbackSnack?.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-        rollbackSnack?.show()
+        showSnackbar(
+            message = "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
+            action = { viewModel.returnPlaceToFavorites(item) },
+            actionText = getString(R.string.rollback_place),
+        )
     }
 
     private fun setupEmptyViews() {

@@ -4,7 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.presentation.views.MainActivity
 
 abstract class BaseFragment : Fragment() {
@@ -44,5 +47,18 @@ abstract class BaseFragment : Fragment() {
             .setNegativeButton(negativeText) {_, _ -> onNegativeAction.invoke() }
             .create()
             .show()
+    }
+
+    fun showSnackbar(
+        message: String,
+        action: () -> Unit = {},
+        actionText: String? = null,
+    ) {
+        view?.let {
+            val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_LONG)
+            snackbar.anchorView = getBottomBaseline()
+            snackbar.setAction(actionText) { action.invoke() }
+            snackbar.show()
+        }
     }
 }

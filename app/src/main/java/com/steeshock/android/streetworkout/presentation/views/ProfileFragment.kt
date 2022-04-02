@@ -158,9 +158,7 @@ class ProfileFragment : BaseFragment() {
                 getString(R.string.unknown_error)
             }
         }
-        val snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
-        snackbar.anchorView = getBottomBaseline()
-        snackbar.show()
+        showSnackbar(message)
     }
 
     private fun handleSignUpResult(
