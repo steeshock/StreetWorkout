@@ -33,14 +33,12 @@ import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.Constants
 import com.steeshock.android.streetworkout.common.appComponent
 import com.steeshock.android.streetworkout.data.model.Category
-import com.steeshock.android.streetworkout.data.model.Place
 import com.steeshock.android.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.android.streetworkout.presentation.viewStates.AddPlaceViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.android.streetworkout.services.FetchAddressIntentService
 import com.steeshock.android.streetworkout.utils.extensions.gone
 import com.steeshock.android.streetworkout.utils.extensions.visible
-import java.util.*
 import javax.inject.Inject
 
 class AddPlaceFragment : BaseFragment() {

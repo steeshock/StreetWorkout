@@ -5,7 +5,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.steeshock.android.streetworkout.data.model.User
 
-class AuthServiceImpl : IAuthService {
+class FirebaseAuthServiceImpl : IAuthService {
 
     private var auth: FirebaseAuth = Firebase.auth
 
