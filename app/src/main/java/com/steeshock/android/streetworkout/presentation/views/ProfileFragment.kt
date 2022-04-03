@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.steeshock.android.streetworkout.R
 import com.steeshock.android.streetworkout.common.BaseFragment
 import com.steeshock.android.streetworkout.common.appComponent
@@ -70,7 +69,9 @@ class ProfileFragment : BaseFragment() {
         viewModel.viewEvent.observe(viewLifecycleOwner) {
             renderViewEvent(it)
         }
-        viewModel.requestAuthState()
+
+        val signPurposeFromNavigationArgs = getSignPurposeArgs()
+        viewModel.requestAuthState(signPurposeFromNavigationArgs)
     }
 
     private fun initLoginPage() {
@@ -233,6 +234,12 @@ class ProfileFragment : BaseFragment() {
     private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
 
     private fun getPassword() = binding.loginLayout.passwordEditText.text.toString()
+
+    private fun getSignPurposeArgs() = run {
+        arguments?.get("sign_purpose")?.let {
+            SignPurpose.fromString(it.toString())
+        } ?: SIGN_UP
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
