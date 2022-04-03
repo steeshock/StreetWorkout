@@ -49,7 +49,12 @@
         android:id="@+id/navigation_profile"
         android:name="com.steeshock.android.streetworkout.presentation.views.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="sign_purpose"
+            app:argType="string" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/navigation_add_place"

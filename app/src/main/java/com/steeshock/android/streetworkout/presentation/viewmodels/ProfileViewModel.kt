@@ -41,8 +41,13 @@ class ProfileViewModel @Inject constructor(
     private val mutableViewEvent = SingleLiveEvent<AuthViewEvent>()
     val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
 
-    fun requestAuthState() = viewModelScope.launch(Dispatchers.IO) {
-        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+    fun requestAuthState(signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
+        mutableViewState.updateState(postValue = true) {
+            copy(
+                isLoading = true,
+                signPurpose = signPurpose,
+            )
+        }
         if (authService.isUserAuthorized()) {
             sendViewEvent(
                 postValue = true,
@@ -61,7 +66,12 @@ class ProfileViewModel @Inject constructor(
                 event = SignInResult(UserNotAuthorized),
             )
         }
-        mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+        mutableViewState.updateState(postValue = true) {
+            copy(
+                isLoading = false,
+                signPurpose = signPurpose,
+            )
+        }
     }
 
     /**
@@ -263,6 +273,12 @@ class ProfileViewModel @Inject constructor(
      */
     enum class SignPurpose {
         SIGN_UP,
-        SIGN_IN,
+        SIGN_IN;
+
+        companion object {
+            fun fromString(value: String?): SignPurpose {
+                return values().firstOrNull { it.name == value } ?: SIGN_UP
+            }
+        }
     }
 }
