@@ -35,7 +35,7 @@
         <!--Название-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_title_input"
-            style="@style/AuthTextInputLayout"
+            style="@style/OutlinedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/list_item_spacing"
@@ -55,7 +55,7 @@
         <!--Краткое описание-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_description_input"
-            style="@style/AuthTextInputLayout"
+            style="@style/OutlinedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/list_item_spacing"
@@ -74,7 +74,7 @@
         <!--Адрес-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/place_address_input"
-            style="@style/AuthTextInputLayout"
+            style="@style/OutlinedTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/list_item_spacing"
@@ -98,7 +98,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/AuthTextInputLayout"
+                style="@style/OutlinedTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/list_item_spacing"
@@ -142,7 +142,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/AuthTextInputLayout"
+                style="@style/OutlinedTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/list_item_spacing"
@@ -179,7 +179,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/AuthTextInputLayout"
+                style="@style/OutlinedTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/list_item_spacing"
