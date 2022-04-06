@@ -13,7 +13,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/emailInput"
-            style="@style/AuthTextInputLayout"
+            style="@style/Widget.StreetWorkout.OutlinedTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
@@ -34,7 +34,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordInput"
-            style="@style/AuthTextInputLayout"
+            style="@style/Widget.StreetWorkout.OutlinedTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
@@ -47,7 +47,6 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordEditText"
-                style="@style/AuthTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
@@ -55,14 +54,11 @@
 
         <Button
             android:id="@+id/signButton"
+            style="@style/Widget.StreetWorkout.FlatButton"
             android:layout_width="200dp"
-            android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:background="@color/colorPrimary"
             android:text="@string/sign_up_button_title"
-            android:textColor="@android:color/white"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

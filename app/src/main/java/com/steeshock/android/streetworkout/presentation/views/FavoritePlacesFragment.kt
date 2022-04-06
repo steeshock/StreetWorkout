@@ -86,8 +86,8 @@ class FavoritePlacesFragment : BaseFragment() {
         }
     }
 
-    private fun renderViewState(viewState: PlacesViewState?) {
-        when (viewState?.emptyState) {
+    private fun renderViewState(viewState: PlacesViewState) {
+        when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()
                 binding.emptyList.mainLayout.visible()
