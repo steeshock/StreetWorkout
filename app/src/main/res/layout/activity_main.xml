@@ -35,7 +35,7 @@
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/navigationMainColor"
+        android:background="?colorPrimary"
         app:itemHorizontalTranslationEnabled="false"
         app:itemIconTint="@drawable/selector_bottombar"
         app:itemTextColor="@drawable/selector_bottombar"

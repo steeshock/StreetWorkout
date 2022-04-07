@@ -1,25 +1,13 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-
-        <!-- Customize your theme here -->
-        <item name="colorPrimary">@color/navigationMainColor</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <!-- Customize for snackbar -->
-        <item name="snackbarStyle">@style/Widget.StreetWorkout.Snackbar</item>
-        <item name="snackbarButtonStyle">@style/Widget.StreetWorkout.SnackbarButton</item>
-
-    </style>
 
     <style name="Widget.StreetWorkout.Snackbar" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:layout_margin">12dp</item>
+        <item name="android:backgroundTint">?snackbarBackgroundColor</item>
         <item name="actionTextColorAlpha">1</item>
     </style>
 
     <style name="Widget.StreetWorkout.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
-        <item name="android:textColor">@color/snackbarActionTextColor</item>
+        <item name="android:textColor">?snackbarActionTextColor</item>
     </style>
 
     <style name="Widget.StreetWorkout.OutlinedTextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -32,7 +20,7 @@
     <style name="Widget.StreetWorkout.FlatButton" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_height">50dp</item>
         <item name="android:background">?colorPrimary</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?buttonTextColor</item>
     </style>
 
 </resources>

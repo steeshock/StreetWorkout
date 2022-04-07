@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="snackbarActionTextColor" format="reference|color" />
+    <attr name="snackbarBackgroundColor" format="reference|color" />
+    <attr name="buttonTextColor" format="reference|color" />
+    <attr name="favoriteIconColor" format="reference|color" />
+    <attr name="mainBackgroundColor" format="reference|color" />
+</resources>
