@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#455A64</color>
-    <color name="colorPrimaryDark">#455A64</color>
-    <color name="colorAccent">#000000</color>
-    <color name="colorAccentAlpha">#95000000</color>
-
     <color name="separatorColor">#E4E4E4</color>
-    <color name="snackbarLightColor">#323232</color>
-    <color name="snackbarDarkColor">#443f54</color>
-
-    <color name="lighterGrayColor">#F2F2F2</color>
+    <color name="graphiteColor">#323232</color>
+    <color name="earthColor">#455A64</color>
+    <color name="backgroundColor">#F2F2F2</color>
     <color name="purpleColor">#a97ae3</color>
     <color name="whiteColor">#FFFFFF</color>
     <color name="grayColor">#878080</color>
     <color name="redColor">#FF3347</color>
     <color name="lightGrayColor">#ABABAB</color>
     <color name="greenColor">#8bf70a</color>
+    <color name="blackColor">#000000</color>
 </resources>

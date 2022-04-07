@@ -1,20 +1,15 @@
 <resources>
-    <style name="Theme.StreetWorkout" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="Theme.StreetWorkout" parent="Base.Theme.StreetWorkout">
+        <item name="colorPrimary">@color/earthColor</item>
+        <item name="colorPrimaryDark">@color/earthColor</item>
+        <item name="colorAccent">@color/blackColor</item>
 
         <item name="snackbarStyle">@style/Widget.StreetWorkout.Snackbar</item>
         <item name="snackbarButtonStyle">@style/Widget.StreetWorkout.SnackbarButton</item>
         <item name="snackbarActionTextColor">@color/whiteColor</item>
         <item name="snackbarBackgroundColor">@color/grayColor</item>
-
         <item name="buttonTextColor">@color/lightGrayColor</item>
         <item name="favoriteIconColor">@color/greenColor</item>
-
         <item name="mainBackgroundColor">@color/lightGrayColor</item>
-
     </style>
-
 </resources>
