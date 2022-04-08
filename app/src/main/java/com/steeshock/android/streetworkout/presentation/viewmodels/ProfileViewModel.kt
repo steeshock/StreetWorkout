@@ -1,5 +1,8 @@
 package com.steeshock.android.streetworkout.presentation.viewmodels
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.android.streetworkout.data.model.User
+import com.steeshock.android.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.android.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
@@ -25,6 +29,7 @@ import com.steeshock.android.streetworkout.services.auth.UserCredentials
 import com.steeshock.android.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -257,13 +262,26 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun changeSignPurpose(currentSignPurpose: SignPurpose) {
-        when(currentSignPurpose) {
+        when (currentSignPurpose) {
             SIGN_UP -> {
                 mutableViewState.updateState { copy(signPurpose = SIGN_IN) }
             }
             SIGN_IN -> {
                 mutableViewState.updateState { copy(signPurpose = SIGN_UP) }
             }
+        }
+    }
+
+    fun changeAppTheme() = viewModelScope.launch(Dispatchers.IO) {
+        val currentTheme = dataStoreRepository.getInt(NIGHT_MODE_PREFERENCES_KEY)
+        val newThemeValue = if (currentTheme == MODE_NIGHT_FOLLOW_SYSTEM) {
+            MODE_NIGHT_YES
+        } else {
+            MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        dataStoreRepository.putInt(NIGHT_MODE_PREFERENCES_KEY, newThemeValue)
+        withContext(Dispatchers.Main) {
+            AppCompatDelegate.setDefaultNightMode(newThemeValue)
         }
     }
 

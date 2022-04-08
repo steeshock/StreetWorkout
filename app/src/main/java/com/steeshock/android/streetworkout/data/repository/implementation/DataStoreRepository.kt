@@ -21,17 +21,14 @@ class DataStoreRepository(
         val NIGHT_MODE_PREFERENCES_KEY = intPreferencesKey("night_mode")
     }
 
-    override suspend fun putInt(key: String, value: Int) {
-        val preferencesKey = intPreferencesKey(key)
-        var k = context.dataStore
+    override suspend fun putInt(preferencesKey: Preferences.Key<Int>, value: Int) {
         context.dataStore.edit { preferences ->
             preferences[preferencesKey] = value
         }
     }
 
-    override suspend fun getInt(key: String): Int? {
+    override suspend fun getInt(preferencesKey: Preferences.Key<Int>): Int? {
         return try {
-            val preferencesKey = intPreferencesKey(key)
             val preferences = context.dataStore.data.first()
             preferences[preferencesKey]
         } catch (e: Exception) {

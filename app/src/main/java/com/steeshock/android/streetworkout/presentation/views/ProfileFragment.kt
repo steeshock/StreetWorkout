@@ -3,9 +3,9 @@ package com.steeshock.android.streetworkout.presentation.views
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.steeshock.android.streetworkout.R
@@ -240,6 +240,23 @@ class ProfileFragment : BaseFragment() {
             SignPurpose.fromString(it.toString())
         } ?: SIGN_UP
     }
+
+    // region Menu
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_change_theme -> {
+                viewModel.changeAppTheme()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    // endregion
 
     override fun onDestroyView() {
         super.onDestroyView()

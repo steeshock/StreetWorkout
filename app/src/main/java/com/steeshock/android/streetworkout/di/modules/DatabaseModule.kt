@@ -45,6 +45,7 @@ class DatabaseModule(private val appContext: Context) {
     }
 
     @Provides
+    @Singleton
     fun provideDataStoreRepository(): IDataStoreRepository {
         return DataStoreRepository(appContext)
     }

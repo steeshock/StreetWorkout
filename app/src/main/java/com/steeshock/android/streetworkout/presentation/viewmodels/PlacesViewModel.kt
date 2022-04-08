@@ -1,10 +1,15 @@
 package com.steeshock.android.streetworkout.presentation.viewmodels
 
+import android.app.AppComponentFactory
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.*
 import com.steeshock.android.streetworkout.data.api.APIResponse
 import com.steeshock.android.streetworkout.data.model.Category
 import com.steeshock.android.streetworkout.data.model.Place
+import com.steeshock.android.streetworkout.data.repository.implementation.DataStoreRepository
+import com.steeshock.android.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent
@@ -15,6 +20,7 @@ import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEve
 import com.steeshock.android.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -22,6 +28,7 @@ class PlacesViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     private val categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
+    private val dataStoreRepository: IDataStoreRepository,
 ) : ViewModel() {
 
     private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
@@ -52,6 +59,15 @@ class PlacesViewModel @Inject constructor(
         observablePlaces.addSource(actualPlaces) {
             setupEmptyState()
             observablePlaces.value = it.sortedByDescending { i -> i.created }
+        }
+        setupAppTheme()
+    }
+
+    private fun setupAppTheme() = viewModelScope.launch(Dispatchers.IO) {
+        dataStoreRepository.getInt(NIGHT_MODE_PREFERENCES_KEY)?.let {
+            withContext(Dispatchers.Main) {
+                AppCompatDelegate.setDefaultNightMode(it)
+            }
         }
     }
 
