@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.android.streetworkout.data.model.User
+import com.steeshock.android.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.android.streetworkout.presentation.viewStates.AuthViewState
 import com.steeshock.android.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.android.streetworkout.presentation.viewStates.auth.AuthViewEvent
@@ -28,6 +29,7 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
+    private val dataStoreRepository: IDataStoreRepository,
 ) : ViewModel() {
 
     private companion object {

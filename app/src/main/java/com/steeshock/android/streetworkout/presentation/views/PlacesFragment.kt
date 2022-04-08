@@ -20,7 +20,6 @@ import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEve
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.android.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.android.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.android.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.android.streetworkout.utils.extensions.gone
 import com.steeshock.android.streetworkout.utils.extensions.visible

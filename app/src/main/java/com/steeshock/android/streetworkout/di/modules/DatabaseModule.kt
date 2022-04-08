@@ -5,12 +5,15 @@ import com.steeshock.android.streetworkout.data.api.PlacesAPI
 import com.steeshock.android.streetworkout.data.database.CategoriesDao
 import com.steeshock.android.streetworkout.data.database.PlacesDao
 import com.steeshock.android.streetworkout.data.database.PlacesDatabase
+import com.steeshock.android.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.android.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.android.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.android.streetworkout.data.repository.interfaces.IPlacesRepository
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class DatabaseModule(private val appContext: Context) {
@@ -39,6 +42,11 @@ class DatabaseModule(private val appContext: Context) {
 
         // Реализация для работы с Mock API на сервере
         //return MockApiCategoriesRepository.getInstance(categoriesDao, placesAPI)
+    }
+
+    @Provides
+    fun provideDataStoreRepository(): IDataStoreRepository {
+        return DataStoreRepository(appContext)
     }
 
     @Provides
