@@ -8,7 +8,7 @@ android {
     compileSdkVersion 32
 
     defaultConfig {
-        applicationId "com.steeshock.android.streetworkout"
+        applicationId "com.steeshock.streetworkout"
         minSdkVersion 22
         targetSdkVersion 32
         versionCode 1
@@ -17,6 +17,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_URL", '"https://my-json-server.typicode.com/"'
+        resValue "string", "google_maps_key", "AIzaSyAFbIm4Ii_HquUrbI7-BUU668yG6QkG_kQ"
     }
 
     buildTypes {
@@ -43,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation project(':design')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.20"
 

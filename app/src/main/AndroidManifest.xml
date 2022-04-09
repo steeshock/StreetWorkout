@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.steeshock.android.streetworkout">
+    package="com.steeshock.streetworkout">
 
     <!--Location permissions-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -44,7 +44,7 @@
         android:exported attribute to "false" stops other apps from starting this
         service, even when using an explicit intent. -->
         <service
-            android:name="com.steeshock.android.streetworkout.services.FetchAddressIntentService"
+            android:name="com.steeshock.streetworkout.services.FetchAddressIntentService"
             android:exported="false"/>
     </application>
 
