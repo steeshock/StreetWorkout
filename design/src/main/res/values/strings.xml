@@ -34,7 +34,6 @@
     <string name="hint_place_images">Выберите фотографии</string>
     <string name="hint_images_loading">Обработка изображений…</string>
     <string name="hint_place_description">Краткое описание</string>
-    <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>
     <string name="sign_in_button_title">Авторизация</string>
@@ -43,10 +42,6 @@
     <string name="success_message">Успешно</string>
     <string name="failed_message">Ошибка при отправке</string>
     <string name="canceled_message">Отправка отменена</string>
-    <string name="clear_fields_alert">Внимание!</string>
-    <string name="clear_fields_message">Все поля будут очищены. Продолжить?</string>
-    <string name="publish_permission_message">Данные будут отправлены на сервер. Продолжить?</string>
-    <string name="select_category_alert">Выберите категорию:</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>
     <string name="address_found">Адрес найден</string>
@@ -58,7 +53,6 @@
     <string name="password_input_hint">Пароль</string>
     <string name="success_sign_up">Пользователь %s успешно зарегистрирован</string>
     <string name="success_sign_in">Добро пожаловать %s!</string>
-    <string name="sign_in_alert_dialog_message">Авторизуйтесь в приложении, чтобы добавлять новые места</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>
@@ -86,6 +80,7 @@
     <string name="logout_button"><u>Выход</u></string>
     <string name="logout_description">Выйти из текущего пользователя?</string>
     <string name="welcome_title">Добро пожаловать!</string>
+    <string name="attention_title">Внимание!</string>
     <string name="profile_name">Ваше имя:</string>
     <string name="profile_email">Ваш email:</string>
     <string name="action_confirm_title">Подтвердите действие</string>
@@ -93,5 +88,12 @@
     <string name="registration_prompt_message">Еще нет аккаунта? Зарегистрируйтесь</string>
     <string name="authorization_link">Авторизуйтесь</string>
     <string name="registration_link">Зарегистрируйтесь</string>
+
+    <!--Alert dialogs-->
+    <string name="select_theme_dialog_title">Выберите тему:</string>
+    <string name="clear_fields_dialog_message">Все поля будут очищены. Продолжить?</string>
+    <string name="publish_permission_dialog_message">Данные будут отправлены на сервер. Продолжить?</string>
+    <string name="select_category_dialog_title">Выберите категорию:</string>
+    <string name="sign_in_dialog_message">Авторизуйтесь в приложении, чтобы добавлять новые места</string>
 
 </resources>

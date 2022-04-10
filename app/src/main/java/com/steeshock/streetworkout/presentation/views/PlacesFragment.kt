@@ -154,9 +154,9 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun showAuthenticationAlert() {
-        showModalDialog(
-            title = getString(R.string.clear_fields_alert),
-            message = getString(R.string.sign_in_alert_dialog_message),
+        showAlertDialog(
+            title = getString(R.string.attention_title),
+            message = getString(R.string.sign_in_dialog_message),
             positiveText = getString(R.string.sign_in_button_title),
             negativeText = getString(R.string.cancel_item),
             onPositiveAction = { navigateToProfile() },

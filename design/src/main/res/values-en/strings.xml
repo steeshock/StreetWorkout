@@ -35,7 +35,6 @@ search conditions"</string>
     <string name="hint_place_images">Select photos</string>
     <string name="hint_images_loading">Image processing…</string>
     <string name="hint_place_description">Short description</string>
-    <string name="title_activity_maps">Map</string>
     <string name="get_my_position_btn"><u>Determine my geolocation</u></string>
     <string name="add_place_btn">Publish</string>
     <string name="sign_in_button_title">Authorization</string>
@@ -44,10 +43,6 @@ search conditions"</string>
     <string name="success_message">Success</string>
     <string name="failed_message">Sending failed</string>
     <string name="canceled_message">Sending canceled</string>
-    <string name="clear_fields_alert">Caution!</string>
-    <string name="clear_fields_message">All fields will be cleared. Continue?</string>
-    <string name="publish_permission_message">New place will be published on server. Continue?</string>
-    <string name="select_category_alert">Select category:</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Cancel</string>
     <string name="address_found">Address found</string>
@@ -59,7 +54,6 @@ search conditions"</string>
     <string name="password_input_hint">Password</string>
     <string name="success_sign_up">User %s successfully sign up</string>
     <string name="success_sign_in">Welcome %s!</string>
-    <string name="sign_in_alert_dialog_message">Please sign in to add new places</string>
 
     <!--Geoposition-->
     <string name="fetch_address">Fetch address</string>
@@ -94,5 +88,13 @@ search conditions"</string>
     <string name="registration_prompt_message">Don\'t have an account yet? Register</string>
     <string name="authorization_link">Login</string>
     <string name="registration_link">Register</string>
+
+    <!--Alert dialogs-->
+    <string name="select_theme_dialog_title">Select theme:</string>
+    <string name="attention_title">Caution!</string>
+    <string name="clear_fields_dialog_message">All fields will be cleared. Continue?</string>
+    <string name="publish_permission_dialog_message">New place will be published on server. Continue?</string>
+    <string name="select_category_dialog_title">Select category:</string>
+    <string name="sign_in_dialog_message">Please sign in to add new places</string>
 
 </resources>

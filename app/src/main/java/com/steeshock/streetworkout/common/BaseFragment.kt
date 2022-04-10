@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.common
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -24,7 +25,7 @@ abstract class BaseFragment : Fragment() {
         super.onAttach(context)
     }
 
-    fun getBottomBaseline(): View? {
+    private fun getBottomBaseline(): View? {
         return (activity as? MainActivity)?.getBottomBaseline()
     }
 
@@ -32,21 +33,39 @@ abstract class BaseFragment : Fragment() {
         return (activity as? MainActivity)?.getTopBaseline()
     }
 
-    fun showModalDialog(
+    fun showAlertDialog(
         title: String? = null,
         message: String? = null,
-        positiveText: String,
-        negativeText: String,
+        positiveText: String? = null,
+        negativeText: String? = null,
         onPositiveAction: () -> Unit = {},
         onNegativeAction: () -> Unit = {},
     ) {
+        return getAlertDialogBuilder(
+            title = title,
+            message = message,
+            positiveText = positiveText,
+            negativeText = negativeText,
+            onPositiveAction = onPositiveAction,
+            onNegativeAction = onNegativeAction,
+        )
+            .create()
+            .show()
+    }
+
+    fun getAlertDialogBuilder(
+        title: String? = null,
+        message: String? = null,
+        positiveText: String? = null,
+        negativeText: String? = null,
+        onPositiveAction: () -> Unit = {},
+        onNegativeAction: () -> Unit = {},
+    ): AlertDialog.Builder {
         return AlertDialog.Builder(requireActivity())
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(positiveText) { _, _ -> onPositiveAction.invoke()}
             .setNegativeButton(negativeText) {_, _ -> onNegativeAction.invoke() }
-            .create()
-            .show()
     }
 
     fun showSnackbar(

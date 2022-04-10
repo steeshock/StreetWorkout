@@ -3,7 +3,6 @@ package com.steeshock.streetworkout.presentation.views
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -18,7 +17,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -100,9 +98,9 @@ class AddPlaceFragment : BaseFragment() {
         }
 
         binding.clearButton.setOnClickListener {
-            showModalDialog(
-                title = getString(R.string.clear_fields_alert),
-                message = getString(R.string.clear_fields_message),
+            showAlertDialog(
+                title = getString(R.string.attention_title),
+                message = getString(R.string.clear_fields_dialog_message),
                 positiveText = getString(R.string.ok_item),
                 negativeText = getString(R.string.cancel_item),
                 onPositiveAction = { resetFields() },
@@ -111,9 +109,9 @@ class AddPlaceFragment : BaseFragment() {
 
         binding.sendButton.setOnClickListener {
             if (validatePlace()) {
-                showModalDialog(
-                    title = getString(R.string.clear_fields_alert),
-                    message = getString(R.string.publish_permission_message),
+                showAlertDialog(
+                    title = getString(R.string.attention_title),
+                    message = getString(R.string.publish_permission_dialog_message),
                     positiveText = getString(R.string.ok_item),
                     negativeText = getString(R.string.cancel_item),
                     onPositiveAction = { viewModel.onAddNewPlace(
@@ -194,30 +192,7 @@ class AddPlaceFragment : BaseFragment() {
         binding.progressSending.max = viewState.maxProgressValue
     }
 
-    private fun getCategoriesDialog(): Dialog {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireActivity())
-        return builder
-            .setTitle(getString(R.string.select_category_alert))
-            .setMultiChoiceItems(
-                allCategories.map { i -> i.category_name }.toTypedArray(),
-                viewModel.checkedCategoriesArray
-            ) { _, which, isChecked ->
 
-                val selectedCategory = allCategories[which]
-
-                if (isChecked) {
-                    selectedCategory.category_id?.let { viewModel.selectedCategories.add(it) }
-                } else {
-                    selectedCategory.category_id?.let {
-                        viewModel.selectedCategories.remove(
-                            it
-                        )
-                    }
-                }
-            }
-            .setPositiveButton(getString(R.string.ok_item)) { _, _ -> addCategories() }
-            .create()
-    }
     private fun addCategories() {
         if (viewModel.selectedCategories.isEmpty()) {
             binding.placeCategories.text?.clear()
@@ -307,7 +282,27 @@ class AddPlaceFragment : BaseFragment() {
     }
 
     private fun showCategories() {
-        getCategoriesDialog().show()
+        getAlertDialogBuilder(
+            title = getString(R.string.select_category_dialog_title),
+            positiveText = getString(R.string.ok_item),
+            onPositiveAction = { addCategories() },
+        )
+            .setMultiChoiceItems(
+                allCategories.map { i -> i.category_name }.toTypedArray(),
+                viewModel.checkedCategoriesArray
+            ) { _, which, isChecked ->
+                val selectedCategoryId = allCategories[which].category_id
+                when {
+                    isChecked -> {
+                        selectedCategoryId?.let { viewModel.selectedCategories.add(it) }
+                    }
+                    else -> {
+                        selectedCategoryId?.let { viewModel.selectedCategories.remove(it) }
+                    }
+                }
+            }
+            .create()
+            .show()
     }
 
     override fun onDestroyView() {

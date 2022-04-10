@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.*
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.steeshock.streetworkout.R
@@ -85,7 +83,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun initProfilePage() {
         binding.profileLayout.logoutButton.setOnClickListener {
-            showModalDialog(
+            showAlertDialog(
                 title = getString(R.string.action_confirm_title),
                 message = getString(R.string.logout_description),
                 positiveText = getString(R.string.logout_button),
