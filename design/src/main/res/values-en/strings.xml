@@ -90,11 +90,18 @@ search conditions"</string>
     <string name="registration_link">Register</string>
 
     <!--Alert dialogs-->
-    <string name="select_theme_dialog_title">Select theme:</string>
     <string name="attention_title">Caution!</string>
     <string name="clear_fields_dialog_message">All fields will be cleared. Continue?</string>
     <string name="publish_permission_dialog_message">New place will be published on server. Continue?</string>
-    <string name="select_category_dialog_title">Select category:</string>
+    <string name="select_category_dialog_title">Select category</string>
     <string name="sign_in_dialog_message">Please sign in to add new places</string>
+
+    <!--Theme selecting-->
+    <string name="select_theme_dialog_title">Select theme</string>
+    <string-array name="themesSelector">
+        <item name="light_theme_title">Light</item>
+        <item name="dark_theme_title">Dark</item>
+        <item name="system_theme_title">Follow system</item>
+    </string-array>
 
 </resources>

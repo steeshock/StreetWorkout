@@ -1,8 +1,6 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,6 +24,7 @@ import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.Sign
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.UserCredentials
+import com.steeshock.streetworkout.utils.extensions.getThemeByIndex
 import com.steeshock.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -272,18 +271,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun changeAppTheme() = viewModelScope.launch(Dispatchers.IO) {
-        val newThemeValue = when (dataStoreRepository.getInt(NIGHT_MODE_PREFERENCES_KEY)) {
-            null, MODE_NIGHT_FOLLOW_SYSTEM -> {
-                MODE_NIGHT_YES
-            }
-            else -> {
-                MODE_NIGHT_FOLLOW_SYSTEM
-            }
-        }
+    fun changeAppTheme(checkedItem: Int) = viewModelScope.launch(Dispatchers.IO) {
+        val newThemeValue = getThemeByIndex(checkedItem)
         dataStoreRepository.putInt(NIGHT_MODE_PREFERENCES_KEY, newThemeValue)
         withContext(Dispatchers.Main) {
-            AppCompatDelegate.setDefaultNightMode(newThemeValue)
+            setDefaultNightMode(newThemeValue)
         }
     }
 

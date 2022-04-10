@@ -224,7 +224,7 @@ class PlacesFragment : BaseFragment() {
     // endregion
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+       _binding = null
+       super.onDestroyView()    
     }
 }

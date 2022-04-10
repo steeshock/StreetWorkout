@@ -24,10 +24,7 @@ import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
-import com.steeshock.streetworkout.utils.extensions.gone
-import com.steeshock.streetworkout.utils.extensions.setLinkSpan
-import com.steeshock.streetworkout.utils.extensions.toVisibility
-import com.steeshock.streetworkout.utils.extensions.visible
+import com.steeshock.streetworkout.utils.extensions.*
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
@@ -102,7 +99,7 @@ class ProfileFragment : BaseFragment() {
         var promptText = ""
         var promptLink = ""
 
-        when(signPurpose) {
+        when (signPurpose) {
             SIGN_UP -> {
                 binding.loginLayout.signButton.text = getString(R.string.sign_up_button_title)
                 promptText = getString(R.string.authorization_prompt_message)
@@ -129,10 +126,11 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun renderViewEvent(viewEvent: AuthViewEvent) {
-        when(viewEvent) {
+        when (viewEvent) {
             is SignUpResult,
             is SignInResult,
-            is UnknownError, -> {
+            is UnknownError,
+            -> {
                 showSnackbar(viewEvent)
             }
             is EmailValidation -> {
@@ -146,7 +144,7 @@ class ProfileFragment : BaseFragment() {
 
     // TODO("Показывать другой вью элемент")
     private fun showSnackbar(viewEvent: AuthViewEvent) {
-        val message = when(viewEvent) {
+        val message = when (viewEvent) {
             is SignUpResult -> {
                 handleSignUpResult(viewEvent)
             }
@@ -248,7 +246,7 @@ class ProfileFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_change_theme -> {
-                viewModel.changeAppTheme()
+                showThemeChangeDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -256,8 +254,23 @@ class ProfileFragment : BaseFragment() {
     }
     // endregion
 
+    private fun showThemeChangeDialog() {
+        getAlertDialogBuilder(
+            title = getString(R.string.select_theme_dialog_title),
+        )
+            .setSingleChoiceItems(
+                resources.getStringArray(R.array.themesSelector),
+                getIndexByThemeName()
+            ) { dialog, checkedItem ->
+                dialog.dismiss()
+                viewModel.changeAppTheme(checkedItem)
+            }
+            .create()
+            .show()
+    }
+
     override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+       _binding = null
+       super.onDestroyView()    
     }
 }
