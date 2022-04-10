@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackGroundColor"
+    android:background="?mainBackgroundColor"
     tools:ignore="ContentDescription">
 
     <LinearLayout
@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/mainBackGroundColor"
+            android:background="?mainBackgroundColor"
             android:elevation="8dp"
             app:title="@string/places_title"
             app:titleTextColor="@android:color/black" />
@@ -26,7 +26,7 @@
             android:id="@+id/categoriesRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/mainBackGroundColor" />
+            android:background="?mainBackgroundColor" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresher"
@@ -41,7 +41,7 @@
                     android:id="@+id/placesRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/mainBackGroundColor"
+                    android:background="?mainBackgroundColor"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <include
