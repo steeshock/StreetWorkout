@@ -15,6 +15,8 @@ data class AddPlaceViewState(
 
     var selectedImagesMessage: String = "",
 
+    var selectedCategories: String = "",
+
     var sendingProgress: Int = 0,
 
     var maxProgressValue: Int = 0,

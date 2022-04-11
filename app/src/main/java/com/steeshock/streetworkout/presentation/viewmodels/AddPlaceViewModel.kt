@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class AddPlaceViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
-    private val categoriesRepository: ICategoriesRepository,
+    categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
 ) : ViewModel() {
 
@@ -30,8 +30,11 @@ class AddPlaceViewModel @Inject constructor(
 
     val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories
 
-    var checkedCategoriesArray: BooleanArray? = null
-    var selectedCategories: ArrayList<Int> = arrayListOf()
+    private val selectedCategories: ArrayList<Int> = arrayListOf()
+    private val tempSelectedCategories: ArrayList<Int> = arrayListOf()
+
+    val checkedCategoriesArray: BooleanArray?
+        get() = getCheckedCategories()
 
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var downloadedImagesLinks: ArrayList<String> = arrayListOf()
@@ -60,6 +63,72 @@ class AddPlaceViewModel @Inject constructor(
             }
         } else {
             createAndPublishNewPlace()
+        }
+    }
+
+    fun onResetFields() {
+        selectedImages.clear()
+        selectedCategories.clear()
+        downloadedImagesLinks.clear()
+        mutableViewState.updateState(postValue = true) {
+            copy(
+                loadCompleted = false,
+                selectedImagesMessage = "",
+                selectedCategories = "",
+            )
+        }
+    }
+
+    fun onImagePicked(data: Intent?) {
+        selectedImages.add(data?.data!!)
+        mutableViewState.updateState {
+            copy(
+                isImagePickingInProgress = false,
+                selectedImagesMessage = "Прикреплено фотографий: ${selectedImages.size}",
+            )
+        }
+    }
+
+    fun onOpenedImagePicker(isPickerVisible: Boolean) {
+        mutableViewState.updateState {
+            copy(
+                isImagePickingInProgress = isPickerVisible,
+            )
+        }
+    }
+
+    fun onLocationProgressChanged(isLocationInProgress: Boolean) {
+        mutableViewState.updateState {
+            copy(
+                isLocationInProgress = isLocationInProgress,
+            )
+        }
+    }
+
+    fun onCategoryItemClicked(isChecked: Boolean, selectedItemId: Int) {
+        val selectedCategoryId = allCategories.value?.get(selectedItemId)?.category_id
+        when {
+            isChecked -> selectedCategoryId?.let { tempSelectedCategories.add(it) }
+            else -> selectedCategoryId?.let { tempSelectedCategories.remove(it) }
+        }
+    }
+
+    fun onCategorySelectionConfirmed() {
+        selectedCategories.clear()
+        selectedCategories.addAll(tempSelectedCategories)
+        tempSelectedCategories.clear()
+
+        val selectedCategoriesString = allCategories.value
+            ?.filter { category -> selectedCategories.contains(category.category_id) }
+            ?.map { it.category_name }
+            ?.toString()
+            ?.removeSurrounding("[", "]")
+            ?: ""
+
+        mutableViewState.updateState {
+            copy(
+                selectedCategories = selectedCategoriesString,
+            )
         }
     }
 
@@ -119,48 +188,17 @@ class AddPlaceViewModel @Inject constructor(
             copy(
                 loadCompleted = true,
                 isSendingInProgress = false,
-                selectedImagesMessage ="",
-            )
-        }
-    }
-
-    fun onResetFields() {
-        selectedImages.clear()
-        selectedCategories.clear()
-        downloadedImagesLinks.clear()
-        checkedCategoriesArray = BooleanArray(allCategories.value?.size!!)
-        mutableViewState.updateState(postValue = true) {
-            copy(
-                loadCompleted = false,
                 selectedImagesMessage = "",
             )
         }
     }
 
-    fun onImagePicked(data: Intent?) {
-        selectedImages.add(data?.data!!)
-        mutableViewState.updateState {
-            copy(
-                isImagePickingInProgress = false,
-                selectedImagesMessage = "Прикреплено фотографий: ${selectedImages.size}",
-            )
-        }
-    }
-
-    fun onOpenedImagePicker(isPickerVisible: Boolean) {
-        mutableViewState.updateState {
-            copy(
-                isImagePickingInProgress = isPickerVisible,
-            )
-        }
-    }
-
-    fun onLocationProgressChanged(isLocationInProgress: Boolean) {
-        mutableViewState.updateState {
-            copy(
-                isLocationInProgress = isLocationInProgress,
-            )
-        }
+    private fun getCheckedCategories(): BooleanArray? {
+        tempSelectedCategories.clear()
+        tempSelectedCategories.addAll(selectedCategories)
+        return allCategories.value?.map {
+            selectedCategories.contains(it.category_id)
+        }?.toBooleanArray()
     }
 
     private fun MutableLiveData<AddPlaceViewState>.updateState(
