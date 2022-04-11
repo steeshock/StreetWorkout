@@ -257,6 +257,7 @@ class ProfileFragment : BaseFragment() {
     private fun showThemeChangeDialog() {
         getAlertDialogBuilder(
             title = getString(R.string.select_theme_dialog_title),
+            negativeText = getString(R.string.cancel_item),
         )
             .setSingleChoiceItems(
                 resources.getStringArray(R.array.themesSelector),
