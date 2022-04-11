@@ -224,6 +224,7 @@ class PlacesFragment : BaseFragment() {
     // endregion
 
     override fun onDestroyView() {
+        viewModel.resetSearchFilter()
        _binding = null
        super.onDestroyView()    
     }

@@ -196,6 +196,12 @@ class PlacesViewModel @Inject constructor(
         }
     }
 
+    fun resetSearchFilter() {
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(null)
+        }
+    }
+
     fun filterDataBySearchString(searchString: String?) {
         lastSearchString = searchString
         filterItemsBySearchString(lastSearchString)
