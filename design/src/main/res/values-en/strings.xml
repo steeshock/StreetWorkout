@@ -34,6 +34,7 @@ search conditions"</string>
     <string name="hint_place_categories">Select categories</string>
     <string name="hint_place_images">Select photos</string>
     <string name="hint_images_loading">Image processing…</string>
+    <string name="hint_images_attached">Attached images: %s</string>
     <string name="hint_place_description">Short description</string>
     <string name="get_my_position_btn"><u>Determine my geolocation</u></string>
     <string name="add_place_btn">Publish</string>

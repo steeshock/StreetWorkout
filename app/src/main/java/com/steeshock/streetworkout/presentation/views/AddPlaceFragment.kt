@@ -30,7 +30,6 @@ import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
@@ -50,8 +49,6 @@ class AddPlaceFragment : BaseFragment() {
 
     private var _binding: FragmentAddPlaceBinding? = null
     private val binding get() = _binding!!
-
-    private var allCategories = emptyList<Category>()
 
     override fun injectComponent() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
@@ -137,14 +134,6 @@ class AddPlaceFragment : BaseFragment() {
 
         initViews()
 
-        viewModel.allCategories.observe(viewLifecycleOwner) { categories ->
-            categories?.let { allCategories = it }
-
-            if (viewModel.checkedCategoriesArray == null) {
-                viewModel.checkedCategoriesArray = BooleanArray(allCategories.size)
-            }
-        }
-
         viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
         }
@@ -161,7 +150,7 @@ class AddPlaceFragment : BaseFragment() {
         } else {
             binding.takeImageButton.visible()
             binding.progressImageBar.gone()
-            binding.placeImages.setText(viewState.selectedImagesMessage)
+            binding.placeImages.setText(getImagesHint(viewState.selectedImagesCount))
         }
         if (viewState.isLocationInProgress) {
             binding.myPositionButton.gone()
@@ -190,32 +179,18 @@ class AddPlaceFragment : BaseFragment() {
         binding.myPositionButton.isClickable = !viewState.isSendingInProgress
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
+        binding.placeCategories.setText(viewState.selectedCategories)
     }
 
-
-    private fun addCategories() {
-        if (viewModel.selectedCategories.isEmpty()) {
-            binding.placeCategories.text?.clear()
-            return
-        }
-
-        binding.placeCategories.text?.clear()
-
-        viewModel.selectedCategories.forEach { i ->
-            run {
-                val category = allCategories.find { j -> j.category_id == i }?.category_name
-
-                if (!category.isNullOrEmpty()) {
-                    binding.placeCategories.text?.append(
-                        category,
-                        "; "
-                    )
-                }
-            }
+    private fun getImagesHint(selectedImagesCount: Int): String {
+        val imagesHint = if (selectedImagesCount > 0) "$selectedImagesCount" else ""
+        return if (imagesHint.isNotEmpty()) {
+            getString(R.string.hint_images_attached, imagesHint)
+        } else {
+            ""
         }
     }
 
-    //region Image picking
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -223,7 +198,6 @@ class AddPlaceFragment : BaseFragment() {
             }
             viewModel.onOpenedImagePicker(false)
         }
-    //endregion
 
     // TODO Need refactoring
     private fun validatePlace(): Boolean {
@@ -285,21 +259,13 @@ class AddPlaceFragment : BaseFragment() {
         getAlertDialogBuilder(
             title = getString(R.string.select_category_dialog_title),
             positiveText = getString(R.string.ok_item),
-            onPositiveAction = { addCategories() },
+            onPositiveAction = { viewModel.onCategorySelectionConfirmed() },
         )
             .setMultiChoiceItems(
-                allCategories.map { i -> i.category_name }.toTypedArray(),
-                viewModel.checkedCategoriesArray
-            ) { _, which, isChecked ->
-                val selectedCategoryId = allCategories[which].category_id
-                when {
-                    isChecked -> {
-                        selectedCategoryId?.let { viewModel.selectedCategories.add(it) }
-                    }
-                    else -> {
-                        selectedCategoryId?.let { viewModel.selectedCategories.remove(it) }
-                    }
-                }
+                viewModel.allCategories.value?.map { i -> i.category_name }?.toTypedArray(),
+                viewModel.checkedCategoriesArray,
+            ) { _, selectedItemId, isChecked ->
+                viewModel.onCategoryItemClicked(isChecked, selectedItemId)
             }
             .create()
             .show()
@@ -310,7 +276,7 @@ class AddPlaceFragment : BaseFragment() {
        super.onDestroyView()    
     }
 
-    // TODO Need refactoring
+    // TODO Need refactoring, not for UI layer!
     //region GPS
     private val TAG = "LocationTag"
 
