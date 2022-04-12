@@ -33,6 +33,7 @@
     <string name="hint_place_categories">Выберите категории</string>
     <string name="hint_place_images">Выберите фотографии</string>
     <string name="hint_images_loading">Обработка изображений…</string>
+    <string name="hint_images_attached">Прикреплено фотографий: %s</string>
     <string name="hint_place_description">Краткое описание</string>
     <string name="get_my_position_btn"><u>Определить мою геопозицию</u></string>
     <string name="add_place_btn">Отправить</string>

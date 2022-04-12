@@ -73,7 +73,7 @@ class AddPlaceViewModel @Inject constructor(
         mutableViewState.updateState(postValue = true) {
             copy(
                 loadCompleted = false,
-                selectedImagesMessage = "",
+                selectedImagesCount = 0,
                 selectedCategories = "",
             )
         }
@@ -84,7 +84,7 @@ class AddPlaceViewModel @Inject constructor(
         mutableViewState.updateState {
             copy(
                 isImagePickingInProgress = false,
-                selectedImagesMessage = "Прикреплено фотографий: ${selectedImages.size}",
+                selectedImagesCount = selectedImages.size,
             )
         }
     }
@@ -188,7 +188,7 @@ class AddPlaceViewModel @Inject constructor(
             copy(
                 loadCompleted = true,
                 isSendingInProgress = false,
-                selectedImagesMessage = "",
+                selectedImagesCount = 0,
             )
         }
     }

@@ -13,7 +13,7 @@ data class AddPlaceViewState(
 
     var isSendingInProgress: Boolean = false,
 
-    var selectedImagesMessage: String = "",
+    var selectedImagesCount: Int = 0,
 
     var selectedCategories: String = "",
 

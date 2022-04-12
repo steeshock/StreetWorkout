@@ -150,7 +150,7 @@ class AddPlaceFragment : BaseFragment() {
         } else {
             binding.takeImageButton.visible()
             binding.progressImageBar.gone()
-            binding.placeImages.setText(viewState.selectedImagesMessage)
+            binding.placeImages.setText(getImagesHint(viewState.selectedImagesCount))
         }
         if (viewState.isLocationInProgress) {
             binding.myPositionButton.gone()
@@ -180,6 +180,15 @@ class AddPlaceFragment : BaseFragment() {
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
         binding.placeCategories.setText(viewState.selectedCategories)
+    }
+
+    private fun getImagesHint(selectedImagesCount: Int): String {
+        val imagesHint = if (selectedImagesCount > 0) "$selectedImagesCount" else ""
+        return if (imagesHint.isNotEmpty()) {
+            getString(R.string.hint_images_attached, imagesHint)
+        } else {
+            ""
+        }
     }
 
     private val startForProfileImageResult =
