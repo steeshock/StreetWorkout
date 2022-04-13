@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
-import androidx.appcompat.app.AppCompatDelegate.*
+import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -20,7 +20,6 @@ import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowA
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
