@@ -31,6 +31,7 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
+import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.FetchAddressIntentService
@@ -63,6 +64,20 @@ class AddPlaceFragment : BaseFragment() {
         resultReceiver = AddressResultReceiver(Handler())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initViews()
+
+        viewModel.viewState.observe(viewLifecycleOwner) {
+            renderViewState(it)
+        }
+
+        viewModel.viewEvent.observe(viewLifecycleOwner) {
+            renderViewEvent(it)
+        }
     }
 
     private fun initViews() {
@@ -105,38 +120,12 @@ class AddPlaceFragment : BaseFragment() {
         }
 
         binding.sendButton.setOnClickListener {
-            if (validatePlace()) {
-                showAlertDialog(
-                    title = getString(R.string.attention_title),
-                    message = getString(R.string.publish_permission_dialog_message),
-                    positiveText = getString(R.string.ok_item),
-                    negativeText = getString(R.string.cancel_item),
-                    onPositiveAction = { viewModel.onAddNewPlace(
-                        title = binding.placeTitle.text.toString(),
-                        description = binding.placeDescription.text.toString(),
-                        position = binding.placePosition.text.toString(),
-                        address = binding.placeAddress.text.toString(),
-                    )},
-                )
-            }
-        }
-        binding.placeTitle.addTextChangedListener {
-            binding.placeTitleInput.error = null
-        }
-        binding.placeAddress.addTextChangedListener {
-            binding.placeTitleInput.error = null
+            viewModel.onValidateForm(
+                placeTitle = binding.placeTitle.text.toString(),
+                placeAddress = binding.placeAddress.text.toString(),
+            )
         }
         imagePicker = ImagePicker.with(requireActivity())
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initViews()
-
-        viewModel.viewState.observe(viewLifecycleOwner) {
-            renderViewState(it)
-        }
     }
 
     private fun renderViewState(viewState: AddPlaceViewState) {
@@ -182,6 +171,33 @@ class AddPlaceFragment : BaseFragment() {
         binding.placeCategories.setText(viewState.selectedCategories)
     }
 
+    private fun renderViewEvent(viewEvent: AddPlaceViewEvent) {
+        when(viewEvent) {
+            AddPlaceViewEvent.ErrorPlaceAddressValidation -> {
+                binding.placeAddressInput.error =
+                    resources.getString(R.string.required_field_empty_error)
+            }
+            AddPlaceViewEvent.ErrorPlaceTitleValidation -> {
+                binding.placeTitleInput.error =
+                    resources.getString(R.string.required_field_empty_error)
+            }
+            AddPlaceViewEvent.SuccessValidation -> {
+                showAlertDialog(
+                    title = getString(R.string.attention_title),
+                    message = getString(R.string.publish_permission_dialog_message),
+                    positiveText = getString(R.string.ok_item),
+                    negativeText = getString(R.string.cancel_item),
+                    onPositiveAction = { viewModel.onAddNewPlace(
+                        title = binding.placeTitle.text.toString(),
+                        description = binding.placeDescription.text.toString(),
+                        position = binding.placePosition.text.toString(),
+                        address = binding.placeAddress.text.toString(),
+                    )},
+                )
+            }
+        }
+    }
+
     private fun getImagesHint(selectedImagesCount: Int): String {
         val imagesHint = if (selectedImagesCount > 0) "$selectedImagesCount" else ""
         return if (imagesHint.isNotEmpty()) {
@@ -198,26 +214,6 @@ class AddPlaceFragment : BaseFragment() {
             }
             viewModel.onOpenedImagePicker(false)
         }
-
-    // TODO Need refactoring
-    private fun validatePlace(): Boolean {
-
-        var validationResult = true
-
-        if (binding.placeTitle.text.isNullOrEmpty()) {
-            binding.placeTitleInput.error =
-                resources.getString(R.string.required_field_empty_error)
-            validationResult = false
-        }
-
-        if (binding.placeAddress.text.isNullOrEmpty()) {
-            binding.placeAddressInput.error =
-                resources.getString(R.string.required_field_empty_error)
-            validationResult = false
-        }
-
-        return validationResult
-    }
 
     private fun resetFields() {
         viewModel.onResetFields()
@@ -273,7 +269,7 @@ class AddPlaceFragment : BaseFragment() {
 
     override fun onDestroyView() {
        _binding = null
-       super.onDestroyView()    
+       super.onDestroyView()
     }
 
     // TODO Need refactoring, not for UI layer!

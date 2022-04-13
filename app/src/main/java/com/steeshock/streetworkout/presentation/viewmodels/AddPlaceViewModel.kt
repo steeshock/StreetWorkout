@@ -10,7 +10,10 @@ import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
+import com.steeshock.streetworkout.presentation.viewStates.SingleLiveEvent
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -27,6 +30,9 @@ class AddPlaceViewModel @Inject constructor(
     private val mutableViewState: MutableLiveData<AddPlaceViewState> = MutableLiveData()
     val viewState: LiveData<AddPlaceViewState>
         get() = mutableViewState
+
+    private val mutableViewEvent = SingleLiveEvent<AddPlaceViewEvent>()
+    val viewEvent get() = mutableViewEvent as LiveData<AddPlaceViewEvent>
 
     val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories
 
@@ -132,6 +138,36 @@ class AddPlaceViewModel @Inject constructor(
         }
     }
 
+    fun onValidateForm(
+        placeTitle: String,
+        placeAddress: String,
+    ) {
+        val isSuccessValidation = validateTitle(placeTitle) and
+                validateAddress(placeAddress)
+
+        if (isSuccessValidation) {
+            sendViewEvent(SuccessValidation)
+        }
+    }
+
+    private fun validateTitle(placeTitle: String): Boolean {
+        return if (placeTitle.isEmpty()) {
+            sendViewEvent(ErrorPlaceTitleValidation)
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun validateAddress(placeAddress: String): Boolean {
+        return if (placeAddress.isEmpty()) {
+            sendViewEvent(ErrorPlaceAddressValidation)
+            false
+        } else {
+            true
+        }
+    }
+
     private fun getNewPlace(
         title: String,
         description: String,
@@ -213,5 +249,11 @@ class AddPlaceViewModel @Inject constructor(
         } else {
             value = newState
         }
+    }
+
+    private fun sendViewEvent(
+        event: AddPlaceViewEvent,
+    ) {
+        mutableViewEvent.value = event
     }
 }
