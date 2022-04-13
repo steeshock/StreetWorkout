@@ -18,6 +18,7 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAddPlaceFragment
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
+import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.streetworkout.utils.extensions.gone
