@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.presentation.viewStates
+package com.steeshock.streetworkout.presentation.viewStates.addPlace
 
 /**
  * Describes UI state of Add Place screen

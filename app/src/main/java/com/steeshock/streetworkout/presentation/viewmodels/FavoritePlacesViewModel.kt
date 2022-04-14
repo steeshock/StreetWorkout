@@ -4,7 +4,7 @@ import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*

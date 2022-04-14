@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.presentation.viewStates
+package com.steeshock.streetworkout.presentation.viewStates.places
 
 /**
  * Single view events for Places page

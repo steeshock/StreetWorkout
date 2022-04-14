@@ -11,8 +11,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.presentation.viewStates.AuthViewState
-import com.steeshock.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
+import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
@@ -34,7 +35,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
-) : ViewModel() {
+) : ViewModel(),
+    ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl() {
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 8
@@ -44,9 +46,6 @@ class ProfileViewModel @Inject constructor(
     val viewState: LiveData<AuthViewState>
         get() = mutableViewState
 
-    private val mutableViewEvent = SingleLiveEvent<AuthViewEvent>()
-    val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
-
     fun requestAuthState(signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
         mutableViewState.updateState(postValue = true) {
             copy(
@@ -55,8 +54,7 @@ class ProfileViewModel @Inject constructor(
             )
         }
         if (authService.isUserAuthorized()) {
-            sendViewEvent(
-                postValue = true,
+            postViewEvent(
                 event = SignInResult(
                     SuccessSignIn(
                         User(
@@ -67,8 +65,7 @@ class ProfileViewModel @Inject constructor(
                 ),
             )
         } else {
-            sendViewEvent(
-                postValue = true,
+            postViewEvent(
                 event = SignInResult(UserNotAuthorized),
             )
         }
@@ -83,7 +80,7 @@ class ProfileViewModel @Inject constructor(
     /**
      * Local validation for email and password
      */
-    fun validateFields(
+    fun onValidateForm(
         email: String,
         password: String,
     ) {
@@ -239,25 +236,11 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun sendViewEvent(
-        event: AuthViewEvent,
-        postValue: Boolean = false,
-    ) {
-        if (postValue) {
-            mutableViewEvent.postValue(event)
-        } else {
-            mutableViewEvent.value = event
-        }
-    }
-
     fun signOut() = viewModelScope.launch(Dispatchers.IO) {
         mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
         authService.signOut()
         mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
-        sendViewEvent(
-            postValue = true,
-            event = SignInResult(UserNotAuthorized),
-        )
+        postViewEvent(SignInResult(UserNotAuthorized))
     }
 
     fun changeSignPurpose(currentSignPurpose: SignPurpose) {

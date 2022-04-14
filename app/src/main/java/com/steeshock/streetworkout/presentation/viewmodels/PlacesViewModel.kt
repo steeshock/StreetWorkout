@@ -10,12 +10,13 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAddPlaceFragment
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewEvent.ShowAuthenticationAlert
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
-import com.steeshock.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAddPlaceFragment
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,14 +29,12 @@ class PlacesViewModel @Inject constructor(
     private val categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
-) : ViewModel() {
+) : ViewModel(),
+    ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl() {
 
     private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
     val viewState: LiveData<PlacesViewState>
         get() = mutableViewState
-
-    private val mutableViewEvent = SingleLiveEvent<PlacesViewEvent>()
-    val viewEvent get() = mutableViewEvent as LiveData<PlacesViewEvent>
 
     val observablePlaces = MediatorLiveData<List<Place>>()
     val observableCategories = categoriesRepository.allCategories
@@ -172,9 +171,9 @@ class PlacesViewModel @Inject constructor(
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
         if (authService.isUserAuthorized()) {
-            sendViewEvent(ShowAddPlaceFragment)
+            postViewEvent(ShowAddPlaceFragment)
         } else {
-            sendViewEvent(ShowAuthenticationAlert)
+            postViewEvent(ShowAuthenticationAlert)
         }
     }
 
@@ -233,17 +232,6 @@ class PlacesViewModel @Inject constructor(
             postValue(newState)
         } else {
             value = newState
-        }
-    }
-
-    private fun sendViewEvent(
-        event: PlacesViewEvent,
-        postValue: Boolean = true,
-    ) {
-        if (postValue) {
-            mutableViewEvent.postValue(event)
-        } else {
-            mutableViewEvent.value = event
         }
     }
 }

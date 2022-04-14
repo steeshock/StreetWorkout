@@ -12,9 +12,9 @@ import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesReposit
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent.*
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.presentation.viewStates
+package com.steeshock.streetworkout.presentation.viewStates.auth
 
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP

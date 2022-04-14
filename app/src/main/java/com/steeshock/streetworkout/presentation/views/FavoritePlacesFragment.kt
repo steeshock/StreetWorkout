@@ -13,7 +13,7 @@ import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.visible
