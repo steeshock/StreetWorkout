@@ -2,7 +2,10 @@ package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
@@ -12,6 +15,8 @@ import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreReposito
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAddPlaceFragment
@@ -30,11 +35,8 @@ class PlacesViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
 ) : ViewModel(),
-    ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl() {
-
-    private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
-    val viewState: LiveData<PlacesViewState>
-        get() = mutableViewState
+    ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
 
     val observablePlaces = MediatorLiveData<List<Place>>()
     val observableCategories = categoriesRepository.allCategories
@@ -74,17 +76,17 @@ class PlacesViewModel @Inject constructor(
     private fun setupEmptyState() {
         when {
             allPlaces.value.isNullOrEmpty() -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = EMPTY_PLACES)
                 }
             }
             actualPlaces.value.isNullOrEmpty() -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = EMPTY_SEARCH_RESULTS)
                 }
             }
             else -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = NOT_EMPTY)
                 }
             }
@@ -94,12 +96,12 @@ class PlacesViewModel @Inject constructor(
     private var filterList: MutableList<Category> = mutableListOf()
 
     fun fetchPlaces() {
-        mutableViewState.updateState { copy(isLoading = true) }
+        updateViewState { copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             placesRepository.fetchPlaces(object :
                 APIResponse<List<Place>> {
                 override fun onSuccess(result: List<Place>?) {
-                    mutableViewState.updateState(postValue = true) {
+                    updateViewState(postValue = true) {
                         copy(isLoading = false)
                     }
                     result?.let { insertPlaces(it) }
@@ -114,12 +116,12 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun fetchCategories() {
-        mutableViewState.updateState { copy(isLoading = true) }
+        updateViewState { copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             categoriesRepository.fetchCategories(object :
                 APIResponse<List<Category>> {
                 override fun onSuccess(result: List<Category>?) {
-                    mutableViewState.updateState(postValue = true) {
+                    updateViewState(postValue = true) {
                         copy(isLoading = false)
                     }
                     result?.let { insertCategories(it) }
@@ -216,22 +218,8 @@ class PlacesViewModel @Inject constructor(
 
     // TODO Handle errors on UI
     private fun handleError(throwable: Throwable) {
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(isLoading = false)
-        }
-    }
-
-    private fun MutableLiveData<PlacesViewState>.updateState(
-        postValue: Boolean = false,
-        block: PlacesViewState.() -> PlacesViewState,
-    ) {
-        val currentState = value ?: PlacesViewState()
-        val newState = currentState.run { block() }
-
-        if (postValue) {
-            postValue(newState)
-        } else {
-            value = newState
         }
     }
 }
