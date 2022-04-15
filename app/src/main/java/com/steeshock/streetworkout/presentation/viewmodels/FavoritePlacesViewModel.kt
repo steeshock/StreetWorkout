@@ -3,8 +3,10 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
-import com.steeshock.streetworkout.presentation.viewStates.PlacesViewState
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -12,11 +14,8 @@ import javax.inject.Inject
 
 class FavoritePlacesViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
-) : ViewModel() {
-
-    private val mutableViewState: MutableLiveData<PlacesViewState> = MutableLiveData()
-    val viewState: LiveData<PlacesViewState>
-        get() = mutableViewState
+) : ViewModel(),
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
 
     val observablePlaces = MediatorLiveData<List<Place>>()
 
@@ -38,17 +37,17 @@ class FavoritePlacesViewModel @Inject constructor(
     private fun setupEmptyState() {
         when {
             allFavoritePlaces.value.isNullOrEmpty() -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = EmptyViewState.EMPTY_PLACES)
                 }
             }
             actualPlaces.value.isNullOrEmpty() -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = EmptyViewState.EMPTY_SEARCH_RESULTS)
                 }
             }
             else -> {
-                mutableViewState.updateState {
+                updateViewState {
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
@@ -80,13 +79,5 @@ class FavoritePlacesViewModel @Inject constructor(
                 it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString)}
             }
         }
-    }
-
-    private fun MutableLiveData<PlacesViewState>.updateState(
-        block: PlacesViewState.() -> PlacesViewState,
-    ) {
-        val currentState = value ?: PlacesViewState()
-        val newState = currentState.run { block() }
-        value = newState
     }
 }

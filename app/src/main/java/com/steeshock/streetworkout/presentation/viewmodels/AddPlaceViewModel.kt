@@ -10,10 +10,13 @@ import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent.*
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
-import com.steeshock.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -25,14 +28,9 @@ class AddPlaceViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
-) : ViewModel() {
-
-    private val mutableViewState: MutableLiveData<AddPlaceViewState> = MutableLiveData()
-    val viewState: LiveData<AddPlaceViewState>
-        get() = mutableViewState
-
-    private val mutableViewEvent = SingleLiveEvent<AddPlaceViewEvent>()
-    val viewEvent get() = mutableViewEvent as LiveData<AddPlaceViewEvent>
+) : ViewModel(),
+    ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
+    ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl({AddPlaceViewState()}) {
 
     val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories
 
@@ -55,7 +53,7 @@ class AddPlaceViewModel @Inject constructor(
     ) {
         sendingPlace = getNewPlace(title, description, position, address)
 
-        mutableViewState.updateState {
+        updateViewState {
             copy(
                 isSendingInProgress = true,
                 sendingProgress = 0,
@@ -76,7 +74,7 @@ class AddPlaceViewModel @Inject constructor(
         selectedImages.clear()
         selectedCategories.clear()
         downloadedImagesLinks.clear()
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(
                 loadCompleted = false,
                 selectedImagesCount = 0,
@@ -87,7 +85,7 @@ class AddPlaceViewModel @Inject constructor(
 
     fun onImagePicked(data: Intent?) {
         selectedImages.add(data?.data!!)
-        mutableViewState.updateState {
+        updateViewState {
             copy(
                 isImagePickingInProgress = false,
                 selectedImagesCount = selectedImages.size,
@@ -96,7 +94,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     fun onOpenedImagePicker(isPickerVisible: Boolean) {
-        mutableViewState.updateState {
+        updateViewState {
             copy(
                 isImagePickingInProgress = isPickerVisible,
             )
@@ -104,7 +102,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     fun onLocationProgressChanged(isLocationInProgress: Boolean) {
-        mutableViewState.updateState {
+        updateViewState {
             copy(
                 isLocationInProgress = isLocationInProgress,
             )
@@ -131,7 +129,7 @@ class AddPlaceViewModel @Inject constructor(
             ?.removeSurrounding("[", "]")
             ?: ""
 
-        mutableViewState.updateState {
+        updateViewState {
             copy(
                 selectedCategories = selectedCategoriesString,
             )
@@ -195,7 +193,7 @@ class AddPlaceViewModel @Inject constructor(
         val result = placesRepository.uploadImage(uri, placeId)
         downloadedImagesLinks.add(result.toString())
 
-        mutableViewState.updateState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
+        updateViewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
         delay(500)
 
         if (downloadedImagesLinks.size == selectedImages.size) {
@@ -212,7 +210,7 @@ class AddPlaceViewModel @Inject constructor(
             placesRepository.insertPlaceRemote(it)
         }
 
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(
                 sendingProgress = ++sendingProgress
             )
@@ -220,7 +218,7 @@ class AddPlaceViewModel @Inject constructor(
 
         delay(300)
 
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(
                 loadCompleted = true,
                 isSendingInProgress = false,
@@ -249,11 +247,5 @@ class AddPlaceViewModel @Inject constructor(
         } else {
             value = newState
         }
-    }
-
-    private fun sendViewEvent(
-        event: AddPlaceViewEvent,
-    ) {
-        mutableViewEvent.value = event
     }
 }

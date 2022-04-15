@@ -1,8 +1,6 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -11,10 +9,13 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.presentation.viewStates.AuthViewState
-import com.steeshock.streetworkout.presentation.viewStates.SingleLiveEvent
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
+import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
+import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
@@ -34,29 +35,23 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
-) : ViewModel() {
+) : ViewModel(),
+    ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),
+    ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl({ AuthViewState() }) {
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 8
     }
 
-    private val mutableViewState: MutableLiveData<AuthViewState> = MutableLiveData()
-    val viewState: LiveData<AuthViewState>
-        get() = mutableViewState
-
-    private val mutableViewEvent = SingleLiveEvent<AuthViewEvent>()
-    val viewEvent get() = mutableViewEvent as LiveData<AuthViewEvent>
-
     fun requestAuthState(signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(
                 isLoading = true,
                 signPurpose = signPurpose,
             )
         }
         if (authService.isUserAuthorized()) {
-            sendViewEvent(
-                postValue = true,
+            postViewEvent(
                 event = SignInResult(
                     SuccessSignIn(
                         User(
@@ -67,12 +62,11 @@ class ProfileViewModel @Inject constructor(
                 ),
             )
         } else {
-            sendViewEvent(
-                postValue = true,
+            postViewEvent(
                 event = SignInResult(UserNotAuthorized),
             )
         }
-        mutableViewState.updateState(postValue = true) {
+        updateViewState(postValue = true) {
             copy(
                 isLoading = false,
                 signPurpose = signPurpose,
@@ -83,7 +77,7 @@ class ProfileViewModel @Inject constructor(
     /**
      * Local validation for email and password
      */
-    fun validateFields(
+    fun onValidateForm(
         email: String,
         password: String,
     ) {
@@ -148,14 +142,14 @@ class ProfileViewModel @Inject constructor(
         email: String,
         password: String,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        updateViewState(postValue = true) { copy(isLoading = true) }
         authService.signIn(
             userCredentials = UserCredentials(
                 email = email,
                 password = password,
             ),
             onSuccess = { user ->
-                mutableViewState.updateState(postValue = true) {
+                updateViewState(postValue = true) {
                     copy(isLoading = false)
                 }
                 sendViewEvent(
@@ -170,7 +164,7 @@ class ProfileViewModel @Inject constructor(
                 )
             },
             onError = {
-                mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+                updateViewState(postValue = true) { copy(isLoading = false) }
                 handleException(it)
             }
         )
@@ -180,14 +174,14 @@ class ProfileViewModel @Inject constructor(
         email: String,
         password: String,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        updateViewState(postValue = true) { copy(isLoading = true) }
         authService.signUp(
             userCredentials = UserCredentials(
                 email = email,
                 password = password,
             ),
             onSuccess = { user ->
-                mutableViewState.updateState(postValue = true) {
+                updateViewState(postValue = true) {
                     copy(isLoading = false)
                 }
                 sendViewEvent(
@@ -202,7 +196,7 @@ class ProfileViewModel @Inject constructor(
                 )
             },
             onError = {
-                mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
+                updateViewState(postValue = true) { copy(isLoading = false) }
                 handleException(it)
             }
         )
@@ -225,48 +219,20 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun MutableLiveData<AuthViewState>.updateState(
-        postValue: Boolean = false,
-        block: AuthViewState.() -> AuthViewState,
-    ) {
-        val currentState = value ?: AuthViewState()
-        val newState = currentState.run { block() }
-
-        if (postValue) {
-            postValue(newState)
-        } else {
-            value = newState
-        }
-    }
-
-    private fun sendViewEvent(
-        event: AuthViewEvent,
-        postValue: Boolean = false,
-    ) {
-        if (postValue) {
-            mutableViewEvent.postValue(event)
-        } else {
-            mutableViewEvent.value = event
-        }
-    }
-
     fun signOut() = viewModelScope.launch(Dispatchers.IO) {
-        mutableViewState.updateState(postValue = true) { copy(isLoading = true) }
+        updateViewState(postValue = true) { copy(isLoading = true) }
         authService.signOut()
-        mutableViewState.updateState(postValue = true) { copy(isLoading = false) }
-        sendViewEvent(
-            postValue = true,
-            event = SignInResult(UserNotAuthorized),
-        )
+        updateViewState(postValue = true) { copy(isLoading = false) }
+        postViewEvent(SignInResult(UserNotAuthorized))
     }
 
     fun changeSignPurpose(currentSignPurpose: SignPurpose) {
         when (currentSignPurpose) {
             SIGN_UP -> {
-                mutableViewState.updateState { copy(signPurpose = SIGN_IN) }
+                updateViewState { copy(signPurpose = SIGN_IN) }
             }
             SIGN_IN -> {
-                mutableViewState.updateState { copy(signPurpose = SIGN_UP) }
+                updateViewState { copy(signPurpose = SIGN_UP) }
             }
         }
     }

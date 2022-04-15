@@ -11,7 +11,7 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.databinding.FragmentProfileBinding
-import com.steeshock.streetworkout.presentation.viewStates.AuthViewState
+import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationResult
@@ -71,7 +71,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun initLoginPage() {
         binding.loginLayout.signButton.setOnClickListener {
-            viewModel.validateFields(
+            viewModel.onValidateForm(
                 email = getEmail(),
                 password = getPassword(),
             )

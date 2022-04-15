@@ -31,8 +31,8 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.AddPlaceViewState
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.FetchAddressIntentService
 import com.steeshock.streetworkout.utils.extensions.gone
