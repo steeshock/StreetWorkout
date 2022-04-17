@@ -7,4 +7,6 @@ sealed class SignUpResponse {
     data class SuccessSignUp(val user: User?) : SignUpResponse()
 
     object UserCollisionError : SignUpResponse()
+
+    object InvalidEmailError : SignUpResponse()
 }
