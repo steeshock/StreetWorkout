@@ -18,9 +18,10 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
+import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
-import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.SuccessSignUp
-import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.UserCollisionError
+import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse
+import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.services.auth.IAuthService
@@ -62,9 +63,7 @@ class ProfileViewModel @Inject constructor(
                 ),
             )
         } else {
-            postViewEvent(
-                event = SignInResult(UserNotAuthorized),
-            )
+            postViewEvent(SignInResult(UserNotAuthorized))
         }
         updateViewState(postValue = true) {
             copy(
@@ -165,7 +164,7 @@ class ProfileViewModel @Inject constructor(
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
-                handleException(it)
+                handleException(it, SIGN_IN)
             }
         )
     }
@@ -197,12 +196,15 @@ class ProfileViewModel @Inject constructor(
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
-                handleException(it)
+                handleException(it, SIGN_UP)
             }
         )
     }
 
-    private fun handleException(exception: Exception) {
+    private fun handleException(
+        exception: Exception,
+        signPurpose: SignPurpose,
+    ) {
         when (exception) {
             is FirebaseAuthUserCollisionException -> {
                 sendViewEvent(SignUpResult(UserCollisionError))
@@ -211,7 +213,14 @@ class ProfileViewModel @Inject constructor(
                 sendViewEvent(SignInResult(InvalidUserError))
             }
             is FirebaseAuthInvalidCredentialsException -> {
-                sendViewEvent(SignInResult(InvalidCredentialsError))
+                when (signPurpose) {
+                    SIGN_IN -> {
+                        sendViewEvent(SignInResult(InvalidCredentialsError))
+                    }
+                    SIGN_UP -> {
+                        sendViewEvent(SignUpResult(InvalidEmailError))
+                    }
+                }
             }
             else -> {
                 sendViewEvent(UnknownError)

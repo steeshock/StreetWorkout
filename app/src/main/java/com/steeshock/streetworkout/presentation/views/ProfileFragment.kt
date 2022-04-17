@@ -19,7 +19,9 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationR
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
+import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.InvalidCredentialsError
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse
+import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
@@ -142,7 +144,6 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    // TODO("Показывать другой вью элемент")
     private fun showSnackbar(viewEvent: AuthViewEvent) {
         val message = when (viewEvent) {
             is SignUpResult -> {
@@ -161,11 +162,16 @@ class ProfileFragment : BaseFragment() {
     private fun handleSignUpResult(
         viewEvent: SignUpResult,
     ) = when (viewEvent.result) {
-        is SignUpResponse.SuccessSignUp -> {
+        is SuccessSignUp -> {
+            showProfilePage(viewEvent.result.user)
             getString(R.string.success_sign_up, viewEvent.result.user?.email)
         }
-        is SignUpResponse.UserCollisionError -> {
+        is UserCollisionError -> {
             showEmailValidationError(EXISTING_EMAIL)
+            getString(R.string.sign_error)
+        }
+        is InvalidEmailError -> {
+            showEmailValidationError(NOT_VALID_EMAIL)
             getString(R.string.sign_error)
         }
     }
@@ -187,7 +193,8 @@ class ProfileFragment : BaseFragment() {
         }
         is UserNotAuthorized -> {
             showLoginPage()
-            getString(R.string.sign_prompt_message)
+            resetLoginFields()
+            null
         }
     }
 
@@ -225,6 +232,11 @@ class ProfileFragment : BaseFragment() {
 
         binding.profileLayout.displayNameTextView.text = user?.displayName
         binding.profileLayout.emailTextView.text = user?.email
+    }
+
+    private fun resetLoginFields() {
+        binding.loginLayout.emailEditText.text = null
+        binding.loginLayout.passwordEditText.text = null
     }
 
     private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
