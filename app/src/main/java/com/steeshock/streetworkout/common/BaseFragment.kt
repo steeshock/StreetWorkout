@@ -66,15 +66,17 @@ abstract class BaseFragment : Fragment() {
     }
 
     fun showSnackbar(
-        message: String,
+        message: String?,
         action: () -> Unit = {},
         actionText: String? = null,
     ) {
-        view?.let {
-            val snackbar = Snackbar.make(it, message, Snackbar.LENGTH_LONG)
-            snackbar.anchorView = getBottomBaseline()
-            snackbar.setAction(actionText) { action.invoke() }
-            snackbar.show()
+        view?.let { view ->
+            message?.let { message ->
+                val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                snackbar.anchorView = getBottomBaseline()
+                snackbar.setAction(actionText) { action.invoke() }
+                snackbar.show()
+            }
         }
     }
 }

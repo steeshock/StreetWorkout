@@ -144,7 +144,6 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    // TODO("Показывать другой вью элемент")
     private fun showSnackbar(viewEvent: AuthViewEvent) {
         val message = when (viewEvent) {
             is SignUpResult -> {
@@ -194,7 +193,8 @@ class ProfileFragment : BaseFragment() {
         }
         is UserNotAuthorized -> {
             showLoginPage()
-            getString(R.string.sign_prompt_message)
+            resetLoginFields()
+            null
         }
     }
 
@@ -232,6 +232,11 @@ class ProfileFragment : BaseFragment() {
 
         binding.profileLayout.displayNameTextView.text = user?.displayName
         binding.profileLayout.emailTextView.text = user?.email
+    }
+
+    private fun resetLoginFields() {
+        binding.loginLayout.emailEditText.text = null
+        binding.loginLayout.passwordEditText.text = null
     }
 
     private fun getEmail() = binding.loginLayout.emailEditText.text.toString()

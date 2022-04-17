@@ -63,9 +63,7 @@ class ProfileViewModel @Inject constructor(
                 ),
             )
         } else {
-            postViewEvent(
-                event = SignInResult(UserNotAuthorized),
-            )
+            postViewEvent(SignInResult(UserNotAuthorized))
         }
         updateViewState(postValue = true) {
             copy(
