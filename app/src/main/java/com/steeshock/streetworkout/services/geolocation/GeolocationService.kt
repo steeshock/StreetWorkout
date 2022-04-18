@@ -26,6 +26,7 @@ class GeolocationService @Inject constructor(private val context: Context) {
                 ?.addOnSuccessListener {
                     if (!Geocoder.isPresent()) {
                         continuation.resumeWithException(Throwable("No geocoder available"))
+                        return@addOnSuccessListener
                     }
                     continuation.resume(it)
                 }

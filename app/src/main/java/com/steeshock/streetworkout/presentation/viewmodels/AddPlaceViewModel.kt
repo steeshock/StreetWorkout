@@ -3,7 +3,6 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.streetworkout.data.model.Category
@@ -231,11 +230,15 @@ class AddPlaceViewModel @Inject constructor(
 
     fun requestGeolocation() = viewModelScope.launch(Dispatchers.IO) {
         updateViewState(postValue = true) { copy(isLocationInProgress = true) }
-        val location = geolocationService.getLastLocation()
 
-        if (location != null) {
-            val kek = location
+        try {
+            val location = geolocationService.getLastLocation()
+            if (location != null) {
+                val kek = location
+            }
+            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
+        } catch (t: Throwable) {
+            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
         }
-        updateViewState(postValue = true) { copy(isLocationInProgress = false) }
     }
 }
