@@ -18,6 +18,7 @@ import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceView
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.services.geolocation.GeolocationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ class AddPlaceViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
+    private val geolocationService: GeolocationService,
 ) : ViewModel(),
     ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl({AddPlaceViewState()}) {
@@ -97,14 +99,6 @@ class AddPlaceViewModel @Inject constructor(
         updateViewState {
             copy(
                 isImagePickingInProgress = isPickerVisible,
-            )
-        }
-    }
-
-    fun onLocationProgressChanged(isLocationInProgress: Boolean) {
-        updateViewState {
-            copy(
-                isLocationInProgress = isLocationInProgress,
             )
         }
     }
@@ -235,17 +229,13 @@ class AddPlaceViewModel @Inject constructor(
         }?.toBooleanArray()
     }
 
-    private fun MutableLiveData<AddPlaceViewState>.updateState(
-        postValue: Boolean = false,
-        block: AddPlaceViewState.() -> AddPlaceViewState,
-    ) {
-        val currentState = value ?: AddPlaceViewState()
-        val newState = currentState.run { block() }
+    fun requestGeolocation() = viewModelScope.launch(Dispatchers.IO) {
+        updateViewState(postValue = true) { copy(isLocationInProgress = true) }
+        val location = geolocationService.getLastLocation()
 
-        if (postValue) {
-            postValue(newState)
-        } else {
-            value = newState
+        if (location != null) {
+            val kek = location
         }
+        updateViewState(postValue = true) { copy(isLocationInProgress = false) }
     }
 }

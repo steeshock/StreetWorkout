@@ -34,7 +34,7 @@ import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
-import com.steeshock.streetworkout.services.FetchAddressIntentService
+import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
@@ -62,7 +62,6 @@ class AddPlaceFragment : BaseFragment() {
     ): View {
         _binding = FragmentAddPlaceBinding.inflate(inflater, container, false)
         resultReceiver = AddressResultReceiver(Handler())
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         return binding.root
     }
 
@@ -233,10 +232,6 @@ class AddPlaceFragment : BaseFragment() {
         Toast.makeText(requireActivity(), R.string.success_message, Toast.LENGTH_LONG).show()
     }
 
-    private fun getPosition() {
-        getMyPosition()
-    }
-
     private fun openImagePicker() {
         viewModel.onOpenedImagePicker(true)
         imagePicker
@@ -278,15 +273,13 @@ class AddPlaceFragment : BaseFragment() {
 
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
 
-    private var fusedLocationClient: FusedLocationProviderClient? = null
-
     private var lastLocation: Location? = null
 
     private var addressOutput = ""
 
     private lateinit var resultReceiver: AddressResultReceiver
 
-    private fun getMyPosition() {
+    private fun getPosition() {
         if (!checkPermissions()) {
             requestPermissions()
         } else {
@@ -294,48 +287,7 @@ class AddPlaceFragment : BaseFragment() {
                 startIntentService()
                 return
             }
-
-            // If we have not yet retrieved the user location, we process the user's request by setting
-            // addressRequested to true. As far as the user is concerned, pressing the Fetch Address
-            // button immediately kicks off the process of getting the address.
-            viewModel.onLocationProgressChanged(true)
-            getAddress()
-        }
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private fun getAddress() {
-        fusedLocationClient?.lastLocation?.addOnSuccessListener(
-            requireActivity(),
-            OnSuccessListener { location ->
-                if (location == null) {
-                    Log.w(TAG, "onSuccess:null")
-                    return@OnSuccessListener
-                }
-
-                lastLocation = location
-
-                // Determine whether a Geocoder is available.
-                if (!Geocoder.isPresent()) {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.no_geocoder_available,
-                        Toast.LENGTH_LONG
-                    ).show()
-                    return@OnSuccessListener
-                }
-
-                // If the user pressed the fetch address button before we had the location,
-                // this will be set to true indicating that we should kick off the intent
-                // service after fetching the location.
-                if (viewModel.viewState.value?.isLocationInProgress == true) startIntentService()
-            })?.addOnFailureListener(requireActivity()) { e ->
-            Log.w(
-                TAG,
-                "getLastLocation:onFailure",
-                e
-            )
+            viewModel.requestGeolocation()
         }
     }
 
@@ -382,7 +334,7 @@ class AddPlaceFragment : BaseFragment() {
             }
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            viewModel.onLocationProgressChanged(false)
+            //viewModel.onLocationProgressChanged(false)
         }
     }
 
@@ -392,6 +344,7 @@ class AddPlaceFragment : BaseFragment() {
         binding.placePosition.text?.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
     }
 
+    // region Permissions
     private fun checkPermissions(): Boolean {
         val permissionState = ActivityCompat.checkSelfPermission(
             requireActivity(),
@@ -442,20 +395,17 @@ class AddPlaceFragment : BaseFragment() {
 
         if (requestCode != REQUEST_PERMISSIONS_REQUEST_CODE) return
 
-        when {
-            grantResults.isEmpty() ->
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.")
-            grantResults[0] == PackageManager.PERMISSION_GRANTED -> // Permission granted.
-                getAddress()
-            else -> // Permission denied.
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.permission_denied_explanation,
-                    Toast.LENGTH_LONG
-                ).show()
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            viewModel.requestGeolocation()
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                R.string.permission_denied_explanation,
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
+    //endregion
+
     //endregion
 }
