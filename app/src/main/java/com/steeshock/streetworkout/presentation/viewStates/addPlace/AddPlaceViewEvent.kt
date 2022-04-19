@@ -1,5 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewStates.addPlace
 
+import android.location.Location
+
 /**
  * Single view events for Add Places page
  */
@@ -18,4 +20,9 @@ sealed class AddPlaceViewEvent {
      * Error while validating place address
      */
     object ErrorPlaceAddressValidation: AddPlaceViewEvent()
+
+    /**
+     * Location fetching result
+     */
+    data class LocationResult(val location: Location?) : AddPlaceViewEvent()
 }

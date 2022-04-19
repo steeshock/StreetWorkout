@@ -61,19 +61,20 @@ abstract class BaseFragment : Fragment() {
         return AlertDialog.Builder(requireActivity())
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton(positiveText) { _, _ -> onPositiveAction.invoke()}
-            .setNegativeButton(negativeText) {_, _ -> onNegativeAction.invoke() }
+            .setPositiveButton(positiveText) { _, _ -> onPositiveAction.invoke() }
+            .setNegativeButton(negativeText) { _, _ -> onNegativeAction.invoke() }
     }
 
     fun showSnackbar(
         message: String?,
         action: () -> Unit = {},
         actionText: String? = null,
+        showOnTop: Boolean = false,
     ) {
         view?.let { view ->
             message?.let { message ->
                 val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                snackbar.anchorView = getBottomBaseline()
+                snackbar.anchorView = if (showOnTop) getTopBaseline() else getBottomBaseline()
                 snackbar.setAction(actionText) { action.invoke() }
                 snackbar.show()
             }

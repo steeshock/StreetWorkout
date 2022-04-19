@@ -1,9 +1,9 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steeshock.streetworkout.data.model.Category
@@ -18,6 +18,7 @@ import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceView
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.services.geolocation.GeolocationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ class AddPlaceViewModel @Inject constructor(
     private val placesRepository: IPlacesRepository,
     categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
+    private val geolocationService: GeolocationService,
 ) : ViewModel(),
     ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl({AddPlaceViewState()}) {
@@ -44,6 +46,8 @@ class AddPlaceViewModel @Inject constructor(
     private var downloadedImagesLinks: ArrayList<String> = arrayListOf()
 
     private var sendingPlace: Place? = null
+
+    var lastLocation: Location? = null
 
     fun onAddNewPlace(
         title: String,
@@ -79,6 +83,8 @@ class AddPlaceViewModel @Inject constructor(
                 loadCompleted = false,
                 selectedImagesCount = 0,
                 selectedCategories = "",
+                placeAddress = "",
+                placeLocation = null,
             )
         }
     }
@@ -97,14 +103,6 @@ class AddPlaceViewModel @Inject constructor(
         updateViewState {
             copy(
                 isImagePickingInProgress = isPickerVisible,
-            )
-        }
-    }
-
-    fun onLocationProgressChanged(isLocationInProgress: Boolean) {
-        updateViewState {
-            copy(
-                isLocationInProgress = isLocationInProgress,
             )
         }
     }
@@ -132,6 +130,30 @@ class AddPlaceViewModel @Inject constructor(
         updateViewState {
             copy(
                 selectedCategories = selectedCategoriesString,
+            )
+        }
+    }
+
+    fun onRequestGeolocation() = viewModelScope.launch(Dispatchers.IO) {
+        updateViewState(postValue = true) { copy(isLocationInProgress = true) }
+        try {
+            if (lastLocation == null) {
+                lastLocation = geolocationService.getLastLocation()
+            }
+        } catch (t: Throwable) {
+            lastLocation = null
+            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
+        } finally {
+            postViewEvent(LocationResult(lastLocation))
+        }
+    }
+
+    fun onAddressReceived(addressOutput: String? = null) {
+        updateViewState(postValue = true) {
+            copy(
+                placeAddress = addressOutput,
+                placeLocation = lastLocation,
+                isLocationInProgress = false,
             )
         }
     }
@@ -188,7 +210,7 @@ class AddPlaceViewModel @Inject constructor(
         )
     }
 
-    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch() {
+    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch {
 
         val result = placesRepository.uploadImage(uri, placeId)
         downloadedImagesLinks.add(result.toString())
@@ -233,19 +255,5 @@ class AddPlaceViewModel @Inject constructor(
         return allCategories.value?.map {
             selectedCategories.contains(it.category_id)
         }?.toBooleanArray()
-    }
-
-    private fun MutableLiveData<AddPlaceViewState>.updateState(
-        postValue: Boolean = false,
-        block: AddPlaceViewState.() -> AddPlaceViewState,
-    ) {
-        val currentState = value ?: AddPlaceViewState()
-        val newState = currentState.run { block() }
-
-        if (postValue) {
-            postValue(newState)
-        } else {
-            value = newState
-        }
     }
 }

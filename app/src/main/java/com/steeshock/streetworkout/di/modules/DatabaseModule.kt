@@ -16,7 +16,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DatabaseModule(private val appContext: Context) {
+class DatabaseModule {
 
     @Provides
     fun providePlacesRepository(
@@ -46,19 +46,19 @@ class DatabaseModule(private val appContext: Context) {
 
     @Provides
     @Singleton
-    fun provideDataStoreRepository(): IDataStoreRepository {
+    fun provideDataStoreRepository(appContext: Context): IDataStoreRepository {
         return DataStoreRepository(appContext)
     }
 
     @Provides
-    fun providePlacesDao(): PlacesDao {
+    fun providePlacesDao(appContext: Context): PlacesDao {
         return PlacesDatabase
             .getInstance(appContext)
             .getPlacesDao()
     }
 
     @Provides
-    fun provideCategoriesDao(): CategoriesDao {
+    fun provideCategoriesDao(appContext: Context): CategoriesDao {
         return PlacesDatabase
             .getInstance(appContext)
             .getCategoriesDao()

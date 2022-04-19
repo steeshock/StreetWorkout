@@ -63,6 +63,7 @@ search conditions"</string>
     <string name="no_address_found">Sorry, no address found</string>
     <string name="no_geocoder_available">No geocoder available</string>
     <string name="no_location_data_provided">No location data provided</string>
+    <string name="try_later_description">Please try later</string>
     <string name="service_not_available">Sorry, the service is not available</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="permission_rationale">Location permission is needed for core functionality</string>

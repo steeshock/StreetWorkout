@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.steeshock.streetworkout.services
+package com.steeshock.streetworkout.services.geolocation
 
 import android.app.IntentService
 import android.content.Intent

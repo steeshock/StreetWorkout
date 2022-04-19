@@ -45,7 +45,7 @@
         android:exported attribute to "false" stops other apps from starting this
         service, even when using an explicit intent. -->
         <service
-            android:name="com.steeshock.streetworkout.services.FetchAddressIntentService"
+            android:name="com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService"
             android:exported="false"/>
     </application>
 

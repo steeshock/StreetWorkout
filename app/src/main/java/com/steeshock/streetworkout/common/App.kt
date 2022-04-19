@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.steeshock.streetworkout.di.AppComponent
 import com.steeshock.streetworkout.di.DaggerAppComponent
+import com.steeshock.streetworkout.di.modules.ApplicationModule
 import com.steeshock.streetworkout.di.modules.DatabaseModule
 
 class App : Application() {
@@ -15,7 +16,7 @@ class App : Application() {
 
         appComponent = DaggerAppComponent
             .builder()
-            .databaseModule(DatabaseModule(this))
+            .applicationModule(ApplicationModule(this))
             .build()
     }
 }

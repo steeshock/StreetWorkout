@@ -62,6 +62,7 @@
     <string name="no_address_found">Извините, адрес не найден</string>
     <string name="no_geocoder_available">Датчик недоступен</string>
     <string name="no_location_data_provided">Отсутствуют данные о координатах</string>
+    <string name="try_later_description">Попробуйте повторить позже</string>
     <string name="service_not_available">Извините, сервис недоступен</string>
     <string name="permission_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
     <string name="permission_rationale">Для работы необходимо предоставить разрешения</string>
