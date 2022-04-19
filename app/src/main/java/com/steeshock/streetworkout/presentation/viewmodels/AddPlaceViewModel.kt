@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -46,6 +47,8 @@ class AddPlaceViewModel @Inject constructor(
 
     private var sendingPlace: Place? = null
 
+    var lastLocation: Location? = null
+
     fun onAddNewPlace(
         title: String,
         description: String,
@@ -80,6 +83,8 @@ class AddPlaceViewModel @Inject constructor(
                 loadCompleted = false,
                 selectedImagesCount = 0,
                 selectedCategories = "",
+                placeAddress = "",
+                placeLocation = null,
             )
         }
     }
@@ -125,6 +130,30 @@ class AddPlaceViewModel @Inject constructor(
         updateViewState {
             copy(
                 selectedCategories = selectedCategoriesString,
+            )
+        }
+    }
+
+    fun onRequestGeolocation() = viewModelScope.launch(Dispatchers.IO) {
+        updateViewState(postValue = true) { copy(isLocationInProgress = true) }
+        try {
+            if (lastLocation == null) {
+                lastLocation = geolocationService.getLastLocation()
+            }
+        } catch (t: Throwable) {
+            lastLocation = null
+            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
+        } finally {
+            postViewEvent(LocationResult(lastLocation))
+        }
+    }
+
+    fun onAddressReceived(addressOutput: String? = null) {
+        updateViewState(postValue = true) {
+            copy(
+                placeAddress = addressOutput,
+                placeLocation = lastLocation,
+                isLocationInProgress = false,
             )
         }
     }
@@ -181,7 +210,7 @@ class AddPlaceViewModel @Inject constructor(
         )
     }
 
-    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch() {
+    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch {
 
         val result = placesRepository.uploadImage(uri, placeId)
         downloadedImagesLinks.add(result.toString())
@@ -226,19 +255,5 @@ class AddPlaceViewModel @Inject constructor(
         return allCategories.value?.map {
             selectedCategories.contains(it.category_id)
         }?.toBooleanArray()
-    }
-
-    fun requestGeolocation() = viewModelScope.launch(Dispatchers.IO) {
-        updateViewState(postValue = true) { copy(isLocationInProgress = true) }
-
-        try {
-            val location = geolocationService.getLastLocation()
-            if (location != null) {
-                val kek = location
-            }
-            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
-        } catch (t: Throwable) {
-            updateViewState(postValue = true) { copy(isLocationInProgress = false) }
-        }
     }
 }

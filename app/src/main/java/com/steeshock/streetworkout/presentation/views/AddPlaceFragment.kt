@@ -1,16 +1,13 @@
 package com.steeshock.streetworkout.presentation.views
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.ResultReceiver
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,15 +20,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.OnSuccessListener
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
@@ -168,19 +163,21 @@ class AddPlaceFragment : BaseFragment() {
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
         binding.placeCategories.setText(viewState.selectedCategories)
+
+        setLocationResult(viewState)
     }
 
     private fun renderViewEvent(viewEvent: AddPlaceViewEvent) {
         when(viewEvent) {
-            AddPlaceViewEvent.ErrorPlaceAddressValidation -> {
+            ErrorPlaceAddressValidation -> {
                 binding.placeAddressInput.error =
                     resources.getString(R.string.required_field_empty_error)
             }
-            AddPlaceViewEvent.ErrorPlaceTitleValidation -> {
+            ErrorPlaceTitleValidation -> {
                 binding.placeTitleInput.error =
                     resources.getString(R.string.required_field_empty_error)
             }
-            AddPlaceViewEvent.SuccessValidation -> {
+            SuccessValidation -> {
                 showAlertDialog(
                     title = getString(R.string.attention_title),
                     message = getString(R.string.publish_permission_dialog_message),
@@ -193,6 +190,9 @@ class AddPlaceFragment : BaseFragment() {
                         address = binding.placeAddress.text.toString(),
                     )},
                 )
+            }
+            is LocationResult -> {
+                handleLocationEvent(viewEvent)
             }
         }
     }
@@ -246,6 +246,14 @@ class AddPlaceFragment : BaseFragment() {
             }
     }
 
+    private fun getPosition() {
+        if (!checkPermissions()) {
+            requestPermissions()
+        } else {
+            viewModel.onRequestGeolocation()
+        }
+    }
+
     private fun showCategories() {
         getAlertDialogBuilder(
             title = getString(R.string.select_category_dialog_title),
@@ -262,89 +270,61 @@ class AddPlaceFragment : BaseFragment() {
             .show()
     }
 
+    private fun setLocationResult(viewState: AddPlaceViewState) {
+        binding.placeAddress.setText(viewState.placeAddress)
+        binding.placePosition.text?.clear()
+        viewState.placeLocation?.let {
+            binding.placePosition.text?.append("${it.latitude} ${it.longitude}")
+        }
+    }
+
+    private fun handleLocationEvent(viewEvent: LocationResult) {
+        when {
+            viewEvent.location != null -> {
+                startIntentService(viewEvent.location)
+            }
+            else -> {
+                Toast.makeText(requireActivity(), R.string.try_later_description, Toast.LENGTH_LONG).show()
+                viewModel.onAddressReceived()
+            }
+        }
+    }
+
     override fun onDestroyView() {
        _binding = null
        super.onDestroyView()
     }
 
-    // TODO Need refactoring, not for UI layer!
-    //region GPS
-    private val TAG = "LocationTag"
-
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-
-    private var lastLocation: Location? = null
-
-    private var addressOutput = ""
-
     private lateinit var resultReceiver: AddressResultReceiver
 
-    private fun getPosition() {
-        if (!checkPermissions()) {
-            requestPermissions()
-        } else {
-            if (lastLocation != null) {
-                startIntentService()
-                return
-            }
-            viewModel.requestGeolocation()
-        }
-    }
-
-    /**
-     * Creates an intent, adds location data to it as an extra, and starts the intent service for
-     * fetching an address.
-     */
-    private fun startIntentService() {
-        // Create an intent for passing to the intent service responsible for fetching the address.
-        val intent: Intent =
-            Intent(requireActivity(), FetchAddressIntentService::class.java).apply {
-                // Pass the result receiver as an extra to the service.
+    private fun startIntentService(lastLocation: Location) {
+        val intent = Intent(requireActivity(), FetchAddressIntentService::class.java).apply {
                 putExtra(Constants.RECEIVER, resultReceiver)
-
-                // Pass the location data as an extra to the service.
                 putExtra(Constants.LOCATION_DATA_EXTRA, lastLocation)
             }
-
-        // Start the service. If the service isn't already running, it is instantiated and started
-        // (creating a process for it if needed); if it is running then it remains running. The
-        // service kills itself automatically once all intents are processed.
         requireActivity().startService(intent)
     }
 
-    /**
-     * Receiver for data sent from FetchAddressIntentService.
-     */
     private inner class AddressResultReceiver(
         handler: Handler,
     ) : ResultReceiver(handler) {
-
-        /**
-         * Receives data sent from FetchAddressIntentService and updates the UI in MainActivity.
-         */
         override fun onReceiveResult(resultCode: Int, resultData: Bundle) {
 
             // Display the address string or an error message sent from the intent service.
-            addressOutput = resultData.getString(Constants.RESULT_DATA_KEY).toString()
-            displayAddressOutput()
+            val addressOutput = resultData.getString(Constants.RESULT_DATA_KEY).toString()
+            viewModel.onAddressReceived(addressOutput)
 
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 Toast.makeText(requireActivity(), R.string.address_found, Toast.LENGTH_SHORT).show()
             }
-
-            // Reset. Enable the Fetch Address button and stop showing the progress bar.
-            //viewModel.onLocationProgressChanged(false)
         }
     }
 
-    private fun displayAddressOutput() {
-        binding.placeAddress.setText(addressOutput)
-        binding.placePosition.text?.clear()
-        binding.placePosition.text?.append("${lastLocation?.latitude} ${lastLocation?.longitude}")
-    }
-
     // region Permissions
+
+    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
+
     private fun checkPermissions(): Boolean {
         val permissionState = ActivityCompat.checkSelfPermission(
             requireActivity(),
@@ -362,15 +342,12 @@ class AddPlaceFragment : BaseFragment() {
         // Provide an additional rationale to the user. This would happen if the user denied the
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.")
-
             Toast.makeText(requireActivity(), R.string.permission_rationale, Toast.LENGTH_LONG)
                 .show()
 
             startLocationPermissionRequest()
 
         } else {
-            Log.i(TAG, "Requesting permission")
             // Request permission. It's possible this can be auto answered if device policy
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
@@ -391,12 +368,10 @@ class AddPlaceFragment : BaseFragment() {
         permissions: Array<String>,
         grantResults: IntArray,
     ) {
-        Log.i(TAG, "onRequestPermissionResult")
-
         if (requestCode != REQUEST_PERMISSIONS_REQUEST_CODE) return
 
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            viewModel.requestGeolocation()
+            viewModel.onRequestGeolocation()
         } else {
             Toast.makeText(
                 requireActivity(),
@@ -405,7 +380,5 @@ class AddPlaceFragment : BaseFragment() {
             ).show()
         }
     }
-    //endregion
-
     //endregion
 }
