@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.presentation.views
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,6 +30,7 @@ import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceView
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
+import com.steeshock.streetworkout.services.permissions.PermissionService
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
@@ -38,6 +39,9 @@ class AddPlaceFragment : BaseFragment() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var permissionService: PermissionService
 
     private val viewModel: AddPlaceViewModel by viewModels { factory }
 
@@ -247,11 +251,13 @@ class AddPlaceFragment : BaseFragment() {
     }
 
     private fun getPosition() {
-        if (!checkPermissions()) {
-            requestPermissions()
-        } else {
+        permissionService.checkPermission(ACCESS_FINE_LOCATION,
+        onPermissionGranted = {
             viewModel.onRequestGeolocation()
-        }
+        },
+        onPermissionDenied = {
+            requestPermissions()
+        })
     }
 
     private fun showCategories() {
@@ -290,11 +296,6 @@ class AddPlaceFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroyView() {
-       _binding = null
-       super.onDestroyView()
-    }
-
     private lateinit var resultReceiver: AddressResultReceiver
 
     private fun startIntentService(lastLocation: Location) {
@@ -325,18 +326,10 @@ class AddPlaceFragment : BaseFragment() {
 
     private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
 
-    private fun checkPermissions(): Boolean {
-        val permissionState = ActivityCompat.checkSelfPermission(
-            requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        return permissionState == PackageManager.PERMISSION_GRANTED
-    }
-
     private fun requestPermissions() {
         val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
             requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION
+            ACCESS_FINE_LOCATION
         )
 
         // Provide an additional rationale to the user. This would happen if the user denied the
@@ -358,7 +351,7 @@ class AddPlaceFragment : BaseFragment() {
     private fun startLocationPermissionRequest() {
         ActivityCompat.requestPermissions(
             requireActivity(),
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(ACCESS_FINE_LOCATION),
             REQUEST_PERMISSIONS_REQUEST_CODE
         )
     }
@@ -381,4 +374,9 @@ class AddPlaceFragment : BaseFragment() {
         }
     }
     //endregion
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 }
