@@ -26,43 +26,8 @@ abstract class BaseFragment : Fragment() {
         return (activity as? MainActivity)?.getBottomBaseline()
     }
 
-    fun getTopBaseline(): View? {
+    private fun getTopBaseline(): View? {
         return (activity as? MainActivity)?.getTopBaseline()
-    }
-
-    fun showAlertDialog(
-        title: String? = null,
-        message: String? = null,
-        positiveText: String? = null,
-        negativeText: String? = null,
-        onPositiveAction: () -> Unit = {},
-        onNegativeAction: () -> Unit = {},
-    ) {
-        return getAlertDialogBuilder(
-            title = title,
-            message = message,
-            positiveText = positiveText,
-            negativeText = negativeText,
-            onPositiveAction = onPositiveAction,
-            onNegativeAction = onNegativeAction,
-        )
-            .create()
-            .show()
-    }
-
-    fun getAlertDialogBuilder(
-        title: String? = null,
-        message: String? = null,
-        positiveText: String? = null,
-        negativeText: String? = null,
-        onPositiveAction: () -> Unit = {},
-        onNegativeAction: () -> Unit = {},
-    ): AlertDialog.Builder {
-        return AlertDialog.Builder(requireActivity())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(positiveText) { _, _ -> onPositiveAction.invoke() }
-            .setNegativeButton(negativeText) { _, _ -> onNegativeAction.invoke() }
     }
 
     fun showSnackbar(

@@ -24,6 +24,7 @@ import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.*
 import com.steeshock.streetworkout.utils.extensions.gone
+import com.steeshock.streetworkout.utils.extensions.showAlertDialog
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
@@ -156,7 +157,7 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun showAuthenticationAlert() {
-        showAlertDialog(
+        requireActivity().showAlertDialog(
             title = getString(R.string.attention_title),
             message = getString(R.string.sign_in_dialog_message),
             positiveText = getString(R.string.sign_in_button_title),
