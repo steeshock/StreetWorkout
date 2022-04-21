@@ -261,8 +261,7 @@ class AddPlaceFragment : BaseFragment(), PermissionsDelegate by PermissionsDeleg
     }
 
     private fun showCategories() {
-        getAlertDialogBuilder(
-            context = requireActivity(),
+        requireActivity().getAlertDialogBuilder(
             title = getString(R.string.select_category_dialog_title),
             positiveText = getString(R.string.ok_item),
             onPositiveAction = { viewModel.onCategorySelectionConfirmed() },

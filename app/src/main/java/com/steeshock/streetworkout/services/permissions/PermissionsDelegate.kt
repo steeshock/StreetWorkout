@@ -18,7 +18,7 @@ interface PermissionsDelegate {
         permission: String,
         onPermissionGranted: () -> Unit = {},
         showDefaultRationaleDialog: Boolean = true,
-        onCustomRationale: () -> Unit = {},
+        onCustomRationale: (() -> Unit) -> Unit = {},
     )
 }
 
@@ -36,7 +36,7 @@ class PermissionsDelegateImpl : PermissionsDelegate {
         permission: String,
         onPermissionGranted: () -> Unit,
         showDefaultRationaleDialog: Boolean,
-        onCustomRationale: () -> Unit
+        onCustomRationale: (() -> Unit) -> Unit
     ) {
         val permissionState = ContextCompat.checkSelfPermission(
             activity,
@@ -52,25 +52,28 @@ class PermissionsDelegateImpl : PermissionsDelegate {
     private fun requestRationale(
         permission: String,
         showDefaultRationaleDialog: Boolean,
-        onCustomRationale: () -> Unit
+        onCustomRationale: (() -> Unit) -> Unit
     ) {
         val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
             permission
         )
 
-        if (showDefaultRationaleDialog) {
-            activity.showAlertDialog(
-                title = activity.getString(R.string.permission_rationale),
-                message = activity.getString(R.string.permission_denied_explanation),
-                positiveText = activity.getString(R.string.ok_item),
-                negativeText = if (!shouldProvideRationale) activity.getString(R.string.settings_item) else null,
-                onPositiveAction = { startPermissionRequest(activity, permission) },
-                onNegativeAction = { openSettings() }
-            )
-        } else {
-            onCustomRationale.invoke()
+        when(showDefaultRationaleDialog) {
+            true -> showDefaultRationaleDialog(shouldProvideRationale, permission)
+            else -> onCustomRationale.invoke { startPermissionRequest(activity, permission) }
         }
+    }
+
+    private fun showDefaultRationaleDialog(shouldProvideRationale: Boolean, permission: String) {
+        activity.showAlertDialog(
+            title = activity.getString(R.string.permission_rationale),
+            message = activity.getString(R.string.permission_denied_explanation),
+            positiveText = activity.getString(R.string.ok_item),
+            negativeText = if (!shouldProvideRationale) activity.getString(R.string.settings_item) else null,
+            onPositiveAction = { startPermissionRequest(activity, permission) },
+            onNegativeAction = { openSettings() }
+        )
     }
 
     private fun startPermissionRequest(activity: Activity, permission: String) {
