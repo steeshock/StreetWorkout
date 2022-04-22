@@ -38,7 +38,7 @@ import com.steeshock.streetworkout.utils.extensions.showAlertDialog
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
-class AddPlaceFragment : BaseFragment(), PermissionsDelegate by PermissionsDelegateImpl() {
+class AddPlaceFragment : BaseFragment() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -54,7 +54,10 @@ class AddPlaceFragment : BaseFragment(), PermissionsDelegate by PermissionsDeleg
 
     override fun injectComponent() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
-        registerPermissionDelegate(requireActivity())
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(

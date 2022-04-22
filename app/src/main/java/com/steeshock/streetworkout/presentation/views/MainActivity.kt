@@ -9,9 +9,11 @@ import androidx.navigation.ui.NavigationUiSaveStateControl
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.databinding.ActivityMainBinding
+import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
+import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
 
 @OptIn(NavigationUiSaveStateControl::class)
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PermissionsDelegate by PermissionsDelegateImpl()  {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         NavigationUI.setupWithNavController(navView, navController, false)
+
+        registerPermissionDelegate(this)
     }
 
     fun getBottomBaseline() = binding.bottomBaseline

@@ -46,6 +46,7 @@ search conditions"</string>
     <string name="canceled_message">Sending canceled</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Cancel</string>
+    <string name="clear_item">Understood</string>
     <string name="settings_item">Settings</string>
     <string name="address_found">Address found</string>
     <string name="place_removed">removed from favorites</string>
@@ -65,8 +66,6 @@ search conditions"</string>
     <string name="no_location_data_provided">No location data provided</string>
     <string name="try_later_description">Please try later</string>
     <string name="service_not_available">Sorry, the service is not available</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
-    <string name="permission_rationale">Need user attention</string>
 
     <!--Local Sign In/Sign Up validation-->
     <string name="empty_email_error">Enter email</string>
@@ -105,5 +104,10 @@ search conditions"</string>
         <item name="dark_theme_title">Dark</item>
         <item name="system_theme_title">Follow system</item>
     </string-array>
+
+    <!--Permissions-->
+    <string name="thanks_item">No, thanks</string>
+    <string name="permission_geolocation_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="permission_rationale_default_title">Need attention</string>
 
 </resources>

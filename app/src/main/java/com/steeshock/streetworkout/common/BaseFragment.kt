@@ -22,13 +22,11 @@ abstract class BaseFragment : Fragment() {
         super.onAttach(context)
     }
 
-    private fun getBottomBaseline(): View? {
-        return (activity as? MainActivity)?.getBottomBaseline()
-    }
-
-    private fun getTopBaseline(): View? {
-        return (activity as? MainActivity)?.getTopBaseline()
-    }
+    fun checkPermission(
+        permission: String,
+        onPermissionGranted: () -> Unit = {},
+        onCustomRationale: ((startPermissionRequestCallback: () -> Unit) -> Unit)? = null,
+    ) = (activity as? MainActivity)?.checkPermission(permission, onPermissionGranted, onCustomRationale)
 
     fun showSnackbar(
         message: String?,
@@ -44,5 +42,13 @@ abstract class BaseFragment : Fragment() {
                 snackbar.show()
             }
         }
+    }
+
+    private fun getBottomBaseline(): View? {
+        return (activity as? MainActivity)?.getBottomBaseline()
+    }
+
+    private fun getTopBaseline(): View? {
+        return (activity as? MainActivity)?.getTopBaseline()
     }
 }
