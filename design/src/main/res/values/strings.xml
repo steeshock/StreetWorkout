@@ -106,7 +106,9 @@
 
     <!--Permissions-->
     <string name="thanks_item">Нет, спасибо</string>
-    <string name="permission_geolocation_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
     <string name="permission_rationale_default_title">Предоставьте разрешения</string>
+    <string name="permission_geolocation_denied_explanation">Чтобы определить текущую геопозицию, необходимо предоставить разрешения в настройках приложения</string>
+    <string name="permission_geolocation_rationale_explanation">Для определения текущей геопозиции необходимо предоставить разрешения</string>
+    <string name="permission_default_explanation">Для продолжения необходимо предоставить разрешения в настройках системы</string>
 
 </resources>

@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.utils.extensions
 
 import android.app.Activity
-import android.content.Context
 import androidx.appcompat.app.AlertDialog
 
 fun Activity.showAlertDialog(
