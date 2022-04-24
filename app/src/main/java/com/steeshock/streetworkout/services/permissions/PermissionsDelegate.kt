@@ -1,7 +1,10 @@
 package com.steeshock.streetworkout.services.permissions
 
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.net.Uri
+import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
@@ -23,6 +26,7 @@ interface PermissionsDelegate {
         onPermissionGranted: () -> Unit = {},
         onCustomRationale: ((startPermissionRequestCallback: () -> Unit) -> Unit)? = null,
         onCustomDenied: (() -> Unit)? = null,
+        showSettingsButton: Boolean = false,
     )
 }
 
@@ -36,6 +40,8 @@ class PermissionsDelegateImpl : PermissionsDelegate {
 
     private var onCustomDenied: (() -> Unit)? = null
 
+    private var showSettingsButton: Boolean = false
+
     private lateinit var permissionExplanation: PermissionExplanation
 
     override fun registerPermissionDelegate(activity: Activity) {
@@ -45,7 +51,7 @@ class PermissionsDelegateImpl : PermissionsDelegate {
             ) { isGranted: Boolean ->
                 when {
                     isGranted -> onPermissionGranted?.invoke()
-                    else -> showDeniedPermissionDialog(onCustomDenied)
+                    else -> showDeniedPermissionDialog(showSettingsButton, onCustomDenied)
                 }
             }
     }
@@ -55,10 +61,12 @@ class PermissionsDelegateImpl : PermissionsDelegate {
         onPermissionGranted: () -> Unit,
         onCustomRationale: ((() -> Unit) -> Unit)?,
         onCustomDenied: (() -> Unit)?,
+        showSettingsButton: Boolean,
     ) {
         this.onPermissionGranted = onPermissionGranted
         this.onCustomDenied = onCustomDenied
         this.permissionExplanation = getPermissionExplanation(permission)
+        this.showSettingsButton = showSettingsButton
 
         when {
             checkSelfPermission(activity, permission) == PERMISSION_GRANTED -> {
@@ -87,10 +95,13 @@ class PermissionsDelegateImpl : PermissionsDelegate {
         }
     }
 
-    private fun showDeniedPermissionDialog(onCustomDenied: (() -> Unit)?) {
+    private fun showDeniedPermissionDialog(
+        showSettingsButton: Boolean,
+        onCustomDenied: (() -> Unit)?,
+    ) {
         when (onCustomDenied) {
             null -> {
-                showDefaultDeniedPermissionDialog()
+                showDefaultDeniedPermissionDialog(showSettingsButton)
             }
             else -> {
                 onCustomDenied.invoke()
@@ -125,12 +136,26 @@ class PermissionsDelegateImpl : PermissionsDelegate {
      * same time, respect the user's decision. Don't link to system
      * settings in an effort to convince the user to change their decision.
      */
-    private fun showDefaultDeniedPermissionDialog() {
+    private fun showDefaultDeniedPermissionDialog(showSettingsButton: Boolean) {
         activity.showAlertDialog(
             title = activity.getString(R.string.permission_rationale_default_title),
             message = activity.getString(permissionExplanation.deniedExplanation),
             positiveText = activity.getString(R.string.clear_item),
+            negativeText = if (showSettingsButton) activity.getString(R.string.settings_item) else null,
+            onNegativeAction = { openSystemSettings() }
         )
+    }
+
+    private fun openSystemSettings() {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri: Uri = Uri.fromParts("package", activity.packageName, null)
+            intent.data = uri
+            activity.startActivity(intent)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
 
