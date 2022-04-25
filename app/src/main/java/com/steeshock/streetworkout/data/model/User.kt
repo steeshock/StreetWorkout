@@ -5,4 +5,6 @@ data class User(
     val displayName: String? = "",
 
     val email: String? = "",
+
+    val favorites: List<Int>? = null,
 )

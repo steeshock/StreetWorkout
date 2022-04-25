@@ -8,9 +8,11 @@ import com.steeshock.streetworkout.data.database.PlacesDatabase
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
+import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserRepository
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -42,6 +44,11 @@ class DatabaseModule {
 
         // Реализация для работы с Mock API на сервере
         //return MockApiCategoriesRepository.getInstance(categoriesDao, placesAPI)
+    }
+
+    @Provides
+    fun provideUserRepository(): IUserRepository {
+        return FirebaseUserRepository()
     }
 
     @Provides

@@ -101,7 +101,7 @@ open class MockApiPlacesRepository(
      */
     override suspend fun insertPlaceRemote(newPlace: Place) {
         val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlace.place_id)
+        val myRef = database.getReference("places").child(newPlace.placeId)
         myRef.setValue(newPlace).await()
     }
 

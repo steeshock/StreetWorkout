@@ -31,7 +31,7 @@
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" >
         <argument
-            android:name="place_uuid"
+            android:name="placeId"
             app:argType="string" />
     </fragment>
 

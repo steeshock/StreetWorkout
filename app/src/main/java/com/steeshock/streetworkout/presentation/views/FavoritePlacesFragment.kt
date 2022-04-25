@@ -61,7 +61,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 override fun onPlaceLocationClicked(place: Place) {
                     view.findNavController().navigate(
                         FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
-                            place.place_id)
+                            place.placeId)
                     )
                 }
             })
