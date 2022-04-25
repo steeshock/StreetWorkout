@@ -22,48 +22,18 @@ abstract class BaseFragment : Fragment() {
         super.onAttach(context)
     }
 
-    private fun getBottomBaseline(): View? {
-        return (activity as? MainActivity)?.getBottomBaseline()
-    }
-
-    fun getTopBaseline(): View? {
-        return (activity as? MainActivity)?.getTopBaseline()
-    }
-
-    fun showAlertDialog(
-        title: String? = null,
-        message: String? = null,
-        positiveText: String? = null,
-        negativeText: String? = null,
-        onPositiveAction: () -> Unit = {},
-        onNegativeAction: () -> Unit = {},
-    ) {
-        return getAlertDialogBuilder(
-            title = title,
-            message = message,
-            positiveText = positiveText,
-            negativeText = negativeText,
-            onPositiveAction = onPositiveAction,
-            onNegativeAction = onNegativeAction,
-        )
-            .create()
-            .show()
-    }
-
-    fun getAlertDialogBuilder(
-        title: String? = null,
-        message: String? = null,
-        positiveText: String? = null,
-        negativeText: String? = null,
-        onPositiveAction: () -> Unit = {},
-        onNegativeAction: () -> Unit = {},
-    ): AlertDialog.Builder {
-        return AlertDialog.Builder(requireActivity())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(positiveText) { _, _ -> onPositiveAction.invoke() }
-            .setNegativeButton(negativeText) { _, _ -> onNegativeAction.invoke() }
-    }
+    fun checkPermission(
+        permission: String,
+        onPermissionGranted: () -> Unit = {},
+        onCustomRationale: ((startPermissionRequestCallback: () -> Unit) -> Unit)? = null,
+        onCustomDenied: (() -> Unit)? = null,
+        showSettingsButton: Boolean = false,
+    ) = (activity as? MainActivity)?.checkPermission(permission,
+        onPermissionGranted,
+        onCustomRationale,
+        onCustomDenied,
+        showSettingsButton,
+    )
 
     fun showSnackbar(
         message: String?,
@@ -79,5 +49,13 @@ abstract class BaseFragment : Fragment() {
                 snackbar.show()
             }
         }
+    }
+
+    private fun getBottomBaseline(): View? {
+        return (activity as? MainActivity)?.getBottomBaseline()
+    }
+
+    private fun getTopBaseline(): View? {
+        return (activity as? MainActivity)?.getTopBaseline()
     }
 }

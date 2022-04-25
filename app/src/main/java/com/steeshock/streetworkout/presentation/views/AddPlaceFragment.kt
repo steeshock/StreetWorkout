@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.presentation.views
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,7 +30,11 @@ import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceView
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
+import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
+import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
+import com.steeshock.streetworkout.utils.extensions.getAlertDialogBuilder
 import com.steeshock.streetworkout.utils.extensions.gone
+import com.steeshock.streetworkout.utils.extensions.showAlertDialog
 import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
@@ -43,11 +47,17 @@ class AddPlaceFragment : BaseFragment() {
 
     private lateinit var imagePicker: ImagePicker.Builder
 
+    private lateinit var resultReceiver: AddressResultReceiver
+
     private var _binding: FragmentAddPlaceBinding? = null
     private val binding get() = _binding!!
 
     override fun injectComponent() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -104,7 +114,7 @@ class AddPlaceFragment : BaseFragment() {
         }
 
         binding.clearButton.setOnClickListener {
-            showAlertDialog(
+            requireActivity().showAlertDialog(
                 title = getString(R.string.attention_title),
                 message = getString(R.string.clear_fields_dialog_message),
                 positiveText = getString(R.string.ok_item),
@@ -178,7 +188,7 @@ class AddPlaceFragment : BaseFragment() {
                     resources.getString(R.string.required_field_empty_error)
             }
             SuccessValidation -> {
-                showAlertDialog(
+                requireActivity().showAlertDialog(
                     title = getString(R.string.attention_title),
                     message = getString(R.string.publish_permission_dialog_message),
                     positiveText = getString(R.string.ok_item),
@@ -247,15 +257,14 @@ class AddPlaceFragment : BaseFragment() {
     }
 
     private fun getPosition() {
-        if (!checkPermissions()) {
-            requestPermissions()
-        } else {
+        checkPermission(ACCESS_FINE_LOCATION,
+        onPermissionGranted = {
             viewModel.onRequestGeolocation()
-        }
+        })
     }
 
     private fun showCategories() {
-        getAlertDialogBuilder(
+        requireActivity().getAlertDialogBuilder(
             title = getString(R.string.select_category_dialog_title),
             positiveText = getString(R.string.ok_item),
             onPositiveAction = { viewModel.onCategorySelectionConfirmed() },
@@ -290,13 +299,6 @@ class AddPlaceFragment : BaseFragment() {
         }
     }
 
-    override fun onDestroyView() {
-       _binding = null
-       super.onDestroyView()
-    }
-
-    private lateinit var resultReceiver: AddressResultReceiver
-
     private fun startIntentService(lastLocation: Location) {
         val intent = Intent(requireActivity(), FetchAddressIntentService::class.java).apply {
                 putExtra(Constants.RECEIVER, resultReceiver)
@@ -321,64 +323,8 @@ class AddPlaceFragment : BaseFragment() {
         }
     }
 
-    // region Permissions
-
-    private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
-
-    private fun checkPermissions(): Boolean {
-        val permissionState = ActivityCompat.checkSelfPermission(
-            requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        return permissionState == PackageManager.PERMISSION_GRANTED
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
-
-    private fun requestPermissions() {
-        val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(
-            requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            Toast.makeText(requireActivity(), R.string.permission_rationale, Toast.LENGTH_LONG)
-                .show()
-
-            startLocationPermissionRequest()
-
-        } else {
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            startLocationPermissionRequest()
-        }
-    }
-
-    private fun startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_PERMISSIONS_REQUEST_CODE
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray,
-    ) {
-        if (requestCode != REQUEST_PERMISSIONS_REQUEST_CODE) return
-
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            viewModel.onRequestGeolocation()
-        } else {
-            Toast.makeText(
-                requireActivity(),
-                R.string.permission_denied_explanation,
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-    //endregion
 }

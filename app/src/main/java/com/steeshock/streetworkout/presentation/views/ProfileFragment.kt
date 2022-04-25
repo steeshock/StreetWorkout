@@ -82,7 +82,7 @@ class ProfileFragment : BaseFragment() {
 
     private fun initProfilePage() {
         binding.profileLayout.logoutButton.setOnClickListener {
-            showAlertDialog(
+            requireActivity().showAlertDialog(
                 title = getString(R.string.action_confirm_title),
                 message = getString(R.string.logout_description),
                 positiveText = getString(R.string.logout_button),
@@ -267,7 +267,7 @@ class ProfileFragment : BaseFragment() {
     // endregion
 
     private fun showThemeChangeDialog() {
-        getAlertDialogBuilder(
+        requireActivity().getAlertDialogBuilder(
             title = getString(R.string.select_theme_dialog_title),
             negativeText = getString(R.string.cancel_item),
         )

@@ -45,6 +45,8 @@
     <string name="canceled_message">Отправка отменена</string>
     <string name="ok_item">OK</string>
     <string name="cancel_item">Отмена</string>
+    <string name="clear_item">Понятно</string>
+    <string name="settings_item">Настройки</string>
     <string name="address_found">Адрес найден</string>
     <string name="place_removed">удалено из избранного</string>
     <string name="rollback_place">Вернуть…</string>
@@ -57,15 +59,12 @@
 
     <!--Geoposition-->
     <string name="fetch_address">Поиск адреса</string>
-    <string name="settings">Настройки</string>
     <string name="invalid_lat_long_used">Неверные широта или долгота</string>
     <string name="no_address_found">Извините, адрес не найден</string>
     <string name="no_geocoder_available">Датчик недоступен</string>
     <string name="no_location_data_provided">Отсутствуют данные о координатах</string>
     <string name="try_later_description">Попробуйте повторить позже</string>
     <string name="service_not_available">Извините, сервис недоступен</string>
-    <string name="permission_denied_explanation">Для определения геопозиции необходимо дать разрешения.</string>
-    <string name="permission_rationale">Для работы необходимо предоставить разрешения</string>
 
     <!--Sign In/Sign Up-->
     <string name="empty_email_error">Введите email</string>
@@ -104,4 +103,12 @@
         <item name="dark_theme_title">Ночь</item>
         <item name="system_theme_title">Как в системе</item>
     </string-array>
+
+    <!--Permissions-->
+    <string name="thanks_item">Нет, спасибо</string>
+    <string name="permission_rationale_default_title">Предоставьте разрешения</string>
+    <string name="permission_geolocation_denied_explanation">Чтобы определить текущую геопозицию, необходимо предоставить разрешения в настройках приложения</string>
+    <string name="permission_geolocation_rationale_explanation">Для определения текущей геопозиции необходимо предоставить разрешения</string>
+    <string name="permission_default_explanation">Для продолжения необходимо предоставить разрешения в настройках системы</string>
+
 </resources>
