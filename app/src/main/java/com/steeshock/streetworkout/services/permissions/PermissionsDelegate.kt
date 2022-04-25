@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.provider.Settings
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
@@ -140,7 +141,7 @@ class PermissionsDelegateImpl : PermissionsDelegate {
         activity.showAlertDialog(
             title = activity.getString(R.string.permission_rationale_default_title),
             message = activity.getString(permissionExplanation.deniedExplanation),
-            positiveText = activity.getString(R.string.clear_item),
+            positiveText = if (showSettingsButton) activity.getString(R.string.ok_item) else activity.getString(R.string.clear_item),
             negativeText = if (showSettingsButton) activity.getString(R.string.settings_item) else null,
             onNegativeAction = { openSystemSettings() }
         )
@@ -148,12 +149,11 @@ class PermissionsDelegateImpl : PermissionsDelegate {
 
     private fun openSystemSettings() {
         try {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri: Uri = Uri.fromParts("package", activity.packageName, null)
+            val intent = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", activity.packageName, null)
             intent.data = uri
             activity.startActivity(intent)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

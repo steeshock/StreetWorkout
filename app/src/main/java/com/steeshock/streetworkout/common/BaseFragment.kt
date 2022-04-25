@@ -26,7 +26,14 @@ abstract class BaseFragment : Fragment() {
         permission: String,
         onPermissionGranted: () -> Unit = {},
         onCustomRationale: ((startPermissionRequestCallback: () -> Unit) -> Unit)? = null,
-    ) = (activity as? MainActivity)?.checkPermission(permission, onPermissionGranted, onCustomRationale)
+        onCustomDenied: (() -> Unit)? = null,
+        showSettingsButton: Boolean = false,
+    ) = (activity as? MainActivity)?.checkPermission(permission,
+        onPermissionGranted,
+        onCustomRationale,
+        onCustomDenied,
+        showSettingsButton,
+    )
 
     fun showSnackbar(
         message: String?,
