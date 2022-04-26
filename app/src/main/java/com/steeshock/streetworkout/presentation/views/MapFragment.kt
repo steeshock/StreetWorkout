@@ -62,18 +62,18 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     private fun moveToPointLocation() {
 
-        val placeUUID = arguments?.get("place_uuid")
+        val placeId = arguments?.get("placeId")
 
-        if (!movedCameraToInitialPoint && placeUUID != null && placeUUID != -1 && placeUUID is String){
+        if (!movedCameraToInitialPoint && placeId != null && placeId != -1 && placeId is String){
 
-            val place = viewModel.observablePlaces.value?.find { i -> i.place_id == placeUUID }
+            val place = viewModel.observablePlaces.value?.find { i -> i.placeId == placeId }
 
             if (place != null){
                 
                 val placeLocation = LatLng(place.latitude, place.longitude)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(placeLocation, 10f))
 
-                val selectedMarker = markers.find { i -> i.place_uuid == placeUUID }
+                val selectedMarker = markers.find { i -> i.placeId == placeId }
                 selectedMarker?.mapMarker?.showInfoWindow()
 
                 movedCameraToInitialPoint = true
@@ -94,7 +94,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 pin = LatLng(place.latitude, place.longitude)
                 val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)
-                place.place_id.let { markers.add(CustomMarker(it, marker)) }
+                place.placeId.let { markers.add(CustomMarker(it, marker)) }
             }
 
             for (position in pinsPositions) {

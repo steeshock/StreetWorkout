@@ -9,11 +9,11 @@ import com.steeshock.streetworkout.data.model.Place.Companion.TABLE_NAME
 data class Place(
 
     @PrimaryKey
-    @ColumnInfo(name = "place_id")
-    var place_id: String = "",
+    @ColumnInfo(name = "placeId")
+    var placeId: String = "",
 
-    @ColumnInfo(name = "user_id")
-    var user_id: String = "",
+    @ColumnInfo(name = "userId")
+    var userId: String = "",
 
     @ColumnInfo(name = "title")
     var title: String = "",

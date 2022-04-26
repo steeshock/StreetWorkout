@@ -1,10 +1,10 @@
 package com.steeshock.streetworkout.presentation.viewStates.auth
 
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserInfo
 
 sealed class SignInResponse {
 
-    data class SuccessSignIn(val user: User?) : SignInResponse()
+    data class SuccessSignIn(val userInfo: UserInfo?) : SignInResponse()
 
     object UserNotAuthorized : SignInResponse()
 

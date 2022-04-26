@@ -24,6 +24,9 @@ open class FirebaseCategoriesRepository(
         @Volatile
         private var instance: FirebaseCategoriesRepository? = null
 
+        /**
+         * Singleton instance creator without Dagger scope annotations
+         */
         fun getInstance(categoriesDao: CategoriesDao) =
             instance
                 ?: synchronized(this) {

@@ -67,7 +67,7 @@ class AddPlaceViewModel @Inject constructor(
 
         if (selectedImages.size > 0) {
             selectedImages.forEach { uri ->
-                uploadDataToFirebase(uri, sendingPlace?.place_id)
+                uploadDataToFirebase(uri, sendingPlace?.placeId)
             }
         } else {
             createAndPublishNewPlace()
@@ -195,12 +195,12 @@ class AddPlaceViewModel @Inject constructor(
         address: String,
     ): Place {
         val placeId = UUID.randomUUID().toString()
-        val userId = authService.getCurrentUserId().toString()
+        val userId = authService.currentUserId.toString()
         val positionValues = position.split(" ")
 
         return Place(
-            place_id = placeId,
-            user_id = userId,
+            placeId = placeId,
+            userId = userId,
             title = title,
             description = description,
             latitude = if (positionValues.size > 1) position[0].code.toDouble() else 54.513845,

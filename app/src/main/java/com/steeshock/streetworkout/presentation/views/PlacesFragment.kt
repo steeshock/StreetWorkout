@@ -20,8 +20,6 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.*
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.showAlertDialog
@@ -168,7 +166,7 @@ class PlacesFragment : BaseFragment() {
 
     private fun navigateToMap(place: Place) {
         findNavController().navigate(
-            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.place_id)
+            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.placeId)
         )
     }
 

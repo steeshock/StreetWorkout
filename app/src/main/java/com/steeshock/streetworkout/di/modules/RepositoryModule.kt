@@ -5,23 +5,26 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.database.PlacesDatabase
+import com.steeshock.streetworkout.data.database.UserInfoDao
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
+import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserInfoRepository
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DatabaseModule {
+class RepositoryModule {
 
     @Provides
     fun providePlacesRepository(
         placesDao: PlacesDao,
-        placesAPI: PlacesAPI
+        placesAPI: PlacesAPI,
     ): IPlacesRepository {
 
         // Реализация для работы с Firebase Realtime Database
@@ -34,7 +37,7 @@ class DatabaseModule {
     @Provides
     fun provideCategoriesRepository(
         categoriesDao: CategoriesDao,
-        placesAPI: PlacesAPI
+        placesAPI: PlacesAPI,
     ): ICategoriesRepository {
 
         // Реализация для работы с Firebase Realtime Database
@@ -42,6 +45,13 @@ class DatabaseModule {
 
         // Реализация для работы с Mock API на сервере
         //return MockApiCategoriesRepository.getInstance(categoriesDao, placesAPI)
+    }
+
+    @Provides
+    fun provideUserRepository(
+        userInfoDao: UserInfoDao,
+    ): IUserInfoRepository {
+        return FirebaseUserInfoRepository(userInfoDao)
     }
 
     @Provides
@@ -62,5 +72,12 @@ class DatabaseModule {
         return PlacesDatabase
             .getInstance(appContext)
             .getCategoriesDao()
+    }
+
+    @Provides
+    fun provideUserInfoDao(appContext: Context): UserInfoDao {
+        return PlacesDatabase
+            .getInstance(appContext)
+            .getUserInfoDao()
     }
 }

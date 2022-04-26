@@ -21,13 +21,14 @@ open class MockApiCategoriesRepository(
 
     override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
     companion object {
 
         @Volatile
         private var instance: MockApiCategoriesRepository? = null
 
+        /**
+         * Singleton instance creator without Dagger scope annotations
+         */
         fun getInstance(
             categoriesDao: CategoriesDao,
             placesAPI: PlacesAPI
@@ -54,21 +55,6 @@ open class MockApiCategoriesRepository(
                 onResponse.onSuccess(result.body())
             }
         }
-        /**
-         * Obsolete RxJava approach
-         */
-        /*
-        placesAPI.getCategories()
-            .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                onResponse.onSuccess(it)
-            }, {
-                onResponse.onError(it)
-            }).also {
-                compositeDisposable.add(it)
-            }
-         */
     }
 
     override suspend fun insertCategoryLocal(newCategory: Category) {

@@ -29,6 +29,9 @@ open class FirebasePlacesRepository(
         @Volatile
         private var instance: FirebasePlacesRepository? = null
 
+        /**
+         * Singleton instance creator without Dagger scope annotations
+         */
         fun getInstance(placesDao: PlacesDao) =
             instance
                 ?: synchronized(this) {
@@ -36,6 +39,8 @@ open class FirebasePlacesRepository(
                 }
     }
 
+
+    // TODO Проставлять избранные места с помощью списка User.favorites
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
         val database = Firebase.database(FIREBASE_PATH)
         val places: MutableList<Place> = mutableListOf()
@@ -44,7 +49,7 @@ open class FirebasePlacesRepository(
 
             for (child in it.children) {
                 val place = child.getValue<Place>()
-                val isFavorite = allPlaces.value?.find { p -> p.place_id == place?.place_id }?.isFavorite
+                val isFavorite = allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
                 place?.isFavorite = isFavorite == true
                 place?.let { p -> places.add(p) }
             }
@@ -70,7 +75,7 @@ open class FirebasePlacesRepository(
 
     override suspend fun insertPlaceRemote(newPlace: Place) {
         val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlace.place_id)
+        val myRef = database.getReference("places").child(newPlace.placeId)
         myRef.setValue(newPlace).await()
     }
 
