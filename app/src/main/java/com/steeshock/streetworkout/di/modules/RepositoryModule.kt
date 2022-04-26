@@ -5,6 +5,7 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.database.PlacesDatabase
+import com.steeshock.streetworkout.data.database.UserInfoDao
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
@@ -23,7 +24,7 @@ class RepositoryModule {
     @Provides
     fun providePlacesRepository(
         placesDao: PlacesDao,
-        placesAPI: PlacesAPI
+        placesAPI: PlacesAPI,
     ): IPlacesRepository {
 
         // Реализация для работы с Firebase Realtime Database
@@ -36,7 +37,7 @@ class RepositoryModule {
     @Provides
     fun provideCategoriesRepository(
         categoriesDao: CategoriesDao,
-        placesAPI: PlacesAPI
+        placesAPI: PlacesAPI,
     ): ICategoriesRepository {
 
         // Реализация для работы с Firebase Realtime Database
@@ -47,8 +48,10 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideUserRepository(): IUserInfoRepository {
-        return FirebaseUserInfoRepository()
+    fun provideUserRepository(
+        userInfoDao: UserInfoDao,
+    ): IUserInfoRepository {
+        return FirebaseUserInfoRepository(userInfoDao)
     }
 
     @Provides
@@ -69,5 +72,12 @@ class RepositoryModule {
         return PlacesDatabase
             .getInstance(appContext)
             .getCategoriesDao()
+    }
+
+    @Provides
+    fun provideUserInfoDao(appContext: Context): UserInfoDao {
+        return PlacesDatabase
+            .getInstance(appContext)
+            .getUserInfoDao()
     }
 }

@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.services.auth
 
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserInfo
 
 interface IAuthService {
     /**
@@ -28,7 +28,7 @@ interface IAuthService {
      */
     suspend fun signUp(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
+        onSuccess: (UserInfo) -> Unit,
         onError: (Exception) -> Unit,
     )
 
@@ -37,7 +37,7 @@ interface IAuthService {
      */
     suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
+        onSuccess: (UserInfo) -> Unit,
         onError: (Exception) -> Unit,
     )
 

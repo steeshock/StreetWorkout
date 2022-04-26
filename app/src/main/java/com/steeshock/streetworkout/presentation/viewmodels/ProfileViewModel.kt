@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserInfo
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
             postViewEvent(
                 event = SignInResult(
                     SuccessSignIn(
-                        User(
+                        UserInfo(
                             displayName = authService.currentUserDisplayName,
                             email = authService.currentUserEmail,
                         )
@@ -181,12 +181,12 @@ class ProfileViewModel @Inject constructor(
      * After success sign up/sign in with Firebase auth,
      * get (if exists) or create additional User instance in remote storage
      */
-    private fun getOrCreateUserInfo(user: User, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getOrCreateUserInfo(userInfo: UserInfo, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
         try {
             val remoteUser = userInfoRepository.getOrCreateUserInfo(
-                userId = user.userId,
-                name = user.displayName,
-                email = user.email,
+                userId = userInfo.userId,
+                name = userInfo.displayName,
+                email = userInfo.email,
             )
             val event = when (signPurpose) {
                 SIGN_UP -> SignUpResult(SuccessSignUp(remoteUser))

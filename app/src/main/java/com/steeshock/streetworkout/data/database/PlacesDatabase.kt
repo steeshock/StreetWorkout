@@ -9,10 +9,11 @@ import com.steeshock.streetworkout.data.converters.ArrayIntConverter
 import com.steeshock.streetworkout.data.converters.ArrayStringConverter
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.UserInfo
 
 
 @Database(
-    entities = [Place::class, Category::class],
+    entities = [Place::class, Category::class, UserInfo::class],
     version = 1,
     exportSchema = false
 )
@@ -21,6 +22,7 @@ abstract class PlacesDatabase : RoomDatabase() {
 
     abstract fun getPlacesDao(): PlacesDao
     abstract fun getCategoriesDao(): CategoriesDao
+    abstract fun getUserInfoDao(): UserInfoDao
 
     companion object {
 

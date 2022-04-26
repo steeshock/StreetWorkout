@@ -3,7 +3,7 @@ package com.steeshock.streetworkout.services.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserInfo
 
 class FirebaseAuthServiceImpl : IAuthService {
 
@@ -24,7 +24,7 @@ class FirebaseAuthServiceImpl : IAuthService {
 
     override suspend fun signUp(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
+        onSuccess: (UserInfo) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.createUserWithEmailAndPassword(
@@ -34,7 +34,7 @@ class FirebaseAuthServiceImpl : IAuthService {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onSuccess.invoke(
-                        User(
+                        UserInfo(
                             userId = currentUserId,
                             displayName = currentUserDisplayName,
                             email = currentUserEmail,
@@ -49,7 +49,7 @@ class FirebaseAuthServiceImpl : IAuthService {
 
     override suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
+        onSuccess: (UserInfo) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.signInWithEmailAndPassword(
@@ -59,7 +59,7 @@ class FirebaseAuthServiceImpl : IAuthService {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onSuccess.invoke(
-                        User(
+                        UserInfo(
                             userId = currentUserId,
                             displayName = currentUserDisplayName,
                             email = currentUserEmail,
