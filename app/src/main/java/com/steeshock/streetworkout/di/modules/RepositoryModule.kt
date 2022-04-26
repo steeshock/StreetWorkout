@@ -8,17 +8,17 @@ import com.steeshock.streetworkout.data.database.PlacesDatabase
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
-import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserRepository
+import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserInfoRepository
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DatabaseModule {
+class RepositoryModule {
 
     @Provides
     fun providePlacesRepository(
@@ -47,8 +47,8 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideUserRepository(): IUserRepository {
-        return FirebaseUserRepository()
+    fun provideUserRepository(): IUserInfoRepository {
+        return FirebaseUserInfoRepository()
     }
 
     @Provides

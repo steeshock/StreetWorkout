@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
+import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -18,9 +19,7 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
-import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
-import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
@@ -36,6 +35,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
+    private val userInfoRepository: IUserInfoRepository,
 ) : ViewModel(),
     ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl({ AuthViewState() }) {
@@ -56,8 +56,8 @@ class ProfileViewModel @Inject constructor(
                 event = SignInResult(
                     SuccessSignIn(
                         User(
-                            displayName = authService.getDisplayName(),
-                            email = authService.getUserEmail(),
+                            displayName = authService.currentUserDisplayName,
+                            email = authService.currentUserEmail,
                         )
                     )
                 ),
@@ -148,19 +148,7 @@ class ProfileViewModel @Inject constructor(
                 password = password,
             ),
             onSuccess = { user ->
-                updateViewState(postValue = true) {
-                    copy(isLoading = false)
-                }
-                sendViewEvent(
-                    SignInResult(
-                        SuccessSignIn(
-                            User(
-                                displayName = user?.displayName,
-                                email = user?.email,
-                            )
-                        )
-                    ),
-                )
+                getOrCreateUserInfo(user, SIGN_IN)
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
@@ -180,19 +168,7 @@ class ProfileViewModel @Inject constructor(
                 password = password,
             ),
             onSuccess = { user ->
-                updateViewState(postValue = true) {
-                    copy(isLoading = false)
-                }
-                sendViewEvent(
-                    SignUpResult(
-                        SuccessSignUp(
-                            User(
-                                displayName = user?.displayName,
-                                email = user?.email,
-                            )
-                        )
-                    ),
-                )
+                getOrCreateUserInfo(user, SIGN_UP)
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
@@ -201,29 +177,56 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    /**
+     * After success sign up/sign in with Firebase auth,
+     * get (if exists) or create additional User instance in remote storage
+     */
+    private fun getOrCreateUserInfo(user: User, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val remoteUser = userInfoRepository.getOrCreateUserInfo(
+                userId = user.userId,
+                name = user.displayName,
+                email = user.email,
+            )
+            val event = when (signPurpose) {
+                SIGN_UP -> SignUpResult(SuccessSignUp(remoteUser))
+                SIGN_IN -> SignInResult(SuccessSignIn(remoteUser))
+            }
+            withContext(Dispatchers.Main) {
+                updateViewState { copy(isLoading = false) }
+                sendViewEvent(event)
+            }
+        } catch (e: Exception) {
+            updateViewState(postValue = true) { copy(isLoading = false) }
+            handleException(e, signPurpose)
+        }
+    }
+
     private fun handleException(
         exception: Exception,
         signPurpose: SignPurpose,
-    ) {
-        when (exception) {
-            is FirebaseAuthUserCollisionException -> {
-                sendViewEvent(SignUpResult(UserCollisionError))
-            }
-            is FirebaseAuthInvalidUserException -> {
-                sendViewEvent(SignInResult(InvalidUserError))
-            }
-            is FirebaseAuthInvalidCredentialsException -> {
-                when (signPurpose) {
-                    SIGN_IN -> {
-                        sendViewEvent(SignInResult(InvalidCredentialsError))
-                    }
-                    SIGN_UP -> {
-                        sendViewEvent(SignUpResult(InvalidEmailError))
+    ) = viewModelScope.launch(Dispatchers.IO)  {
+        withContext(Dispatchers.Main) {
+            when (exception) {
+                is FirebaseAuthUserCollisionException -> {
+                    sendViewEvent(SignUpResult(UserCollisionError))
+                }
+                is FirebaseAuthInvalidUserException -> {
+                    sendViewEvent(SignInResult(InvalidUserError))
+                }
+                is FirebaseAuthInvalidCredentialsException -> {
+                    when (signPurpose) {
+                        SIGN_IN -> {
+                            sendViewEvent(SignInResult(InvalidCredentialsError))
+                        }
+                        SIGN_UP -> {
+                            sendViewEvent(SignUpResult(InvalidEmailError))
+                        }
                     }
                 }
-            }
-            else -> {
-                sendViewEvent(UnknownError)
+                else -> {
+                    sendViewEvent(UnknownError)
+                }
             }
         }
     }

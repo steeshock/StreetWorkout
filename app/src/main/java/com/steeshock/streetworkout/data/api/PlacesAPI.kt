@@ -6,17 +6,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface PlacesAPI {
-    /**
-     * Obsolete RxJava approach
-     */
-    //@GET("steeshock/SimpleAPI/places/")
-    //fun getPlaces(): Observable<List<Place>>
-
-    /**
-     * Obsolete RxJava approach
-     */
-    //@GET("steeshock/SimpleAPI/categories/")
-    //fun getCategories(): Observable<List<Category>>
 
     @GET("steeshock/SimpleAPI/places/")
     suspend fun getPlaces(): Response<List<Place>>

@@ -13,21 +13,18 @@ class FirebaseAuthServiceImpl : IAuthService {
         return auth.currentUser != null
     }
 
-    override suspend fun getUserEmail(): String? {
-        return auth.currentUser?.email
-    }
+    override val currentUserEmail: String
+        get() = auth.currentUser?.email ?: ""
 
-    override suspend fun getDisplayName(): String? {
-        return auth.currentUser?.displayName
-    }
+    override val currentUserDisplayName: String
+        get() = auth.currentUser?.displayName ?: ""
 
-    override fun getCurrentUserId(): String? {
-        return auth.currentUser?.uid
-    }
+    override val currentUserId: String
+        get() = auth.currentUser?.uid ?: ""
 
     override suspend fun signUp(
         userCredentials: UserCredentials,
-        onSuccess: (User?) -> Unit,
+        onSuccess: (User) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.createUserWithEmailAndPassword(
@@ -38,8 +35,9 @@ class FirebaseAuthServiceImpl : IAuthService {
                 if (task.isSuccessful) {
                     onSuccess.invoke(
                         User(
-                            displayName = auth.currentUser?.displayName,
-                            email = auth.currentUser?.email,
+                            userId = currentUserId,
+                            displayName = currentUserDisplayName,
+                            email = currentUserEmail,
                         )
                     )
                 }
@@ -51,7 +49,7 @@ class FirebaseAuthServiceImpl : IAuthService {
 
     override suspend fun signIn(
         userCredentials: UserCredentials,
-        onSuccess: (User?) -> Unit,
+        onSuccess: (User) -> Unit,
         onError: (Exception) -> Unit,
     ) {
         auth.signInWithEmailAndPassword(
@@ -62,8 +60,9 @@ class FirebaseAuthServiceImpl : IAuthService {
                 if (task.isSuccessful) {
                     onSuccess.invoke(
                         User(
-                            displayName = auth.currentUser?.displayName,
-                            email = auth.currentUser?.email,
+                            userId = currentUserId,
+                            displayName = currentUserDisplayName,
+                            email = currentUserEmail,
                         )
                     )
                 }
@@ -74,6 +73,7 @@ class FirebaseAuthServiceImpl : IAuthService {
     }
 
     override suspend fun signOut() {
+        // TODO Сбрасывать список избранного при релогине
         auth.signOut()
     }
 }

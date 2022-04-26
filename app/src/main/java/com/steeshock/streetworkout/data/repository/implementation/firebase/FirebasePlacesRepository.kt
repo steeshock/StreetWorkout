@@ -29,6 +29,9 @@ open class FirebasePlacesRepository(
         @Volatile
         private var instance: FirebasePlacesRepository? = null
 
+        /**
+         * Singleton instance creator without Dagger scope annotations
+         */
         fun getInstance(placesDao: PlacesDao) =
             instance
                 ?: synchronized(this) {
@@ -36,6 +39,8 @@ open class FirebasePlacesRepository(
                 }
     }
 
+
+    // TODO Проставлять избранные места с помощью списка User.favorites
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
         val database = Firebase.database(FIREBASE_PATH)
         val places: MutableList<Place> = mutableListOf()

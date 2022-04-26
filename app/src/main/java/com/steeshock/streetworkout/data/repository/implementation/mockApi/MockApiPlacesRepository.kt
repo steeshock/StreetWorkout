@@ -11,7 +11,6 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -26,8 +25,6 @@ open class MockApiPlacesRepository(
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     override val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
@@ -36,6 +33,9 @@ open class MockApiPlacesRepository(
         @Volatile
         private var instance: MockApiPlacesRepository? = null
 
+        /**
+         * Singleton instance creator without Dagger scope annotations
+         */
         fun getInstance(
             placesDao: PlacesDao,
             placesAPI: PlacesAPI
@@ -63,22 +63,6 @@ open class MockApiPlacesRepository(
                 onResponse.onSuccess(result.body())
             }
         }
-        /**
-         * Obsolete RxJava approach
-         */
-        /*
-        placesAPI.getPlaces()
-            .subscribeOn(io.reactivex.rxjava3.schedulers.Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                onResponse.onSuccess(it)
-            }, {
-                onResponse.onError(it)
-            }).also {
-                compositeDisposable.add(it)
-            }
-
-         */
     }
 
     /**

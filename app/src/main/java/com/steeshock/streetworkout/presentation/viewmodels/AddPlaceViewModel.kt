@@ -195,7 +195,7 @@ class AddPlaceViewModel @Inject constructor(
         address: String,
     ): Place {
         val placeId = UUID.randomUUID().toString()
-        val userId = authService.getCurrentUserId().toString()
+        val userId = authService.currentUserId.toString()
         val positionValues = position.split(" ")
 
         return Place(

@@ -2,9 +2,11 @@ package com.steeshock.streetworkout.data.model
 
 data class User(
 
-    val displayName: String? = "",
+    val userId: String = "",
 
-    val email: String? = "",
+    val displayName: String = "",
 
-    val favorites: List<Int>? = null,
+    val email: String = "",
+
+    val favorites: List<String>? = null,
 )
