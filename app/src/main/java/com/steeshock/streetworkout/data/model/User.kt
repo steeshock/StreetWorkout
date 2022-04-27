@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = UserInfo.TABLE_NAME)
-data class UserInfo(
+@Entity(tableName = User.TABLE_NAME)
+data class User(
 
     @PrimaryKey
     @ColumnInfo(name = "userId")
@@ -21,6 +21,6 @@ data class UserInfo(
     val favorites: ArrayList<String>? = null,
 ) {
     companion object {
-        const val TABLE_NAME = "user_info_table"
+        const val TABLE_NAME = "user_table"
     }
 }

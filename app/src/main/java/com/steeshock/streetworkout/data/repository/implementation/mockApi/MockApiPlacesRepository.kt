@@ -28,29 +28,6 @@ open class MockApiPlacesRepository(
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     override val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
-    companion object {
-
-        @Volatile
-        private var instance: MockApiPlacesRepository? = null
-
-        /**
-         * Singleton instance creator without Dagger scope annotations
-         */
-        fun getInstance(
-            placesDao: PlacesDao,
-            placesAPI: PlacesAPI
-        ) =
-            instance
-                ?: synchronized(this) {
-                    instance
-                        ?: MockApiPlacesRepository(
-                            placesDao,
-                            placesAPI
-                        )
-                            .also { instance = it }
-                }
-    }
-
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
         var result: Response<List<Place>>? = null
         try {

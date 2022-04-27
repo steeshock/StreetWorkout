@@ -19,21 +19,6 @@ open class FirebaseCategoriesRepository(
 
     override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
-    companion object {
-
-        @Volatile
-        private var instance: FirebaseCategoriesRepository? = null
-
-        /**
-         * Singleton instance creator without Dagger scope annotations
-         */
-        fun getInstance(categoriesDao: CategoriesDao) =
-            instance
-                ?: synchronized(this) {
-                    instance ?: FirebaseCategoriesRepository(categoriesDao).also { instance = it }
-                }
-    }
-
     override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
         val database = Firebase.database(FIREBASE_PATH)
         val categories: MutableList<Category> = mutableListOf()

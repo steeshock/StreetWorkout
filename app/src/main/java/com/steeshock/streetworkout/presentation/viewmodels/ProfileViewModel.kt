@@ -6,10 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.steeshock.streetworkout.data.model.UserInfo
+import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
+import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -35,7 +35,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
-    private val userInfoRepository: IUserInfoRepository,
+    private val userRepository: IUserRepository,
 ) : ViewModel(),
     ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl({ AuthViewState() }) {
@@ -55,7 +55,7 @@ class ProfileViewModel @Inject constructor(
             postViewEvent(
                 event = SignInResult(
                     SuccessSignIn(
-                        UserInfo(
+                        User(
                             displayName = authService.currentUserDisplayName,
                             email = authService.currentUserEmail,
                         )
@@ -148,7 +148,7 @@ class ProfileViewModel @Inject constructor(
                 password = password,
             ),
             onSuccess = { user ->
-                getOrCreateUserInfo(user, SIGN_IN)
+                getOrCreateUser(user, SIGN_IN)
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
@@ -168,7 +168,7 @@ class ProfileViewModel @Inject constructor(
                 password = password,
             ),
             onSuccess = { user ->
-                getOrCreateUserInfo(user, SIGN_UP)
+                getOrCreateUser(user, SIGN_UP)
             },
             onError = {
                 updateViewState(postValue = true) { copy(isLoading = false) }
@@ -181,12 +181,12 @@ class ProfileViewModel @Inject constructor(
      * After success sign up/sign in with Firebase auth,
      * get (if exists) or create additional User instance in remote storage
      */
-    private fun getOrCreateUserInfo(userInfo: UserInfo, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
+    private fun getOrCreateUser(user: User, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
         try {
-            val remoteUser = userInfoRepository.getOrCreateUserInfo(
-                userId = userInfo.userId,
-                name = userInfo.displayName,
-                email = userInfo.email,
+            val remoteUser = userRepository.getOrCreateUser(
+                userId = user.userId,
+                name = user.displayName,
+                email = user.email,
             )
             val event = when (signPurpose) {
                 SIGN_UP -> SignUpResult(SuccessSignUp(remoteUser))

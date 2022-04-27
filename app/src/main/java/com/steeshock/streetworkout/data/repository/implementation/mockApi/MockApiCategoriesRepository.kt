@@ -21,28 +21,6 @@ open class MockApiCategoriesRepository(
 
     override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
-    companion object {
-
-        @Volatile
-        private var instance: MockApiCategoriesRepository? = null
-
-        /**
-         * Singleton instance creator without Dagger scope annotations
-         */
-        fun getInstance(
-            categoriesDao: CategoriesDao,
-            placesAPI: PlacesAPI
-        ) = instance
-                ?: synchronized(this) {
-                    instance
-                        ?: MockApiCategoriesRepository(
-                            categoriesDao,
-                            placesAPI
-                        )
-                            .also { instance = it }
-                }
-    }
-
     override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
         var result: Response<List<Category>>? = null
         try {

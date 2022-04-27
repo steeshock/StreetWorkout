@@ -24,21 +24,6 @@ open class FirebasePlacesRepository(
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     override val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
-    companion object {
-
-        @Volatile
-        private var instance: FirebasePlacesRepository? = null
-
-        /**
-         * Singleton instance creator without Dagger scope annotations
-         */
-        fun getInstance(placesDao: PlacesDao) =
-            instance
-                ?: synchronized(this) {
-                    instance ?: FirebasePlacesRepository(placesDao).also { instance = it }
-                }
-    }
-
 
     // TODO Проставлять избранные места с помощью списка User.favorites
     override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
