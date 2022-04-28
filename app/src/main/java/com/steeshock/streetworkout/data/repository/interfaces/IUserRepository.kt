@@ -4,7 +4,8 @@ import com.steeshock.streetworkout.data.model.User
 
 interface IUserRepository {
     /**
-     * Get if exist user info or create new one in remote storage
+     * Fetch if exist user info or create new one in remote storage
+     * After user created, add it to local storage (update user locally if exists)
      *
      * [userId] - uid of created Firebase User
      *

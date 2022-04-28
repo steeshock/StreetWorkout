@@ -5,10 +5,15 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
-import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Repository for work with Firebase Realtime Database
@@ -19,28 +24,28 @@ open class FirebaseCategoriesRepository(
 
     override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
 
-    override suspend fun fetchCategories(onResponse: APIResponse<List<Category>>) {
-        val database = Firebase.database(FIREBASE_PATH)
-        val categories: MutableList<Category> = mutableListOf()
+    override suspend fun fetchCategories(): Boolean {
+        return suspendCoroutine { continuation ->
+            val database = Firebase.database(FIREBASE_PATH)
+            val categories: MutableList<Category> = mutableListOf()
 
-        database.getReference("categories").get().addOnSuccessListener {
+            database.getReference("categories").get().addOnSuccessListener {
 
-            for (child in it.children) {
+                for (child in it.children) {
+                    val category = child.getValue<Category>()
+                    val isSelected = allCategories.value?.find { p -> p.category_id == category?.category_id }?.isSelected
+                    category?.isSelected = isSelected
+                    category?.let { c -> categories.add(c) }
+                }
 
-                val category = child.getValue<Category>()
+                CoroutineScope(Dispatchers.IO).launch {
+                    categoriesDao.insertAllCategories(categories)
+                    continuation.resume(true)
+                }
 
-                val isSelected =
-                    allCategories.value?.find { p -> p.category_id == category?.category_id }?.isSelected
-
-                category?.isSelected = isSelected
-
-                category?.let { c -> categories.add(c) }
+            }.addOnFailureListener {
+                continuation.resumeWithException(Throwable("Failed to fetch categories"))
             }
-
-            onResponse.onSuccess(categories)
-
-        }.addOnFailureListener {
-            onResponse.onError(it)
         }
     }
 

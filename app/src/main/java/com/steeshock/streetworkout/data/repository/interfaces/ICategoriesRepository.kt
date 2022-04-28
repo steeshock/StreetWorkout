@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.data.repository.interfaces
 
 import androidx.lifecycle.LiveData
-import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.model.Category
 
 interface ICategoriesRepository {
@@ -9,9 +8,9 @@ interface ICategoriesRepository {
     val allCategories: LiveData<List<Category>>
 
     /**
-     * Fetch categories from remote source and return data to [onResponse] callback
+     * Fetch categories from remote source and and save data to local storage
      */
-    suspend fun fetchCategories(onResponse: APIResponse<List<Category>>)
+    suspend fun fetchCategories(): Boolean
 
     /**
      * Insert new place in local Places table

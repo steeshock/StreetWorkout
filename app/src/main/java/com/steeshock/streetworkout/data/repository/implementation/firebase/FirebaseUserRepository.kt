@@ -19,7 +19,7 @@ class FirebaseUserRepository(
 ) : IUserRepository {
 
     override suspend fun getOrCreateUser(userId: String, name: String, email: String): User? {
-        return getUserById(userId) ?: createUser(userId, name, email)
+        return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
     override suspend fun getUserFavorites(userId: String): List<String>? {
@@ -44,7 +44,7 @@ class FirebaseUserRepository(
         }
     }
 
-    private suspend fun getUserById(userId: String): User? {
+    private suspend fun fetchUser(userId: String): User? {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
             val userByIdRef = database.getReference("users").child(userId)

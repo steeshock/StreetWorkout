@@ -2,7 +2,6 @@ package com.steeshock.streetworkout.data.repository.interfaces
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.model.Place
 
 interface IPlacesRepository {
@@ -11,9 +10,9 @@ interface IPlacesRepository {
     val allFavoritePlaces: LiveData<List<Place>>
 
     /**
-     * Fetch places from remote source and return data to [onResponse] callback
+     * Fetch places from remote source and save data to local storage
      */
-    suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>)
+    suspend fun fetchPlaces(): Boolean
 
     /**
      * Upload image with file [uri] to Firebase Storage
