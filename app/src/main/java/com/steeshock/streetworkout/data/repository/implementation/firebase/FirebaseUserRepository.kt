@@ -4,9 +4,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
-import com.steeshock.streetworkout.data.database.UserInfoDao
-import com.steeshock.streetworkout.data.model.UserInfo
-import com.steeshock.streetworkout.data.repository.interfaces.IUserInfoRepository
+import com.steeshock.streetworkout.data.database.UserDao
+import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,29 +14,29 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseUserInfoRepository(
-    private val userInfoDao: UserInfoDao,
-) : IUserInfoRepository {
+class FirebaseUserRepository(
+    private val userDao: UserDao,
+) : IUserRepository {
 
-    override suspend fun getOrCreateUserInfo(userId: String, name: String, email: String): UserInfo? {
-        return getUserById(userId) ?: createUser(userId, name, email)
+    override suspend fun getOrCreateUser(userId: String, name: String, email: String): User? {
+        return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
     override suspend fun getUserFavorites(userId: String): List<String>? {
-        return userInfoDao.getUserInfo(userId).favorites
+        return userDao.getUserById(userId).favorites
     }
 
-    private suspend fun createUser(userId: String, name: String, email: String): UserInfo? {
+    private suspend fun createUser(userId: String, name: String, email: String): User? {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
-            val newUser = database.getReference("users").child(userId)
-            val userInfo = UserInfo(userId, name, email)
-            newUser.setValue(userInfo)
+            val newUserRef = database.getReference("users").child(userId)
+            val user = User(userId, name, email)
+            newUserRef.setValue(user)
                 .addOnSuccessListener {
                     CoroutineScope(Dispatchers.IO).launch {
-                        userInfoDao.insertUserInfo(userInfo)
+                        userDao.insertUser(user)
                     }
-                    continuation.resume(userInfo)
+                    continuation.resume(user)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(Throwable("Failed to create new user"))
@@ -44,16 +44,16 @@ class FirebaseUserInfoRepository(
         }
     }
 
-    private suspend fun getUserById(userId: String): UserInfo? {
+    private suspend fun fetchUser(userId: String): User? {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
-            val userById = database.getReference("users").child(userId)
-            userById.get()
+            val userByIdRef = database.getReference("users").child(userId)
+            userByIdRef.get()
                 .addOnSuccessListener { snapshot ->
-                    val existentUser = snapshot.getValue<UserInfo>()
+                    val existentUser = snapshot.getValue<User>()
                     existentUser?.let {
                         CoroutineScope(Dispatchers.IO).launch {
-                            userInfoDao.insertUserInfo(it)
+                            userDao.insertUser(it)
                         }
                     }
                     continuation.resume(existentUser)

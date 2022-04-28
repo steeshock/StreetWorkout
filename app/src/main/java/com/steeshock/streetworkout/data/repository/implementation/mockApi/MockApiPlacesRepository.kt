@@ -6,15 +6,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
-import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import retrofit2.Response
 import java.util.*
 
 /**
@@ -28,41 +24,13 @@ open class MockApiPlacesRepository(
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
     override val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
 
-    companion object {
-
-        @Volatile
-        private var instance: MockApiPlacesRepository? = null
-
-        /**
-         * Singleton instance creator without Dagger scope annotations
-         */
-        fun getInstance(
-            placesDao: PlacesDao,
-            placesAPI: PlacesAPI
-        ) =
-            instance
-                ?: synchronized(this) {
-                    instance
-                        ?: MockApiPlacesRepository(
-                            placesDao,
-                            placesAPI
-                        )
-                            .also { instance = it }
-                }
-    }
-
-    override suspend fun fetchPlaces(onResponse: APIResponse<List<Place>>) {
-        var result: Response<List<Place>>? = null
-        try {
-            result = placesAPI.getPlaces()
-        } catch (t: Throwable) {
-            onResponse.onError(t)
+    override suspend fun fetchPlaces(): Boolean {
+        val result = placesAPI.getPlaces()
+        if (result.isSuccessful) {
+            result.body()?.let { insertAllPlaces(it) }
+            return true
         }
-        withContext(Dispatchers.Main) {
-            if (result?.isSuccessful == true) {
-                onResponse.onSuccess(result.body())
-            }
-        }
+        return false
     }
 
     /**

@@ -6,7 +6,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.steeshock.streetworkout.data.api.APIResponse
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
@@ -23,9 +22,7 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
@@ -45,6 +42,7 @@ class PlacesViewModel @Inject constructor(
     private val filteredPlaces: MutableLiveData<List<Place>> = MutableLiveData()
     private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
+    private var filterList: MutableList<Category> = mutableListOf()
     private var lastSearchString: String? = null
 
     init {
@@ -61,6 +59,88 @@ class PlacesViewModel @Inject constructor(
             observablePlaces.value = it.sortedByDescending { i -> i.created }
         }
         setupAppTheme()
+    }
+
+    fun fetchData() = viewModelScope.launch(Dispatchers.IO) {
+        updateViewState(postValue = true) { copy(isLoading = true) }
+        try {
+            coroutineScope {
+                awaitAll(
+                    async { placesRepository.fetchPlaces() },
+                    async { categoriesRepository.fetchCategories() }
+                )
+            }
+        } catch (t: Throwable) {
+            handleError(t)
+        } finally {
+            updateViewState(postValue = true) { copy(isLoading = false) }
+        }
+    }
+
+    // TODO Temporary function for easy testing
+    fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
+        placesRepository.clearPlacesTable()
+        categoriesRepository.clearCategoriesTable()
+    }
+
+    fun onLikeClicked(place: Place) {
+        updatePlace(place.copy(isFavorite = !place.isFavorite))
+    }
+
+    fun onFilterByCategory(category: Category) {
+        category.changeSelectedState()
+        if (filterList.find { it.category_name == category.category_name } != null) {
+            filterList.remove(category)
+        } else {
+            filterList.add(category)
+        }
+        filterData(filterList)
+        updateCategory(category)
+    }
+
+    fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized()) {
+            postViewEvent(ShowAddPlaceFragment)
+        } else {
+            postViewEvent(ShowAuthenticationAlert)
+        }
+    }
+
+    fun resetSearchFilter() {
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(null)
+        }
+    }
+
+    fun filterDataBySearchString(searchString: String?) {
+        lastSearchString = searchString
+        filterItemsBySearchString(lastSearchString)
+    }
+
+    private fun filterItemsBySearchString(lastSearchString: String?) {
+        actualPlaces.value = if (lastSearchString.isNullOrEmpty())
+            filteredPlaces.value
+        else {
+            filteredPlaces.value?.filter {
+                it.title.lowercase(Locale.ROOT).contains(lastSearchString.lowercase())
+            }
+        }
+    }
+
+    private fun filterData(filterList: MutableList<Category>) {
+        allPlaces.value?.let {
+            actualPlaces.value = if (filterList.isEmpty()) {
+                it
+            } else {
+                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true }
+            }
+
+            filteredPlaces.value = actualPlaces.value
+        }
+
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(lastSearchString)
+        }
     }
 
     private fun setupAppTheme() = viewModelScope.launch(Dispatchers.IO) {
@@ -93,127 +173,12 @@ class PlacesViewModel @Inject constructor(
         }
     }
 
-    private var filterList: MutableList<Category> = mutableListOf()
-
-    fun fetchPlaces() {
-        updateViewState { copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
-            placesRepository.fetchPlaces(object :
-                APIResponse<List<Place>> {
-                override fun onSuccess(result: List<Place>?) {
-                    updateViewState(postValue = true) {
-                        copy(isLoading = false)
-                    }
-                    result?.let { insertPlaces(it) }
-                }
-
-                override fun onError(t: Throwable) {
-                    handleError(t)
-                    t.printStackTrace()
-                }
-            })
-        }
-    }
-
-    fun fetchCategories() {
-        updateViewState { copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
-            categoriesRepository.fetchCategories(object :
-                APIResponse<List<Category>> {
-                override fun onSuccess(result: List<Category>?) {
-                    updateViewState(postValue = true) {
-                        copy(isLoading = false)
-                    }
-                    result?.let { insertCategories(it) }
-                }
-
-                override fun onError(t: Throwable) {
-                    handleError(t)
-                    t.printStackTrace()
-                }
-            })
-        }
-    }
-
-    fun insertPlaces(places: List<Place>) = viewModelScope.launch(Dispatchers.IO) {
-        placesRepository.insertAllPlaces(places)
-    }
-
-    fun insertCategories(categories: List<Category>) = viewModelScope.launch(Dispatchers.IO) {
-        categoriesRepository.insertAllCategories(categories)
-    }
-
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
     }
 
     private fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
         placesRepository.updatePlace(place)
-    }
-
-    fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
-        placesRepository.clearPlacesTable()
-        categoriesRepository.clearCategoriesTable()
-    }
-
-    fun onLikeClicked(place: Place) {
-        updatePlace(place.copy(isFavorite = !place.isFavorite))
-    }
-
-    fun onFilterByCategory(category: Category) {
-        category.changeSelectedState()
-        if (filterList.find { it.category_name == category.category_name } != null) {
-            filterList.remove(category)
-        } else {
-            filterList.add(category)
-        }
-        filterData(filterList)
-        updateCategory(category)
-    }
-
-    fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized()) {
-            postViewEvent(ShowAddPlaceFragment)
-        } else {
-            postViewEvent(ShowAuthenticationAlert)
-        }
-    }
-
-    private fun filterData(filterList: MutableList<Category>) {
-        allPlaces.value?.let {
-            actualPlaces.value = if (filterList.isEmpty()) {
-                it
-            } else {
-                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true }
-            }
-
-            filteredPlaces.value = actualPlaces.value
-        }
-
-        if (!lastSearchString.isNullOrEmpty()) {
-            filterDataBySearchString(lastSearchString)
-        }
-    }
-
-    fun resetSearchFilter() {
-        if (!lastSearchString.isNullOrEmpty()) {
-            filterDataBySearchString(null)
-        }
-    }
-
-    fun filterDataBySearchString(searchString: String?) {
-        lastSearchString = searchString
-        filterItemsBySearchString(lastSearchString)
-    }
-
-    private fun filterItemsBySearchString(lastSearchString: String?) {
-        actualPlaces.value = if (lastSearchString.isNullOrEmpty())
-            filteredPlaces.value
-        else {
-            filteredPlaces.value?.filter {
-                it.title.lowercase(Locale.ROOT).contains(lastSearchString.lowercase())
-            }
-        }
     }
 
     // TODO Handle errors on UI

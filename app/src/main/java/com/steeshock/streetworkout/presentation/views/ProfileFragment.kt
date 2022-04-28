@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.UserInfo
+import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.databinding.FragmentProfileBinding
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
@@ -162,8 +162,8 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignUpResult,
     ) = when (viewEvent.result) {
         is SuccessSignUp -> {
-            showProfilePage(viewEvent.result.userInfo)
-            getString(R.string.success_sign_up, viewEvent.result.userInfo?.email)
+            showProfilePage(viewEvent.result.user)
+            getString(R.string.success_sign_up, viewEvent.result.user?.email)
         }
         is UserCollisionError -> {
             showEmailValidationError(EXISTING_EMAIL)
@@ -179,8 +179,8 @@ class ProfileFragment : BaseFragment() {
         viewEvent: SignInResult,
     ) = when (viewEvent.result) {
         is SuccessSignIn -> {
-            showProfilePage(viewEvent.result.userInfo)
-            getString(R.string.success_sign_in, viewEvent.result.userInfo?.email)
+            showProfilePage(viewEvent.result.user)
+            getString(R.string.success_sign_in, viewEvent.result.user?.email)
         }
         is InvalidUserError -> {
             showEmailValidationError(INVALID_EMAIL)
@@ -225,12 +225,12 @@ class ProfileFragment : BaseFragment() {
         binding.loginLayout.root.visible()
     }
 
-    private fun showProfilePage(userInfo: UserInfo?) {
+    private fun showProfilePage(user: User?) {
         binding.loginLayout.root.gone()
         binding.profileLayout.root.visible()
 
-        binding.profileLayout.displayNameTextView.text = userInfo?.displayName
-        binding.profileLayout.emailTextView.text = userInfo?.email
+        binding.profileLayout.displayNameTextView.text = user?.displayName
+        binding.profileLayout.emailTextView.text = user?.email
     }
 
     private fun resetLoginFields() {

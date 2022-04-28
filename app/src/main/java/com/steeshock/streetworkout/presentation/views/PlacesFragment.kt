@@ -107,7 +107,7 @@ class PlacesFragment : BaseFragment() {
             }
 
             binding.refresher.setOnRefreshListener {
-                fetchData(viewModel)
+                fetchData()
             }
         }
     }
@@ -143,11 +143,6 @@ class PlacesFragment : BaseFragment() {
                 showAuthenticationAlert()
             }
         }
-    }
-
-    private fun fetchData(placesViewModel: PlacesViewModel) {
-        placesViewModel.fetchPlaces()
-        placesViewModel.fetchCategories()
     }
 
     private fun showAddPlaceFragment() {
