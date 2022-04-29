@@ -11,6 +11,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesReposit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -44,7 +45,7 @@ open class FirebaseCategoriesRepository(
                 }
 
             }.addOnFailureListener {
-                continuation.resumeWithException(Throwable("Failed to fetch categories"))
+                continuation.resumeWithException(it)
             }
         }
     }

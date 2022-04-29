@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -25,7 +26,7 @@ class GeolocationService @Inject constructor(private val context: Context) {
             fusedLocationClient?.lastLocation
                 ?.addOnSuccessListener {
                     if (!Geocoder.isPresent()) {
-                        continuation.resumeWithException(Throwable("No geocoder available"))
+                        continuation.resumeWithException(Exception("No geocoder available"))
                         return@addOnSuccessListener
                     }
                     continuation.resume(it)

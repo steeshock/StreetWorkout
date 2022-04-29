@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewStates.auth
 
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
 
 /**
  * Describes UI state of Auth screen

@@ -10,6 +10,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -39,7 +40,7 @@ class FirebaseUserRepository(
                     continuation.resume(user)
                 }
                 .addOnFailureListener {
-                    continuation.resumeWithException(Throwable("Failed to create new user"))
+                    continuation.resumeWithException(it)
                 }
         }
     }
@@ -59,7 +60,7 @@ class FirebaseUserRepository(
                     continuation.resume(existentUser)
                 }
                 .addOnFailureListener {
-                    continuation.resumeWithException(Throwable("Failed to get user information"))
+                    continuation.resumeWithException(it)
                 }
         }
     }

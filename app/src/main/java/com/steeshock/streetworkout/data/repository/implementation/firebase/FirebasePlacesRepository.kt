@@ -50,7 +50,7 @@ open class FirebasePlacesRepository(
                 }
 
             }.addOnFailureListener {
-                continuation.resumeWithException(Throwable("Failed to fetch places"))
+                continuation.resumeWithException(it)
             }
         }
     }

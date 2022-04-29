@@ -140,7 +140,7 @@ class AddPlaceViewModel @Inject constructor(
             if (lastLocation == null) {
                 lastLocation = geolocationService.getLastLocation()
             }
-        } catch (t: Throwable) {
+        } catch (e: Exception) {
             lastLocation = null
             updateViewState(postValue = true) { copy(isLocationInProgress = false) }
         } finally {
