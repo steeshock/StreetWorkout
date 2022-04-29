@@ -4,14 +4,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class FirebaseAuthServiceImpl : IAuthService {
 
     private var auth: FirebaseAuth = Firebase.auth
 
-    override suspend fun isUserAuthorized(): Boolean {
-        return auth.currentUser != null
-    }
+    override val isUserAuthorized: Boolean
+        get() = auth.currentUser != null
 
     override val currentUserEmail: String
         get() = auth.currentUser?.email ?: ""
@@ -22,54 +27,35 @@ class FirebaseAuthServiceImpl : IAuthService {
     override val currentUserId: String
         get() = auth.currentUser?.uid ?: ""
 
-    override suspend fun signUp(
+    override suspend fun sign(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
-        onError: (Exception) -> Unit,
-    ) {
-        auth.createUserWithEmailAndPassword(
-            userCredentials.email,
-            userCredentials.password,
-        )
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onSuccess.invoke(
-                        User(
-                            userId = currentUserId,
-                            displayName = currentUserDisplayName,
-                            email = currentUserEmail,
-                        )
+        signPurpose: SignPurpose,
+    ): User {
+        return suspendCoroutine { continuation ->
+            when (signPurpose) {
+                SIGN_UP -> {
+                    auth.createUserWithEmailAndPassword(
+                        userCredentials.email,
+                        userCredentials.password,
                     )
                 }
-            }
-            .addOnFailureListener {
-                onError.invoke(it)
-            }
-    }
-
-    override suspend fun signIn(
-        userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
-        onError: (Exception) -> Unit,
-    ) {
-        auth.signInWithEmailAndPassword(
-            userCredentials.email,
-            userCredentials.password,
-        )
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onSuccess.invoke(
-                        User(
-                            userId = currentUserId,
-                            displayName = currentUserDisplayName,
-                            email = currentUserEmail,
-                        )
+                SIGN_IN -> {
+                    auth.signInWithEmailAndPassword(
+                        userCredentials.email,
+                        userCredentials.password,
                     )
                 }
+            }.addOnSuccessListener {
+                val user = User(
+                    userId = currentUserId,
+                    displayName = currentUserDisplayName,
+                    email = currentUserEmail,
+                )
+                continuation.resume(user)
+            }.addOnFailureListener {
+                continuation.resumeWithException(it)
             }
-            .addOnFailureListener {
-                onError.invoke(it)
-            }
+        }
     }
 
     override suspend fun signOut() {

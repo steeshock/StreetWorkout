@@ -23,6 +23,7 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.*
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -70,8 +71,8 @@ class PlacesViewModel @Inject constructor(
                     async { categoriesRepository.fetchCategories() }
                 )
             }
-        } catch (t: Throwable) {
-            handleError(t)
+        } catch (e: Exception) {
+            handleError(e)
         } finally {
             updateViewState(postValue = true) { copy(isLoading = false) }
         }
@@ -99,7 +100,7 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized()) {
+        if (authService.isUserAuthorized) {
             postViewEvent(ShowAddPlaceFragment)
         } else {
             postViewEvent(ShowAuthenticationAlert)
@@ -182,7 +183,7 @@ class PlacesViewModel @Inject constructor(
     }
 
     // TODO Handle errors on UI
-    private fun handleError(throwable: Throwable) {
+    private fun handleError(exception: Exception) {
         updateViewState(postValue = true) {
             copy(isLoading = false)
         }

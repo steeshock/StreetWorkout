@@ -21,15 +21,13 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationR
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_IN
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.*
 import com.steeshock.streetworkout.services.auth.UserCredentials
 import com.steeshock.streetworkout.utils.extensions.getThemeByIndex
 import com.steeshock.streetworkout.utils.extensions.isEmailValid
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
@@ -51,7 +49,7 @@ class ProfileViewModel @Inject constructor(
                 signPurpose = signPurpose,
             )
         }
-        if (authService.isUserAuthorized()) {
+        if (authService.isUserAuthorized) {
             postViewEvent(
                 event = SignInResult(
                     SuccessSignIn(
@@ -84,13 +82,8 @@ class ProfileViewModel @Inject constructor(
             validateEmail(email) and validatePassword(password, viewState.value?.signPurpose)
 
         if (isSuccessValidation) {
-            when (viewState.value?.signPurpose) {
-                SIGN_UP -> {
-                    signUpUser(email, password)
-                }
-                else -> {
-                    signInUser(email, password)
-                }
+            viewState.value?.signPurpose?.let { signPurpose ->
+                signUser(email, password, signPurpose)
             }
         }
     }
@@ -137,44 +130,22 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun signInUser(
+    private fun signUser(
         email: String,
         password: String,
+        signPurpose: SignPurpose,
     ) = viewModelScope.launch(Dispatchers.IO) {
         updateViewState(postValue = true) { copy(isLoading = true) }
-        authService.signIn(
-            userCredentials = UserCredentials(
-                email = email,
-                password = password,
-            ),
-            onSuccess = { user ->
-                getOrCreateUser(user, SIGN_IN)
-            },
-            onError = {
-                updateViewState(postValue = true) { copy(isLoading = false) }
-                handleException(it, SIGN_IN)
+        try {
+            coroutineScope {
+                val userCredentials = UserCredentials(email, password)
+                val user = async { authService.sign(userCredentials, signPurpose) }
+                getOrCreateUser(user.await(),signPurpose)
             }
-        )
-    }
-
-    private fun signUpUser(
-        email: String,
-        password: String,
-    ) = viewModelScope.launch(Dispatchers.IO) {
-        updateViewState(postValue = true) { copy(isLoading = true) }
-        authService.signUp(
-            userCredentials = UserCredentials(
-                email = email,
-                password = password,
-            ),
-            onSuccess = { user ->
-                getOrCreateUser(user, SIGN_UP)
-            },
-            onError = {
-                updateViewState(postValue = true) { copy(isLoading = false) }
-                handleException(it, SIGN_UP)
-            }
-        )
+        } catch (e: Exception) {
+            handleException(e, signPurpose)
+            updateViewState(postValue = true) { copy(isLoading = false) }
+        }
     }
 
     /**
@@ -254,23 +225,6 @@ class ProfileViewModel @Inject constructor(
         dataStoreRepository.putInt(NIGHT_MODE_PREFERENCES_KEY, newThemeValue)
         withContext(Dispatchers.Main) {
             setDefaultNightMode(newThemeValue)
-        }
-    }
-
-    /**
-     * For security reasons, we should not check
-     * the password length while user Sing In
-     *
-     * That's why we should separate validation for Sign Up and Sing In
-     */
-    enum class SignPurpose {
-        SIGN_UP,
-        SIGN_IN;
-
-        companion object {
-            fun fromString(value: String?): SignPurpose {
-                return values().firstOrNull { it.name == value } ?: SIGN_UP
-            }
         }
     }
 }

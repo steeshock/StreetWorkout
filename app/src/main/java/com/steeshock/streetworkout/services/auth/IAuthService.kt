@@ -6,7 +6,7 @@ interface IAuthService {
     /**
      * Check if current user is authorized
      */
-    suspend fun isUserAuthorized(): Boolean
+    val isUserAuthorized: Boolean
 
     /**
      * Get current authorized user email
@@ -24,25 +24,33 @@ interface IAuthService {
     val currentUserId: String
 
     /**
-     * Sign up new user (registration)
+     * [signPurpose] Sign up new user (registration)
+     * or Sign in existing user (authorization)
      */
-    suspend fun signUp(
+    suspend fun sign(
         userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
-        onError: (Exception) -> Unit,
-    )
-
-    /**
-     * Sign in existing user (authorization)
-     */
-    suspend fun signIn(
-        userCredentials: UserCredentials,
-        onSuccess: (User) -> Unit,
-        onError: (Exception) -> Unit,
-    )
+        signPurpose: SignPurpose,
+    ): User
 
     /**
      * Logout current authorized user
      */
     suspend fun signOut()
+
+    /**
+     * For security reasons, we should not check
+     * the password length while user Sing In
+     *
+     * That's why we should separate validation for Sign Up and Sing In
+     */
+    enum class SignPurpose {
+        SIGN_UP,
+        SIGN_IN;
+
+        companion object {
+            fun fromString(value: String?): SignPurpose {
+                return values().firstOrNull { it.name == value } ?: SIGN_UP
+            }
+        }
+    }
 }

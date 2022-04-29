@@ -20,7 +20,7 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel.SignPurpose.*
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.utils.extensions.gone
 import com.steeshock.streetworkout.utils.extensions.showAlertDialog
 import com.steeshock.streetworkout.utils.extensions.visible
