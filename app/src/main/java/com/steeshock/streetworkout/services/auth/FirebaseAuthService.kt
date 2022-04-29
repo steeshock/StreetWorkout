@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseAuthServiceImpl : IAuthService {
+class FirebaseAuthService : IAuthService {
 
     private var auth: FirebaseAuth = Firebase.auth
 

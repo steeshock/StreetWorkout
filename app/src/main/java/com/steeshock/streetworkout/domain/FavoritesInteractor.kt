@@ -16,4 +16,8 @@ class FavoritesInteractor(
             placesRepository.updatePlacesWithFavoriteList(userFavorites)
         }
     }
+
+    override suspend fun resetFavorites() {
+        placesRepository.resetFavorites()
+    }
 }

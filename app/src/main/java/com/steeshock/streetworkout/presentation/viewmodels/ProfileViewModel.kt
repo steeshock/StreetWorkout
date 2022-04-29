@@ -36,7 +36,6 @@ class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
     private val userRepository: IUserRepository,
-    private val placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),

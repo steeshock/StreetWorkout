@@ -2,7 +2,7 @@ package com.steeshock.streetworkout.di.modules
 
 import com.steeshock.streetworkout.data.api.ApiUtils
 import com.steeshock.streetworkout.data.api.PlacesAPI
-import com.steeshock.streetworkout.services.auth.FirebaseAuthServiceImpl
+import com.steeshock.streetworkout.services.auth.FirebaseAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService
 import dagger.Module
 import dagger.Provides
@@ -17,6 +17,6 @@ class NetworkModule {
 
     @Provides
     fun provideAuthService(): IAuthService {
-        return FirebaseAuthServiceImpl()
+        return FirebaseAuthService()
     }
 }

@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.domain
 
 /**
- * Interactor to update places with favorites list from
+ * Interactor to update/reset places with favorites list from
  * different places in application
  */
 interface IFavoritesInteractor {
@@ -12,4 +12,9 @@ interface IFavoritesInteractor {
      * we save this data and just merge with fetched user data favorites
      */
     suspend fun updatePlacesWithUserFavoritesList()
+
+    /**
+     * Reset all favorite places, commonly after logout
+     */
+    suspend fun resetFavorites()
 }
