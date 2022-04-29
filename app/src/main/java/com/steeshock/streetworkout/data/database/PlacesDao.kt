@@ -22,6 +22,12 @@ interface PlacesDao {
     @Query("DELETE FROM ${Place.TABLE_NAME}")
     fun clearPlacesTable()
 
+    @Query("SELECT * FROM ${Place.TABLE_NAME}")
+    fun getAllPlaces(): List<Place>
+
+    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE placeId IN (:placesId)")
+    fun getPlacesByIds(placesId: List<String>): List<Place>
+
     @Update
     fun updatePlace(place: Place)
 }

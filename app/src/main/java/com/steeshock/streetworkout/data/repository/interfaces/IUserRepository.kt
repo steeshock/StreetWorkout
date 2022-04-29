@@ -16,5 +16,5 @@ interface IUserRepository {
     /**
      * Get list of favorite places by userId
      */
-    suspend fun getUserFavorites(userId: String): List<String>?
+    suspend fun getUserFavorites(userId: String): List<String>
 }

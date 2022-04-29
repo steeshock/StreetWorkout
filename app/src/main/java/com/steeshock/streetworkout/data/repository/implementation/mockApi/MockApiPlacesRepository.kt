@@ -68,4 +68,18 @@ open class MockApiPlacesRepository(
     override suspend fun clearPlacesTable() {
         placesDao.clearPlacesTable()
     }
+
+    override suspend fun updatePlacesWithFavoriteList(favorites: List<String>) {
+        placesDao.getPlacesByIds(favorites).apply {
+            forEach { it.isFavorite = true }
+            placesDao.insertAllPlaces(this)
+        }
+    }
+
+    override suspend fun resetFavorites() {
+        placesDao.getAllPlaces().apply {
+            forEach { it.isFavorite = false }
+            placesDao.insertAllPlaces(this)
+        }
+    }
 }

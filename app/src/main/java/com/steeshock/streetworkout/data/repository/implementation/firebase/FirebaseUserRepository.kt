@@ -23,8 +23,8 @@ class FirebaseUserRepository(
         return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
-    override suspend fun getUserFavorites(userId: String): List<String>? {
-        return userDao.getUserById(userId).favorites
+    override suspend fun getUserFavorites(userId: String): List<String> {
+        return userDao.getUserById(userId).favorites ?: listOf()
     }
 
     private suspend fun createUser(userId: String, name: String, email: String): User? {

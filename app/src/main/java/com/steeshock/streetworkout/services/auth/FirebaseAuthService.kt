@@ -59,7 +59,6 @@ class FirebaseAuthServiceImpl : IAuthService {
     }
 
     override suspend fun signOut() {
-        // TODO Сбрасывать список избранного при релогине
         auth.signOut()
     }
 }

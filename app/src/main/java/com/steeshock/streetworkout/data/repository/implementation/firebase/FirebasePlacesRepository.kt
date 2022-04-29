@@ -12,7 +12,6 @@ import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -83,5 +82,19 @@ open class FirebasePlacesRepository(
 
     override suspend fun clearPlacesTable() {
         placesDao.clearPlacesTable()
+    }
+
+    override suspend fun updatePlacesWithFavoriteList(favorites: List<String>) {
+        placesDao.getPlacesByIds(favorites).apply {
+            forEach { it.isFavorite = true }
+            placesDao.insertAllPlaces(this)
+        }
+    }
+
+    override suspend fun resetFavorites() {
+        placesDao.getAllPlaces().apply {
+            forEach { it.isFavorite = false }
+            placesDao.insertAllPlaces(this)
+        }
     }
 }
