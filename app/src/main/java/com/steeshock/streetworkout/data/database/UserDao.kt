@@ -9,5 +9,8 @@ interface UserDao {
     suspend fun insertUser(user: User)
 
     @Query("SELECT * FROM ${User.TABLE_NAME} WHERE userId = :userId ")
-    suspend fun getUserById(userId: String): User
+    suspend fun getUserById(userId: String): User?
+
+    @Update
+    suspend fun updateUser(user: User)
 }

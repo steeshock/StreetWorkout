@@ -86,8 +86,8 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.clearCategoriesTable()
     }
 
-    fun onLikeClicked(place: Place) {
-        updatePlace(place.copy(isFavorite = !place.isFavorite))
+    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
     fun onFilterByCategory(category: Category) {
@@ -178,10 +178,6 @@ class PlacesViewModel @Inject constructor(
 
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
-    }
-
-    private fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        placesRepository.updatePlace(place)
     }
 
     // TODO Handle errors on UI

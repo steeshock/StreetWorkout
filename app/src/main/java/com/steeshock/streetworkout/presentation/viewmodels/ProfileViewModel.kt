@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.domain.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
@@ -25,7 +24,8 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.*
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.services.auth.UserCredentials
 import com.steeshock.streetworkout.utils.extensions.getThemeByIndex
 import com.steeshock.streetworkout.utils.extensions.isEmailValid
@@ -213,7 +213,7 @@ class ProfileViewModel @Inject constructor(
     fun signOut() = viewModelScope.launch(Dispatchers.IO) {
         updateViewState(postValue = true) { copy(isLoading = true) }
         authService.signOut()
-        placesRepository.resetFavorites()
+        favoritesInteractor.resetFavorites()
         updateViewState(postValue = true) { copy(isLoading = false) }
         postViewEvent(SignInResult(UserNotAuthorized))
     }

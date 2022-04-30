@@ -1,8 +1,10 @@
 package com.steeshock.streetworkout.domain
 
+import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
+import kotlinx.coroutines.coroutineScope
 
 class FavoritesInteractor(
     private val authService: IAuthService,
@@ -14,6 +16,20 @@ class FavoritesInteractor(
         if (authService.isUserAuthorized) {
             val userFavorites = userRepository.getUserFavorites(authService.currentUserId)
             placesRepository.updatePlacesWithFavoriteList(userFavorites)
+        }
+    }
+
+    override suspend fun updatePlaceFavoriteState(place: Place, forceState: Boolean?) {
+        when (forceState) {
+            null -> {
+                placesRepository.updatePlace(place.copy(isFavorite = !place.isFavorite))
+            }
+            else -> {
+                placesRepository.updatePlace(place.copy(isFavorite = forceState))
+            }
+        }
+        if (authService.isUserAuthorized) {
+            userRepository.updateUserFavorites(authService.currentUserId, place.placeId)
         }
     }
 

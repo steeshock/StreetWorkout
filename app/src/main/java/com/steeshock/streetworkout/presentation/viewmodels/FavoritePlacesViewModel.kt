@@ -3,6 +3,7 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.domain.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
@@ -13,7 +14,8 @@ import java.util.*
 import javax.inject.Inject
 
 class FavoritePlacesViewModel @Inject constructor(
-    private val placesRepository: IPlacesRepository,
+    placesRepository: IPlacesRepository,
+    private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
 
@@ -55,15 +57,11 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun onFavoriteStateChanged(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        insertPlace(place.copy(isFavorite = false))
+        favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
     fun returnPlaceToFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        insertPlace(place.copy(isFavorite = true))
-    }
-
-    private fun insertPlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        placesRepository.insertPlaceLocal(place)
+        favoritesInteractor.updatePlaceFavoriteState(place, forceState = true)
     }
 
     fun filterDataBySearchString(searchString: String?) {
