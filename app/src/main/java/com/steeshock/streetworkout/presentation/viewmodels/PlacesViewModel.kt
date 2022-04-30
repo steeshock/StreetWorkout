@@ -12,6 +12,7 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.domain.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -23,7 +24,6 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -32,6 +32,7 @@ class PlacesViewModel @Inject constructor(
     private val categoriesRepository: ICategoriesRepository,
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
+    private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
@@ -70,6 +71,7 @@ class PlacesViewModel @Inject constructor(
                     async { placesRepository.fetchPlaces() },
                     async { categoriesRepository.fetchCategories() }
                 )
+                favoritesInteractor.updatePlacesWithUserFavoritesList()
             }
         } catch (e: Exception) {
             handleError(e)
@@ -84,8 +86,8 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.clearCategoriesTable()
     }
 
-    fun onLikeClicked(place: Place) {
-        updatePlace(place.copy(isFavorite = !place.isFavorite))
+    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
     fun onFilterByCategory(category: Category) {
@@ -176,10 +178,6 @@ class PlacesViewModel @Inject constructor(
 
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
-    }
-
-    private fun updatePlace(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        placesRepository.updatePlace(place)
     }
 
     // TODO Handle errors on UI

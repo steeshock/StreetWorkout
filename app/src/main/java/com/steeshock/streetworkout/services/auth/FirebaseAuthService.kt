@@ -11,7 +11,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseAuthServiceImpl : IAuthService {
+class FirebaseAuthService : IAuthService {
 
     private var auth: FirebaseAuth = Firebase.auth
 
@@ -59,7 +59,6 @@ class FirebaseAuthServiceImpl : IAuthService {
     }
 
     override suspend fun signOut() {
-        // TODO Сбрасывать список избранного при релогине
         auth.signOut()
     }
 }

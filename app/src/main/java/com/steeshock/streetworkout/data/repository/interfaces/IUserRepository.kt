@@ -16,5 +16,10 @@ interface IUserRepository {
     /**
      * Get list of favorite places by userId
      */
-    suspend fun getUserFavorites(userId: String): List<String>?
+    suspend fun getUserFavorites(userId: String): List<String>
+
+    /**
+     * Add or remove place with placeId in user's favorite list both locally and remote
+     */
+    suspend fun updateUserFavorites(userId: String, favoritePlaceId: String)
 }

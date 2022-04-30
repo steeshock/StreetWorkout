@@ -7,10 +7,8 @@ import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.lang.Exception
+import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -23,8 +21,47 @@ class FirebaseUserRepository(
         return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
-    override suspend fun getUserFavorites(userId: String): List<String>? {
-        return userDao.getUserById(userId).favorites
+    /* TODO Sometimes there is a bug with null user from DB - issue
+       with async work of getOrCreateUser() and save data to Room */
+    override suspend fun getUserFavorites(userId: String): List<String> {
+        return userDao.getUserById(userId)?.favorites ?: listOf()
+    }
+
+    override suspend fun updateUserFavorites(userId: String, favoritePlaceId: String) {
+        userDao.getUserById(userId)?.let { localUser ->
+            val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favoritePlaceId)
+            updateUserFavoritesRemote(localUser, updatedLocallyFavorites)
+        }
+    }
+
+    private suspend fun updateUserFavoritesLocally(localUser: User, favoritePlaceId: String): ArrayList<String> {
+        return suspendCoroutine { continuation ->
+            val userFavorites = localUser.favorites?.toMutableList() ?: mutableListOf()
+            if (userFavorites.contains(favoritePlaceId)) {
+                userFavorites.remove(favoritePlaceId)
+            } else {
+                userFavorites.add(favoritePlaceId)
+            }
+            val newFavorites = arrayListOf<String>().apply { addAll(userFavorites) }
+            CoroutineScope(Dispatchers.IO).launch {
+                userDao.updateUser(localUser.copy(favorites = newFavorites))
+            }.invokeOnCompletion {
+                continuation.resume(newFavorites)
+            }
+        }
+    }
+
+    /**
+     * Request is cached with Firebase and send when internet is available
+     */
+    private suspend fun updateUserFavoritesRemote(
+        localUser: User,
+        updatedLocallyFavorites: ArrayList<String>,
+    ) {
+        val database = Firebase.database(Constants.FIREBASE_PATH)
+        val userRef = database.getReference("users").child(localUser.userId)
+        val user = localUser.copy(favorites = updatedLocallyFavorites)
+        userRef.setValue(user).await()
     }
 
     private suspend fun createUser(userId: String, name: String, email: String): User? {
@@ -36,8 +73,9 @@ class FirebaseUserRepository(
                 .addOnSuccessListener {
                     CoroutineScope(Dispatchers.IO).launch {
                         userDao.insertUser(user)
+                    }.invokeOnCompletion {
+                        continuation.resume(user)
                     }
-                    continuation.resume(user)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
@@ -51,13 +89,18 @@ class FirebaseUserRepository(
             val userByIdRef = database.getReference("users").child(userId)
             userByIdRef.get()
                 .addOnSuccessListener { snapshot ->
-                    val existentUser = snapshot.getValue<User>()
-                    existentUser?.let {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            userDao.insertUser(it)
+                    when (val existentUser = snapshot.getValue<User>()) {
+                        null -> {
+                            continuation.resume(existentUser)
+                        }
+                        else -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                userDao.insertUser(existentUser)
+                            }.invokeOnCompletion {
+                                continuation.resume(existentUser)
+                            }
                         }
                     }
-                    continuation.resume(existentUser)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)

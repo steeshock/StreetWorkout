@@ -10,6 +10,7 @@ import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.domain.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -23,7 +24,8 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.*
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.services.auth.UserCredentials
 import com.steeshock.streetworkout.utils.extensions.getThemeByIndex
 import com.steeshock.streetworkout.utils.extensions.isEmailValid
@@ -34,6 +36,7 @@ class ProfileViewModel @Inject constructor(
     private val authService: IAuthService,
     private val dataStoreRepository: IDataStoreRepository,
     private val userRepository: IUserRepository,
+    private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl({ AuthViewState() }) {
@@ -143,8 +146,8 @@ class ProfileViewModel @Inject constructor(
                 getOrCreateUser(user.await(),signPurpose)
             }
         } catch (e: Exception) {
-            handleException(e, signPurpose)
             updateViewState(postValue = true) { copy(isLoading = false) }
+            handleException(e, signPurpose)
         }
     }
 
@@ -154,18 +157,23 @@ class ProfileViewModel @Inject constructor(
      */
     private fun getOrCreateUser(user: User, signPurpose: SignPurpose) = viewModelScope.launch(Dispatchers.IO) {
         try {
-            val remoteUser = userRepository.getOrCreateUser(
-                userId = user.userId,
-                name = user.displayName,
-                email = user.email,
-            )
-            val event = when (signPurpose) {
-                SIGN_UP -> SignUpResult(SuccessSignUp(remoteUser))
-                SIGN_IN -> SignInResult(SuccessSignIn(remoteUser))
-            }
-            withContext(Dispatchers.Main) {
-                updateViewState { copy(isLoading = false) }
-                sendViewEvent(event)
+            coroutineScope {
+                val remoteUser = userRepository.getOrCreateUser(
+                    userId = user.userId,
+                    name = user.displayName,
+                    email = user.email,
+                )
+                val event = when (signPurpose) {
+                    SIGN_UP -> SignUpResult(SuccessSignUp(remoteUser))
+                    SIGN_IN -> SignInResult(SuccessSignIn(remoteUser))
+                }
+
+                favoritesInteractor.updatePlacesWithUserFavoritesList()
+
+                withContext(Dispatchers.Main) {
+                    updateViewState { copy(isLoading = false) }
+                    sendViewEvent(event)
+                }
             }
         } catch (e: Exception) {
             updateViewState(postValue = true) { copy(isLoading = false) }
@@ -205,6 +213,7 @@ class ProfileViewModel @Inject constructor(
     fun signOut() = viewModelScope.launch(Dispatchers.IO) {
         updateViewState(postValue = true) { copy(isLoading = true) }
         authService.signOut()
+        favoritesInteractor.resetFavorites()
         updateViewState(postValue = true) { copy(isLoading = false) }
         postViewEvent(SignInResult(UserNotAuthorized))
     }

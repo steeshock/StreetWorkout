@@ -44,4 +44,17 @@ interface IPlacesRepository {
      * Remove all data from Places table
      */
     suspend fun clearPlacesTable()
+
+    /**
+     * Update places favorite state with favorites from User
+     *
+     * Used "additive" merging - if not authorised user add to favorites,
+     * we save this data and just merge with fetched user data favorites
+     */
+    suspend fun updatePlacesWithFavoriteList(favorites: List<String>)
+
+    /**
+     * Reset all favorite places, commonly after logout
+     */
+    suspend fun resetFavorites()
 }
