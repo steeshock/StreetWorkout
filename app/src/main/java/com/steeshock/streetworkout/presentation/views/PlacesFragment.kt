@@ -210,7 +210,7 @@ class PlacesFragment : BaseFragment() {
             R.id.action_search -> {
                 true
             }
-            R.id.action_map -> {
+            R.id.action_sort -> {
                 viewModel.clearDatabase()
                 true
             }

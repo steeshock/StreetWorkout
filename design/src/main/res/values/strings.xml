@@ -6,6 +6,7 @@
     <string name="title_profile">Профиль</string>
     <string name="action_search">Поиск мест…</string>
     <string name="action_map">Переход на карту</string>
+    <string name="action_sort">Сортировка</string>
     <string name="action_add_place">Добавить место</string>
     <string name="places_title">Места тренировок</string>
     <string name="page_not_ready_title">Раздел находится в разработке</string>

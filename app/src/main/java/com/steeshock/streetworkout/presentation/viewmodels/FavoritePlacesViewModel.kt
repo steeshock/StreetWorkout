@@ -61,7 +61,7 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun returnPlaceToFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        favoritesInteractor.updatePlaceFavoriteState(place, forceState = true)
+        favoritesInteractor.updatePlaceFavoriteState(place, newState = true)
     }
 
     fun filterDataBySearchString(searchString: String?) {

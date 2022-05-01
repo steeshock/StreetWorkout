@@ -18,24 +18,24 @@ class FavoritesInteractor(
             val mergedFavorites = getMergedFavorites(remoteUserFavorites, localUserFavorites).toList()
 
             if (remoteUserFavorites != mergedFavorites) {
-                userRepository.updateUserFavoriteList(authService.currentUserId, mergedFavorites)
+                userRepository.updateUserFavoriteList(authService.currentUserId, favorites = mergedFavorites)
             }
 
             placesRepository.updatePlacesWithFavoriteList(mergedFavorites)
         }
     }
 
-    override suspend fun updatePlaceFavoriteState(place: Place, forceState: Boolean?) {
-        when (forceState) {
+    override suspend fun updatePlaceFavoriteState(place: Place, newState: Boolean?) {
+        when (newState) {
             null -> {
                 placesRepository.updatePlace(place.copy(isFavorite = !place.isFavorite))
             }
             else -> {
-                placesRepository.updatePlace(place.copy(isFavorite = forceState))
+                placesRepository.updatePlace(place.copy(isFavorite = newState))
             }
         }
         if (authService.isUserAuthorized) {
-            userRepository.addPlaceToUserFavoriteList(authService.currentUserId, place.placeId)
+            userRepository.updateUserFavoriteList(authService.currentUserId, favoritePlaceId = place.placeId)
         }
     }
 

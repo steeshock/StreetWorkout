@@ -19,9 +19,9 @@ interface IFavoritesInteractor {
     /**
      * Update place's favorite state locally and remote (invert current state)
      *
-     * [forceState] - set favorite state to particular value, not inverted
+     * [newState] - set favorite state to particular value, not inverted
      */
-    suspend fun updatePlaceFavoriteState(place: Place, forceState: Boolean? = null)
+    suspend fun updatePlaceFavoriteState(place: Place, newState: Boolean? = null)
 
     /**
      * Reset all favorite places, commonly after logout
