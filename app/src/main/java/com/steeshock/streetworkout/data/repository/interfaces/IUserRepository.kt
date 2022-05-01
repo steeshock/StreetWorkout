@@ -21,5 +21,10 @@ interface IUserRepository {
     /**
      * Add or remove place with placeId in user's favorite list both locally and remote
      */
-    suspend fun updateUserFavorites(userId: String, favoritePlaceId: String)
+    suspend fun addPlaceToUserFavoriteList(userId: String, favoritePlaceId: String)
+
+    /**
+     * Update whole user's favorite list both locally and remote
+     */
+    suspend fun updateUserFavoriteList(userId: String, favorites: List<String>)
 }

@@ -4,7 +4,6 @@ import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
-import kotlinx.coroutines.coroutineScope
 
 class FavoritesInteractor(
     private val authService: IAuthService,
@@ -12,10 +11,17 @@ class FavoritesInteractor(
     private val userRepository: IUserRepository,
 
     ) : IFavoritesInteractor {
-    override suspend fun updatePlacesWithUserFavoritesList() {
+    override suspend fun syncUserFavorites() {
         if (authService.isUserAuthorized) {
-            val userFavorites = userRepository.getUserFavorites(authService.currentUserId)
-            placesRepository.updatePlacesWithFavoriteList(userFavorites)
+            val remoteUserFavorites = userRepository.getUserFavorites(authService.currentUserId)
+            val localUserFavorites = placesRepository.getLocalFavorites()
+            val mergedFavorites = getMergedFavorites(remoteUserFavorites, localUserFavorites).toList()
+
+            if (remoteUserFavorites != mergedFavorites) {
+                userRepository.updateUserFavoriteList(authService.currentUserId, mergedFavorites)
+            }
+
+            placesRepository.updatePlacesWithFavoriteList(mergedFavorites)
         }
     }
 
@@ -29,11 +35,17 @@ class FavoritesInteractor(
             }
         }
         if (authService.isUserAuthorized) {
-            userRepository.updateUserFavorites(authService.currentUserId, place.placeId)
+            userRepository.addPlaceToUserFavoriteList(authService.currentUserId, place.placeId)
         }
     }
 
     override suspend fun resetFavorites() {
         placesRepository.resetFavorites()
     }
+
+    private fun getMergedFavorites(remoteUserFavorites: List<String>, localUserFavorites: List<String>) =
+        mutableSetOf<String>().apply {
+            addAll(remoteUserFavorites)
+            addAll(localUserFavorites)
+        }
 }

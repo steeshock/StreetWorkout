@@ -8,12 +8,13 @@ import com.steeshock.streetworkout.data.model.Place
  */
 interface IFavoritesInteractor {
     /**
-     * Update places favorite states with favorites list from authorized User
+     * Sync favorite places with favorite list from authorized User
      *
-     * Used "additive" merging - if not authorised user already add something in favorites,
-     * we save this data and just merge with fetched user data favorites
+     * Used soft "additive" merging - if not authorised user already add something in favorites,
+     * we save this data and just merge with fetched user data favorites, after that update
+     * user favorite list both locally and remote
      */
-    suspend fun updatePlacesWithUserFavoritesList()
+    suspend fun syncUserFavorites()
 
     /**
      * Update place's favorite state locally and remote (invert current state)

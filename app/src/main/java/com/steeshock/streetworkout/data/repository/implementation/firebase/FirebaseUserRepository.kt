@@ -21,15 +21,20 @@ class FirebaseUserRepository(
         return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
-    /* TODO Sometimes there is a bug with null user from DB - issue
-       with async work of getOrCreateUser() and save data to Room */
     override suspend fun getUserFavorites(userId: String): List<String> {
         return userDao.getUserById(userId)?.favorites ?: listOf()
     }
 
-    override suspend fun updateUserFavorites(userId: String, favoritePlaceId: String) {
+    override suspend fun addPlaceToUserFavoriteList(userId: String, favoritePlaceId: String) {
         userDao.getUserById(userId)?.let { localUser ->
             val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favoritePlaceId)
+            updateUserFavoritesRemote(localUser, updatedLocallyFavorites)
+        }
+    }
+
+    override suspend fun updateUserFavoriteList(userId: String, favorites: List<String>) {
+        userDao.getUserById(userId)?.let { localUser ->
+            val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favorites)
             updateUserFavoritesRemote(localUser, updatedLocallyFavorites)
         }
     }
@@ -43,6 +48,17 @@ class FirebaseUserRepository(
                 userFavorites.add(favoritePlaceId)
             }
             val newFavorites = arrayListOf<String>().apply { addAll(userFavorites) }
+            CoroutineScope(Dispatchers.IO).launch {
+                userDao.updateUser(localUser.copy(favorites = newFavorites))
+            }.invokeOnCompletion {
+                continuation.resume(newFavorites)
+            }
+        }
+    }
+
+    private suspend fun updateUserFavoritesLocally(localUser: User, favorites: List<String>): ArrayList<String> {
+        return suspendCoroutine { continuation ->
+            val newFavorites = arrayListOf<String>().apply { addAll(favorites) }
             CoroutineScope(Dispatchers.IO).launch {
                 userDao.updateUser(localUser.copy(favorites = newFavorites))
             }.invokeOnCompletion {
