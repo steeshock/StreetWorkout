@@ -21,28 +21,46 @@ class FirebaseUserRepository(
         return fetchUser(userId) ?: createUser(userId, name, email)
     }
 
-    /* TODO Sometimes there is a bug with null user from DB - issue
-       with async work of getOrCreateUser() and save data to Room */
     override suspend fun getUserFavorites(userId: String): List<String> {
         return userDao.getUserById(userId)?.favorites ?: listOf()
     }
 
-    override suspend fun updateUserFavorites(userId: String, favoritePlaceId: String) {
+    override suspend fun updateUserFavoriteList(
+        userId: String,
+        favorites: List<String>?,
+        favoritePlaceId: String?,
+    ) {
         userDao.getUserById(userId)?.let { localUser ->
-            val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favoritePlaceId)
+            val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favorites, favoritePlaceId)
             updateUserFavoritesRemote(localUser, updatedLocallyFavorites)
         }
     }
 
-    private suspend fun updateUserFavoritesLocally(localUser: User, favoritePlaceId: String): ArrayList<String> {
+    private suspend fun updateUserFavoritesLocally(
+        localUser: User,
+        favorites: List<String>? = null,
+        favoritePlaceId: String? = null,
+    ): ArrayList<String> {
         return suspendCoroutine { continuation ->
-            val userFavorites = localUser.favorites?.toMutableList() ?: mutableListOf()
-            if (userFavorites.contains(favoritePlaceId)) {
-                userFavorites.remove(favoritePlaceId)
-            } else {
-                userFavorites.add(favoritePlaceId)
+            val newFavorites = arrayListOf<String>().apply {
+                when {
+                    favoritePlaceId  != null  -> {
+                        val userFavorites = localUser.favorites?.toMutableList() ?: mutableListOf()
+                        when {
+                            userFavorites.contains(favoritePlaceId) -> {
+                                userFavorites.remove(favoritePlaceId)
+                            }
+                            else -> {
+                                userFavorites.add(favoritePlaceId)
+                            }
+                        }
+                        addAll(userFavorites)
+                    }
+                    favorites != null -> {
+                        addAll(favorites)
+                    }
+                }
             }
-            val newFavorites = arrayListOf<String>().apply { addAll(userFavorites) }
             CoroutineScope(Dispatchers.IO).launch {
                 userDao.updateUser(localUser.copy(favorites = newFavorites))
             }.invokeOnCompletion {

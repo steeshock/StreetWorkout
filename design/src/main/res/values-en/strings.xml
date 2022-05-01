@@ -6,6 +6,7 @@
     <string name="title_profile">Profile</string>
     <string name="action_search">Find spots…</string>
     <string name="action_map">Go to map</string>
+    <string name="action_sort">Sorting</string>
     <string name="action_add_place">Add new place</string>
     <string name="places_title">Training spots</string>
     <string name="page_not_ready_title">Section is under construction</string>

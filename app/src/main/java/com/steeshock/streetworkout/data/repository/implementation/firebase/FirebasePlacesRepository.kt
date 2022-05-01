@@ -54,6 +54,10 @@ open class FirebasePlacesRepository(
         }
     }
 
+    override suspend fun getLocalFavorites(): List<String> {
+        return placesDao.getFavoritePlaces().map { it.placeId }
+    }
+
     override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
         val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
         val uploadTask = reference.putFile(uri)

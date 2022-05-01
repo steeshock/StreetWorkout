@@ -137,7 +137,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
             R.id.action_search -> {
                 true
             }
-            R.id.action_map -> {
+            R.id.action_sort -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)

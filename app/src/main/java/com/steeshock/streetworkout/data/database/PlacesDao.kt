@@ -25,6 +25,9 @@ interface PlacesDao {
     @Query("SELECT * FROM ${Place.TABLE_NAME}")
     fun getAllPlaces(): List<Place>
 
+    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE isFavorite")
+    fun getFavoritePlaces(): List<Place>
+
     @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE placeId IN (:placesId)")
     fun getPlacesByIds(placesId: List<String>): List<Place>
 

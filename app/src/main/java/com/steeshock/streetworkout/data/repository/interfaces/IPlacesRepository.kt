@@ -15,6 +15,11 @@ interface IPlacesRepository {
     suspend fun fetchPlaces(): Boolean
 
     /**
+     * Get favorite places id's in common List
+     */
+    suspend fun getLocalFavorites(): List<String>
+
+    /**
      * Upload image with file [uri] to Firebase Storage
      * @return Uri with uploaded file
      */

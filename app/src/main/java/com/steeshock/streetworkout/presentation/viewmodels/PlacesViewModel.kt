@@ -71,7 +71,7 @@ class PlacesViewModel @Inject constructor(
                     async { placesRepository.fetchPlaces() },
                     async { categoriesRepository.fetchCategories() }
                 )
-                favoritesInteractor.updatePlacesWithUserFavoritesList()
+                favoritesInteractor.syncUserFavorites()
             }
         } catch (e: Exception) {
             handleError(e)

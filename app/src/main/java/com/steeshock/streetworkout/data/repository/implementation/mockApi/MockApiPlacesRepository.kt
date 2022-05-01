@@ -33,6 +33,10 @@ open class MockApiPlacesRepository(
         return false
     }
 
+    override suspend fun getLocalFavorites(): List<String> {
+        return placesDao.getFavoritePlaces().map { it.placeId }
+    }
+
     /**
      * Firebase realization because of none implementation on Mock API
      */
