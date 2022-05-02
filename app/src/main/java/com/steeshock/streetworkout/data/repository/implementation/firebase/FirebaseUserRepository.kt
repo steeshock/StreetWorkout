@@ -36,6 +36,10 @@ class FirebaseUserRepository(
         }
     }
 
+    override suspend fun syncUser(userId: String) {
+        fetchUser(userId)
+    }
+
     private suspend fun updateUserFavoritesLocally(
         localUser: User,
         favorites: List<String>? = null,

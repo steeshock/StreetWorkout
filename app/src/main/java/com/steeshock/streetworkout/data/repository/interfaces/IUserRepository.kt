@@ -26,4 +26,9 @@ interface IUserRepository {
         favorites: List<String>? = null,
         favoritePlaceId: String? = null,
     )
+
+    /**
+     * Sync user with remote data
+     */
+    suspend fun syncUser(userId: String)
 }

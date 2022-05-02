@@ -10,6 +10,7 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -36,23 +37,11 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    private fun setupEmptyState() {
-        when {
-            allFavoritePlaces.value.isNullOrEmpty() -> {
-                updateViewState {
-                    copy(emptyState = EmptyViewState.EMPTY_PLACES)
-                }
-            }
-            actualPlaces.value.isNullOrEmpty() -> {
-                updateViewState {
-                    copy(emptyState = EmptyViewState.EMPTY_SEARCH_RESULTS)
-                }
-            }
-            else -> {
-                updateViewState {
-                    copy(emptyState = EmptyViewState.NOT_EMPTY)
-                }
-            }
+    fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
+        } catch (e: Exception) {
+            // TODO Handle exceptions
         }
     }
 
@@ -75,6 +64,26 @@ class FavoritePlacesViewModel @Inject constructor(
                 it
             } else {
                 it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+            }
+        }
+    }
+
+    private fun setupEmptyState() {
+        when {
+            allFavoritePlaces.value.isNullOrEmpty() -> {
+                updateViewState {
+                    copy(emptyState = EmptyViewState.EMPTY_PLACES)
+                }
+            }
+            actualPlaces.value.isNullOrEmpty() -> {
+                updateViewState {
+                    copy(emptyState = EmptyViewState.EMPTY_SEARCH_RESULTS)
+                }
+            }
+            else -> {
+                updateViewState {
+                    copy(emptyState = EmptyViewState.NOT_EMPTY)
+                }
             }
         }
     }

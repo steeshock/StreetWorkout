@@ -168,7 +168,7 @@ class ProfileViewModel @Inject constructor(
                     SIGN_IN -> SignInResult(SuccessSignIn(remoteUser))
                 }
 
-                favoritesInteractor.syncUserFavorites()
+                favoritesInteractor.syncFavoritePlaces()
 
                 withContext(Dispatchers.Main) {
                     updateViewState { copy(isLoading = false) }

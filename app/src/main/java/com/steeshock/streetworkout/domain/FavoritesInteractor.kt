@@ -4,6 +4,7 @@ import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
+import kotlinx.coroutines.delay
 
 class FavoritesInteractor(
     private val authService: IAuthService,
@@ -11,17 +12,30 @@ class FavoritesInteractor(
     private val userRepository: IUserRepository,
 
     ) : IFavoritesInteractor {
-    override suspend fun syncUserFavorites() {
+    override suspend fun syncFavoritePlaces(softSync: Boolean, reloadUserData: Boolean) {
         if (authService.isUserAuthorized) {
-            val remoteUserFavorites = userRepository.getUserFavorites(authService.currentUserId)
-            val localUserFavorites = placesRepository.getLocalFavorites()
-            val mergedFavorites = getMergedFavorites(remoteUserFavorites, localUserFavorites).toList()
 
-            if (remoteUserFavorites != mergedFavorites) {
-                userRepository.updateUserFavoriteList(authService.currentUserId, favorites = mergedFavorites)
+            if (reloadUserData) {
+                userRepository.syncUser(authService.currentUserId)
             }
 
-            placesRepository.updatePlacesWithFavoriteList(mergedFavorites)
+            val remoteUserFavorites = userRepository.getUserFavorites(authService.currentUserId).sorted()
+            val localUserFavorites = placesRepository.getLocalFavorites().sorted()
+
+            when (softSync) {
+                true -> {
+                    val mergedFavorites = getMergedFavorites(remoteUserFavorites, localUserFavorites).toList().sorted()
+                    if (remoteUserFavorites != mergedFavorites) {
+                        userRepository.updateUserFavoriteList(authService.currentUserId, favorites = mergedFavorites)
+                    }
+                    placesRepository.updatePlacesWithFavoriteList(mergedFavorites)
+                }
+                false -> {
+                    if (remoteUserFavorites != localUserFavorites) {
+                        placesRepository.updatePlacesWithFavoriteList(remoteUserFavorites)
+                    }
+                }
+            }
         }
     }
 

@@ -135,6 +135,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 true
             }
             R.id.action_sort -> {
+                viewModel.updateFavoritePlaces()
                 true
             }
             else -> super.onOptionsItemSelected(item)
