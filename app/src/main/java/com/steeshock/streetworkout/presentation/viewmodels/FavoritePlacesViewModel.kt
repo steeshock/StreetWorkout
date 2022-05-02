@@ -38,10 +38,13 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO) {
+        updateViewState(postValue = true) { copy(isLoading = true) }
         try {
             favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
         } catch (e: Exception) {
-            // TODO Handle exceptions
+            handleError(e)
+        } finally {
+            updateViewState(postValue = true) { copy(isLoading = false) }
         }
     }
 
@@ -85,6 +88,13 @@ class FavoritePlacesViewModel @Inject constructor(
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
+        }
+    }
+
+    // TODO Handle errors on UI
+    private fun handleError(exception: Exception) {
+        updateViewState(postValue = true) {
+            copy(isLoading = false)
         }
     }
 }
