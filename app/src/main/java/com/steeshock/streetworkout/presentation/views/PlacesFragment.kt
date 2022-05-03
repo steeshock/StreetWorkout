@@ -114,7 +114,6 @@ class PlacesFragment : BaseFragment() {
 
     private fun renderViewState(viewState: PlacesViewState) {
         binding.refresher.isRefreshing = viewState.isLoading
-
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()

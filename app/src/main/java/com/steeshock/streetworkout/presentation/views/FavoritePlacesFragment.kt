@@ -80,10 +80,15 @@ class FavoritePlacesFragment : BaseFragment() {
             viewState.observe(viewLifecycleOwner) {
                 renderViewState(it)
             }
+
+            binding.refresher.setOnRefreshListener {
+                updateFavoritePlaces()
+            }
         }
     }
 
     private fun renderViewState(viewState: PlacesViewState) {
+        binding.refresher.isRefreshing = viewState.isLoading
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()

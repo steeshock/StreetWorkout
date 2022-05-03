@@ -89,8 +89,8 @@ open class FirebasePlacesRepository(
     }
 
     override suspend fun updatePlacesWithFavoriteList(favorites: List<String>) {
-        placesDao.getPlacesByIds(favorites).apply {
-            forEach { it.isFavorite = true }
+        placesDao.getAllPlaces().apply {
+            forEach { it.isFavorite = favorites.contains(it.placeId) }
             placesDao.insertAllPlaces(this)
         }
     }
