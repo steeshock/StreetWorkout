@@ -83,7 +83,7 @@ class ProfileFragment : BaseFragment() {
             requireActivity().showAlertDialog(
                 title = getString(R.string.action_confirm_title),
                 message = getString(R.string.logout_description),
-                positiveText = getString(R.string.logout_button),
+                positiveText = getString(R.string.logout_title),
                 negativeText = getString(R.string.cancel_item),
                 onPositiveAction = { viewModel.signOut() },
             )
@@ -103,12 +103,12 @@ class ProfileFragment : BaseFragment() {
             SIGN_UP -> {
                 binding.loginLayout.signButton.text = getString(R.string.sign_up_button_title)
                 promptText = getString(R.string.authorization_prompt_message)
-                promptLink = getString(R.string.authorization_link)
+                promptLink = getString(R.string.authorization_title)
             }
             SIGN_IN -> {
                 binding.loginLayout.signButton.text = getString(R.string.sign_in_button_title)
                 promptText = getString(R.string.registration_prompt_message)
-                promptLink = getString(R.string.registration_link)
+                promptLink = getString(R.string.registration_title)
             }
         }
         binding.loginLayout.signPromptTextView.apply {

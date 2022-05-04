@@ -19,8 +19,7 @@ import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAddPlaceFragment
-import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.*
@@ -87,6 +86,9 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (!authService.isUserAuthorized && !place.isFavorite) {
+            postViewEvent(ShowAddToFavoritesAuthAlert)
+        }
         favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
@@ -102,10 +104,13 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized) {
-            postViewEvent(ShowAddPlaceFragment)
-        } else {
-            postViewEvent(ShowAuthenticationAlert)
+        when {
+            authService.isUserAuthorized -> {
+                postViewEvent(ShowAddPlaceFragment)
+            }
+            else -> {
+                postViewEvent(ShowAddPlaceAuthAlert)
+            }
         }
     }
 

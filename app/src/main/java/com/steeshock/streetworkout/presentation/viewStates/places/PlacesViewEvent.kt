@@ -10,7 +10,12 @@ sealed class PlacesViewEvent {
     object ShowAddPlaceFragment: PlacesViewEvent()
 
     /**
-     * Show alert for non-authorized users
+     * Show alert when click to add place for non-authorized users
      */
-    object ShowAuthenticationAlert: PlacesViewEvent()
+    object ShowAddPlaceAuthAlert: PlacesViewEvent()
+
+    /**
+     * Show alert when add to favorites for non-authorized users
+     */
+    object ShowAddToFavoritesAuthAlert: PlacesViewEvent()
 }

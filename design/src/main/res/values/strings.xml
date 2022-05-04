@@ -79,7 +79,8 @@
     <string name="sign_error">Пожалуйста, исправьте ошибки</string>
     <string name="sign_prompt_message">Пожалуйста, авторизуйтесь</string>
     <string name="unknown_error">Произошла неизвестная ошибка</string>
-    <string name="logout_button"><u>Выход</u></string>
+    <string name="logout_title"><u>Выход</u></string>
+    <string name="login_title"><u>Войти</u></string>
     <string name="logout_description">Выйти из текущего пользователя?</string>
     <string name="welcome_title">Добро пожаловать!</string>
     <string name="attention_title">Внимание!</string>
@@ -88,14 +89,15 @@
     <string name="action_confirm_title">Подтвердите действие</string>
     <string name="authorization_prompt_message">Уже есть аккаунт? Авторизуйтесь</string>
     <string name="registration_prompt_message">Еще нет аккаунта? Зарегистрируйтесь</string>
-    <string name="authorization_link">Авторизуйтесь</string>
-    <string name="registration_link">Зарегистрируйтесь</string>
+    <string name="authorization_title">Авторизуйтесь</string>
+    <string name="registration_title">Зарегистрируйтесь</string>
 
-    <!--Alert dialogs-->
+    <!--Alert dialogs/snackbars-->
     <string name="clear_fields_dialog_message">Все поля будут очищены. Продолжить?</string>
     <string name="publish_permission_dialog_message">Данные будут отправлены на сервер. Продолжить?</string>
     <string name="select_category_dialog_title">Выберите категорию</string>
     <string name="sign_in_dialog_message">Авторизуйтесь в приложении, чтобы добавлять новые места</string>
+    <string name="sign_in_snackbar_message">Войдите в аккаунт, чтобы не потерять список избранного</string>
 
     <!--Theme selecting-->
     <string name="select_theme_dialog_title">Выберите тему</string>
