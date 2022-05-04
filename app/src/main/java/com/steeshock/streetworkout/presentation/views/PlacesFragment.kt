@@ -16,8 +16,7 @@ import com.steeshock.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
-import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAddPlaceFragment
-import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.ShowAuthenticationAlert
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
@@ -138,8 +137,11 @@ class PlacesFragment : BaseFragment() {
             ShowAddPlaceFragment -> {
                 showAddPlaceFragment()
             }
-            ShowAuthenticationAlert -> {
-                showAuthenticationAlert()
+            ShowAddPlaceAuthAlert -> {
+                showAddPlaceAuthAlert()
+            }
+            ShowAddToFavoritesAuthAlert -> {
+                showAddToFavoritesAuthAlert()
             }
         }
     }
@@ -148,13 +150,21 @@ class PlacesFragment : BaseFragment() {
         findNavController().navigate(R.id.action_navigation_places_to_navigation_add_place)
     }
 
-    private fun showAuthenticationAlert() {
+    private fun showAddPlaceAuthAlert() {
         requireActivity().showAlertDialog(
             title = getString(R.string.attention_title),
             message = getString(R.string.sign_in_dialog_message),
             positiveText = getString(R.string.sign_in_button_title),
             negativeText = getString(R.string.cancel_item),
             onPositiveAction = { navigateToProfile() },
+        )
+    }
+
+    private fun showAddToFavoritesAuthAlert() {
+        showSnackbar(
+            message = getString(R.string.sign_in_snackbar_message),
+            actionText = getString(R.string.login_title),
+            action = { navigateToProfile() }
         )
     }
 

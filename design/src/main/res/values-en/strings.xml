@@ -80,7 +80,8 @@ search conditions"</string>
     <string name="sign_error">Please fix errors</string>
     <string name="sign_prompt_message">Please sign in</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="logout_button">Logout</string>
+    <string name="logout_title">Logout</string>
+    <string name="login_title"><u>Login</u></string>
     <string name="logout_description">Logout from current user?</string>
     <string name="welcome_title">Welcome!</string>
     <string name="profile_name">Your name:</string>
@@ -88,15 +89,16 @@ search conditions"</string>
     <string name="action_confirm_title">Action confirm</string>
     <string name="authorization_prompt_message">Already have an account? Login</string>
     <string name="registration_prompt_message">Don\'t have an account yet? Register</string>
-    <string name="authorization_link">Login</string>
-    <string name="registration_link">Register</string>
+    <string name="authorization_title">Authorize</string>
+    <string name="registration_title">Register</string>
 
-    <!--Alert dialogs-->
+    <!--Alert dialogs/snackbars-->
     <string name="attention_title">Caution!</string>
     <string name="clear_fields_dialog_message">All fields will be cleared. Continue?</string>
     <string name="publish_permission_dialog_message">New place will be published on server. Continue?</string>
     <string name="select_category_dialog_title">Select category</string>
     <string name="sign_in_dialog_message">Please sign in to add new places</string>
+    <string name="sign_in_snackbar_message">Please sign in for not lose the list of favorites</string>
 
     <!--Theme selecting-->
     <string name="select_theme_dialog_title">Select theme</string>
