@@ -80,14 +80,14 @@ search conditions"</string>
     <string name="sign_error">Please fix errors</string>
     <string name="sign_prompt_message">Please sign in</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="logout_title">Logout</string>
+    <string name="logout_title"><u>Logout</u></string>
     <string name="login_title"><u>Login</u></string>
     <string name="logout_description">Logout from current user?</string>
     <string name="welcome_title">Welcome!</string>
     <string name="profile_name">Your name:</string>
     <string name="profile_email">Your email:</string>
     <string name="action_confirm_title">Action confirm</string>
-    <string name="authorization_prompt_message">Already have an account? Login</string>
+    <string name="authorization_prompt_message">Already have an account? Authorize</string>
     <string name="registration_prompt_message">Don\'t have an account yet? Register</string>
     <string name="authorization_title">Authorize</string>
     <string name="registration_title">Register</string>

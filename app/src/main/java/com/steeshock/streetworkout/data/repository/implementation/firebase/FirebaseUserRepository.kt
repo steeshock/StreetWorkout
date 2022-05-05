@@ -17,8 +17,8 @@ class FirebaseUserRepository(
     private val userDao: UserDao,
 ) : IUserRepository {
 
-    override suspend fun getOrCreateUser(userId: String, name: String, email: String): User? {
-        return fetchUser(userId) ?: createUser(userId, name, email)
+    override suspend fun getOrCreateUser(signedUser: User): User? {
+        return fetchUser(signedUser.userId) ?: createUser(signedUser.userId, signedUser.displayName, signedUser.email)
     }
 
     override suspend fun getUserFavorites(userId: String): List<String> {
@@ -86,11 +86,11 @@ class FirebaseUserRepository(
         userRef.setValue(user).await()
     }
 
-    private suspend fun createUser(userId: String, name: String, email: String): User? {
+    private suspend fun createUser(userId: String, displayName: String, email: String): User? {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
             val newUserRef = database.getReference("users").child(userId)
-            val user = User(userId, name, email)
+            val user = User(userId, displayName, email)
             newUserRef.setValue(user)
                 .addOnSuccessListener {
                     CoroutineScope(Dispatchers.IO).launch {
