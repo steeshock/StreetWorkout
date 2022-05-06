@@ -7,11 +7,11 @@ interface IUserRepository {
      * Fetch if exist user info or create new one in remote storage
      * After user created, add it to local storage (update user locally if exists)
      *
-     * [userId] - uid of created Firebase User
+     * [signedUser] - signed Firebase User
      *
      * @return created User
      */
-    suspend fun getOrCreateUser(userId: String, name: String, email: String): User?
+    suspend fun getOrCreateUser(signedUser: User): User?
 
     /**
      * Get list of favorite places by userId
