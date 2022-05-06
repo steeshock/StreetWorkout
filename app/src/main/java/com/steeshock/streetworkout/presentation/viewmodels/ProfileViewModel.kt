@@ -155,6 +155,7 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            authService.signOut()
             updateViewState(postValue = true) { copy(isLoading = false) }
             handleException(e, signPurpose)
         }
