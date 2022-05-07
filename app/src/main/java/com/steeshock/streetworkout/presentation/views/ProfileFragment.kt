@@ -195,6 +195,10 @@ class ProfileFragment : BaseFragment() {
             showCredentialsError()
             getString(R.string.sign_error)
         }
+        is UserNotAuthorized -> {
+            showLoginPage()
+            null
+        }
     }
 
     private fun showPasswordValidationError(result: PasswordValidationResult) {
