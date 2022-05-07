@@ -6,8 +6,6 @@ sealed class SignInResponse {
 
     data class SuccessSignIn(val user: User?) : SignInResponse()
 
-    object UserNotAuthorized : SignInResponse()
-
     object InvalidUserError : SignInResponse()
 
     object InvalidCredentialsError : SignInResponse()

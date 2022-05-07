@@ -62,8 +62,6 @@ class ProfileViewModel @Inject constructor(
                     )
                 ),
             )
-        } else {
-            postViewEvent(SignInResult(UserNotAuthorized))
         }
         updateViewState(postValue = true) {
             copy(
@@ -195,7 +193,7 @@ class ProfileViewModel @Inject constructor(
         authService.signOut()
         favoritesInteractor.resetFavorites()
         updateViewState(postValue = true) { copy(isLoading = false) }
-        postViewEvent(SignInResult(UserNotAuthorized))
+        postViewEvent(SignOut)
     }
 
     fun changeSignPurpose(currentSignPurpose: SignPurpose) {

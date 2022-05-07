@@ -28,4 +28,9 @@ sealed class AuthViewEvent {
      * Local password validation result
      */
     data class PasswordValidation(val result: PasswordValidationResult) : AuthViewEvent()
+
+    /**
+     * User success logout (SignOut)
+     */
+    object SignOut : AuthViewEvent()
 }
