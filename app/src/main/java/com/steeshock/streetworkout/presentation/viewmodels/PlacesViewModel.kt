@@ -12,7 +12,7 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate

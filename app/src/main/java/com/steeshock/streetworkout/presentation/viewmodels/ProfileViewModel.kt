@@ -9,8 +9,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.domain.IFavoritesInteractor
-import com.steeshock.streetworkout.domain.ILoginInteractor
+import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.login.ILoginInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate

@@ -3,7 +3,7 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
