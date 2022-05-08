@@ -129,9 +129,10 @@ class ProfileFragment : BaseFragment() {
         when (viewEvent) {
             is SignUpResult,
             is SignInResult,
+            is SignOut,
             is UnknownError,
             -> {
-                showSnackbar(viewEvent)
+                handleViewEvent(viewEvent)
             }
             is EmailValidation -> {
                 showEmailValidationError(viewEvent.result)
@@ -142,19 +143,24 @@ class ProfileFragment : BaseFragment() {
         }
     }
 
-    private fun showSnackbar(viewEvent: AuthViewEvent) {
-        val message = when (viewEvent) {
+    private fun handleViewEvent(viewEvent: AuthViewEvent) {
+        when (viewEvent) {
             is SignUpResult -> {
-                handleSignUpResult(viewEvent)
+                val message = handleSignUpResult(viewEvent)
+                showSnackbar(message)
             }
             is SignInResult -> {
-                handleSignInResult(viewEvent)
+                val message = handleSignInResult(viewEvent)
+                showSnackbar(message)
+            }
+            is SignOut -> {
+                resetLoginFields()
+                showLoginPage()
             }
             else -> {
-                getString(R.string.unknown_error)
+                showSnackbar(getString(R.string.unknown_error))
             }
         }
-        showSnackbar(message)
     }
 
     private fun handleSignUpResult(
@@ -191,7 +197,6 @@ class ProfileFragment : BaseFragment() {
         }
         is UserNotAuthorized -> {
             showLoginPage()
-            resetLoginFields()
             null
         }
     }
@@ -281,7 +286,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-       _binding = null
-       super.onDestroyView()    
+        _binding = null
+        super.onDestroyView()
     }
 }
