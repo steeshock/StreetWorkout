@@ -1,8 +1,12 @@
-package com.steeshock.streetworkout.domain
+package com.steeshock.streetworkout.domain.login
 
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.services.auth.IAuthService
 
+/**
+ * Interactor to signIn/signUp user with Auth service
+ * and get or create instance os User both remote and locally
+ */
 interface ILoginInteractor {
 
     /**

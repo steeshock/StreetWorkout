@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.domain
+package com.steeshock.streetworkout.domain.favorites
 
 import com.steeshock.streetworkout.data.model.Place
 

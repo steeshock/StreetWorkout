@@ -1,10 +1,9 @@
-package com.steeshock.streetworkout.domain
+package com.steeshock.streetworkout.domain.favorites
 
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
-import kotlinx.coroutines.delay
 
 class FavoritesInteractor(
     private val authService: IAuthService,

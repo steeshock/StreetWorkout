@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.domain
+package com.steeshock.streetworkout.domain.login
 
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
