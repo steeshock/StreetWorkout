@@ -110,7 +110,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.activity_menu, menu)
+        inflater.inflate(R.menu.favorites_menu, menu)
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
@@ -137,9 +137,6 @@ class FavoritePlacesFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                true
-            }
-            R.id.action_sort -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)

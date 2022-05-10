@@ -190,7 +190,7 @@ class PlacesFragment : BaseFragment() {
 
     // region Menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.activity_menu, menu)
+        inflater.inflate(R.menu.places_menu, menu)
 
         val myActionMenuItem = menu.findItem(R.id.action_search)
 
