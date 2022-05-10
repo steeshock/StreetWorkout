@@ -1,8 +1,9 @@
 package com.steeshock.streetworkout.presentation.views
 
 import android.os.Bundle
-import android.view.*
-import androidx.appcompat.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -106,44 +107,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 12))
         }
     }
-
-    // region Menu
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
-        inflater.inflate(R.menu.activity_menu, menu)
-
-        val myActionMenuItem = menu.findItem(R.id.action_search)
-
-        val searchView = myActionMenuItem.actionView as SearchView
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                if (!searchView.isIconified) {
-                    searchView.isIconified = true
-                }
-                myActionMenuItem.collapseActionView()
-                return false
-            }
-
-            override fun onQueryTextChange(s: String?): Boolean {
-                return false
-            }
-        })
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_search -> {
-                true
-            }
-            R.id.action_sort -> {
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-    // endregion
 
     override fun onDestroyView() {
        _binding = null
