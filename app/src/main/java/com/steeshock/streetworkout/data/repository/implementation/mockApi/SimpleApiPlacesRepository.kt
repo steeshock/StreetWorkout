@@ -10,13 +10,19 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Repository for work with REST endpoints
  */
-open class MockApiPlacesRepository(
+open class SimpleApiPlacesRepository(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {
@@ -41,11 +47,19 @@ open class MockApiPlacesRepository(
      * Firebase realization because of none implementation on Mock API
      */
     override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
-        val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
-        val uploadTask = reference.putFile(uri)
-
-        uploadTask.await()
-        return reference.downloadUrl.await()
+        return suspendCoroutine { continuation ->
+            val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
+            CoroutineScope(Dispatchers.IO).launch {
+                reference.putFile(uri).await()
+                reference.downloadUrl
+                    .addOnSuccessListener {
+                        continuation.resume(it)
+                    }
+                    .addOnFailureListener {
+                        continuation.resumeWithException(it)
+                    }
+            }
+        }
     }
 
     override suspend fun insertPlaceLocal(newPlace: Place) {
