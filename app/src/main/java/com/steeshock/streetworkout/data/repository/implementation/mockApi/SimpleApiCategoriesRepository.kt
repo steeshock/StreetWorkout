@@ -9,7 +9,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesReposit
 /**
  * Repository for work with REST endpoints
  */
-open class MockApiCategoriesRepository(
+open class SimpleApiCategoriesRepository(
     private val categoriesDao: CategoriesDao,
     private val placesAPI: PlacesAPI,
 ) : ICategoriesRepository {

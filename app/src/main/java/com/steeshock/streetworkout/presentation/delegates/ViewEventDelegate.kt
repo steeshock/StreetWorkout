@@ -30,7 +30,7 @@ class ViewEventDelegateImpl<T> : ViewEventDelegate<T> {
 
     override fun postViewEvent(event: T) {
         event?.let {
-            mutableViewEvent.postValue(event!!)
+            mutableViewEvent.postValue(it)
         }
     }
 }

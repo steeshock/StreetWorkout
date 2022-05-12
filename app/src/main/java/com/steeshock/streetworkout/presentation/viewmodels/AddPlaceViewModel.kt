@@ -66,9 +66,7 @@ class AddPlaceViewModel @Inject constructor(
         }
 
         if (selectedImages.size > 0) {
-            selectedImages.forEach { uri ->
-                uploadDataToFirebase(uri, sendingPlace?.placeId)
-            }
+            uploadDataToFirebase(selectedImages, sendingPlace?.placeId)
         } else {
             createAndPublishNewPlace()
         }
@@ -195,7 +193,7 @@ class AddPlaceViewModel @Inject constructor(
         address: String,
     ): Place {
         val placeId = UUID.randomUUID().toString()
-        val userId = authService.currentUserId.toString()
+        val userId = authService.currentUserId
         val positionValues = position.split(" ")
 
         return Place(
@@ -210,16 +208,16 @@ class AddPlaceViewModel @Inject constructor(
         )
     }
 
-    private fun uploadDataToFirebase(uri: Uri, placeId: String?) = viewModelScope.launch {
+    private fun uploadDataToFirebase(selectedImages: MutableList<Uri>, placeId: String?) = viewModelScope.launch {
+        selectedImages.forEach { uri ->
+            val result = placesRepository.uploadImage(uri, placeId)
+            downloadedImagesLinks.add(result.toString())
 
-        val result = placesRepository.uploadImage(uri, placeId)
-        downloadedImagesLinks.add(result.toString())
+            updateViewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
 
-        updateViewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
-        delay(500)
-
-        if (downloadedImagesLinks.size == selectedImages.size) {
-            createAndPublishNewPlace()
+            if (downloadedImagesLinks.size == selectedImages.size) {
+                createAndPublishNewPlace()
+            }
         }
     }
 

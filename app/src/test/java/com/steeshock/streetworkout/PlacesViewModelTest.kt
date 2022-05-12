@@ -2,21 +2,19 @@ package com.steeshock.streetworkout
 
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.implementation.mockApi.MockApiCategoriesRepository
-import com.steeshock.streetworkout.data.repository.implementation.mockApi.MockApiPlacesRepository
+import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiCategoriesRepository
+import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiPlacesRepository
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 
 class PlacesViewModelTest {
 
-    private val mockPlacesViewModelRepository: MockApiPlacesRepository =
-        mock(MockApiPlacesRepository::class.java)
-    private val mockCategoriesViewModelRepository: MockApiCategoriesRepository =
-        mock(MockApiCategoriesRepository::class.java)
+    private val simplePlacesViewModelRepository: SimpleApiPlacesRepository =
+        mock(SimpleApiPlacesRepository::class.java)
+    private val simpleCategoriesViewModelRepository: SimpleApiCategoriesRepository =
+        mock(SimpleApiCategoriesRepository::class.java)
 
     private lateinit var places: MutableList<Place>
     private lateinit var categories: MutableList<Category>
