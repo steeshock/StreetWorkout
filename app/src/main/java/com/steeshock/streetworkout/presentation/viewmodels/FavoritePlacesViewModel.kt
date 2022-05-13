@@ -10,7 +10,6 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -30,10 +29,11 @@ class FavoritePlacesViewModel @Inject constructor(
     init {
         observablePlaces.addSource(allFavoritePlaces) {
             actualPlaces.value = it
+            filterData()
         }
         observablePlaces.addSource(actualPlaces) {
             setupEmptyState()
-            observablePlaces.value = it.sortedBy { i -> i.created }
+            observablePlaces.value = it.sortedByDescending { i -> i.created }
         }
     }
 
@@ -59,6 +59,12 @@ class FavoritePlacesViewModel @Inject constructor(
     fun filterDataBySearchString(searchString: String?) {
         lastSearchString = searchString
         filterItemsBySearchString(lastSearchString)
+    }
+
+    private fun filterData() {
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(lastSearchString)
+        }
     }
 
     private fun filterItemsBySearchString(lastSearchString: String?) {
