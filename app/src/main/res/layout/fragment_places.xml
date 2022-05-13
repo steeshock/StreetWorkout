@@ -44,7 +44,7 @@
                     android:background="?mainBackgroundColor"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <com.steeshock.streetworkout.design.CustomView
+                <com.steeshock.streetworkout.design.ImageDescriptionView
                     android:id="@+id/emptyList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -52,7 +52,7 @@
                     app:image="@drawable/ic_rage_face"
                     app:title="@string/empty_places_list_state_message" />
 
-                <com.steeshock.streetworkout.design.CustomView
+                <com.steeshock.streetworkout.design.ImageDescriptionView
                     android:id="@+id/emptyResults"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

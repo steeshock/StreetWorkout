@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.steeshock.streetworkout.design.R.styleable.*
 import com.steeshock.streetworkout.design.databinding.EmptyStateViewBinding
 
-class CustomView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
+class ImageDescriptionView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
     private val binding = EmptyStateViewBinding.inflate(LayoutInflater.from(context), this, true)
 

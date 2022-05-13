@@ -38,19 +38,21 @@
                     android:background="?mainBackgroundColor"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <include
+                <com.steeshock.streetworkout.design.ImageDescriptionView
                     android:id="@+id/emptyList"
-                    layout="@layout/empty_state_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:image="@drawable/ic_rage_face"
+                    app:title="@string/empty_favorites_list_state_message" />
 
-                <include
+                <com.steeshock.streetworkout.design.ImageDescriptionView
                     android:id="@+id/emptyResults"
-                    layout="@layout/empty_state_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:image="@drawable/ic_jackie_face"
+                    app:title="@string/empty_state_message" />
             </FrameLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

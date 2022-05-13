@@ -67,7 +67,6 @@ class FavoritePlacesFragment : BaseFragment() {
             })
 
         binding.placesRecycler.adapter = placesAdapter
-        setupEmptyViews()
         initData()
     }
 
@@ -92,18 +91,18 @@ class FavoritePlacesFragment : BaseFragment() {
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()
-                binding.emptyList.mainLayout.visible()
-                binding.emptyResults.mainLayout.gone()
+                binding.emptyList.visible()
+                binding.emptyResults.gone()
             }
             EMPTY_SEARCH_RESULTS -> {
                 binding.placesRecycler.gone()
-                binding.emptyList.mainLayout.gone()
-                binding.emptyResults.mainLayout.visible()
+                binding.emptyList.gone()
+                binding.emptyResults.visible()
             }
             NOT_EMPTY -> {
                 binding.placesRecycler.visible()
-                binding.emptyList.mainLayout.gone()
-                binding.emptyResults.mainLayout.gone()
+                binding.emptyList.gone()
+                binding.emptyResults.gone()
             }
         }
     }
@@ -150,14 +149,6 @@ class FavoritePlacesFragment : BaseFragment() {
             action = { viewModel.returnPlaceToFavorites(item) },
             actionText = getString(R.string.rollback_place),
         )
-    }
-
-    private fun setupEmptyViews() {
-        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
-        binding.emptyList.title.setText(R.string.empty_favorites_list_state_message)
-
-        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
-        binding.emptyResults.title.setText(R.string.empty_favorites_state_message)
     }
 
     override fun onDestroyView() {
