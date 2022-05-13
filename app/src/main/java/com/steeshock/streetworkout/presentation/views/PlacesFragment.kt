@@ -82,7 +82,6 @@ class PlacesFragment : BaseFragment() {
         binding.categoriesRecycler.layoutManager =
             LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
 
-        setupEmptyViews()
         initData()
     }
 
@@ -116,18 +115,18 @@ class PlacesFragment : BaseFragment() {
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()
-                binding.emptyList.mainLayout.visible()
-                binding.emptyResults.mainLayout.gone()
+                binding.emptyList.visible()
+                binding.emptyResults.gone()
             }
             EMPTY_SEARCH_RESULTS -> {
                 binding.placesRecycler.gone()
-                binding.emptyList.mainLayout.gone()
-                binding.emptyResults.mainLayout.visible()
+                binding.emptyList.gone()
+                binding.emptyResults.visible()
             }
             NOT_EMPTY -> {
                 binding.placesRecycler.visible()
-                binding.emptyList.mainLayout.gone()
-                binding.emptyResults.mainLayout.gone()
+                binding.emptyList.gone()
+                binding.emptyResults.gone()
             }
         }
     }
@@ -178,14 +177,6 @@ class PlacesFragment : BaseFragment() {
         findNavController().navigate(
             PlacesFragmentDirections.actionNavigationPlacesToNavigationProfile(SIGN_IN.toString())
         )
-    }
-
-    private fun setupEmptyViews() {
-        binding.emptyList.image.setImageResource(R.drawable.ic_rage_face)
-        binding.emptyList.title.setText(R.string.empty_places_list_state_message)
-
-        binding.emptyResults.image.setImageResource(R.drawable.ic_jackie_face)
-        binding.emptyResults.title.setText(R.string.empty_state_message)
     }
 
     // region Menu

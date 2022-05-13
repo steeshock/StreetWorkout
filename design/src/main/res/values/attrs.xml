@@ -5,4 +5,9 @@
     <attr name="buttonTextColor" format="reference|color" />
     <attr name="favoriteIconColor" format="reference|color" />
     <attr name="mainBackgroundColor" format="reference|color" />
+
+    <declare-styleable name="CustomView">
+        <attr format="string" name="title"/>
+        <attr format="reference" name="image"/>
+    </declare-styleable>
 </resources>
