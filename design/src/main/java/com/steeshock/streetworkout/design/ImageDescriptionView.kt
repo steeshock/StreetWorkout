@@ -4,24 +4,21 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.withStyledAttributes
 import com.steeshock.streetworkout.design.R.styleable.*
-import com.steeshock.streetworkout.design.databinding.EmptyStateViewBinding
+import com.steeshock.streetworkout.design.databinding.ImageDescritionViewBinding
 
 class ImageDescriptionView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
-    private val binding = EmptyStateViewBinding.inflate(LayoutInflater.from(context), this, true)
+    private val binding = ImageDescritionViewBinding.inflate(LayoutInflater.from(context), this, true)
+
+    private var title: String = ""
+    private var imageResource: Int = 0
 
     init {
-        val title: String
-        val imageResource: Int
-
-        context.theme.obtainStyledAttributes(attrs, CustomView, 0, 0).apply {
-            try {
-                title = getString(CustomView_title) ?: ""
-                imageResource = getResourceId(CustomView_image, 0)
-            } finally {
-                recycle()
-            }
+        context.withStyledAttributes(attrs, CustomView) {
+            title = getString(CustomView_title) ?: ""
+            imageResource = getResourceId(CustomView_image, 0)
         }
 
         binding.image.setImageResource(imageResource)
