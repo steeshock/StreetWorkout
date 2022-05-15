@@ -152,6 +152,7 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
+        viewModel.resetSearchFilter()
        _binding = null
        super.onDestroyView()    
     }
