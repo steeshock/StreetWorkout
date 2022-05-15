@@ -61,6 +61,12 @@ class FavoritePlacesViewModel @Inject constructor(
         filterItemsBySearchString(lastSearchString)
     }
 
+    fun resetSearchFilter() {
+        if (!lastSearchString.isNullOrEmpty()) {
+            filterDataBySearchString(null)
+        }
+    }
+
     private fun filterData() {
         if (!lastSearchString.isNullOrEmpty()) {
             filterDataBySearchString(lastSearchString)
