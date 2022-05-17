@@ -25,7 +25,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
-        android:id="@+id/myPositionButton"
+        android:id="@+id/imageButton"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="center"
@@ -34,7 +34,7 @@
         android:visibility="visible" />
 
     <ProgressBar
-        android:id="@+id/progress_location_bar"
+        android:id="@+id/progressBar"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="center"

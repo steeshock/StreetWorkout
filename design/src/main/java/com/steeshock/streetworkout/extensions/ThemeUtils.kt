@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.utils.extensions
+package com.steeshock.streetworkout.extensions
 
 import androidx.appcompat.app.AppCompatDelegate.*
 
