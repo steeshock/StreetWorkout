@@ -8,6 +8,7 @@
     tools:ignore="ContentDescription">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         style="@style/Widget.StreetWorkout.OutlinedTextInput"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,7 +17,6 @@
         android:layout_weight="1">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/place_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

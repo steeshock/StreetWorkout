@@ -11,6 +11,8 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
 import com.steeshock.streetworkout.domain.login.ILoginInteractor
+import com.steeshock.streetworkout.extensions.getThemeByIndex
+import com.steeshock.streetworkout.extensions.isEmailValid
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -26,8 +28,6 @@ import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
-import com.steeshock.streetworkout.utils.extensions.getThemeByIndex
-import com.steeshock.streetworkout.utils.extensions.isEmailValid
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

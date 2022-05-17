@@ -3,7 +3,6 @@ package com.steeshock.streetworkout.presentation.views
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -25,17 +23,15 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
+import com.steeshock.streetworkout.extensions.getAlertDialogBuilder
+import com.steeshock.streetworkout.extensions.gone
+import com.steeshock.streetworkout.extensions.showAlertDialog
+import com.steeshock.streetworkout.extensions.visible
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
-import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
-import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
-import com.steeshock.streetworkout.utils.extensions.getAlertDialogBuilder
-import com.steeshock.streetworkout.utils.extensions.gone
-import com.steeshock.streetworkout.utils.extensions.showAlertDialog
-import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class AddPlaceFragment : BaseFragment() {

@@ -16,9 +16,9 @@ class ImageDescriptionView(context: Context, attrs: AttributeSet) : ConstraintLa
     private var imageResource: Int = 0
 
     init {
-        context.withStyledAttributes(attrs, CustomView) {
-            title = getString(CustomView_title) ?: ""
-            imageResource = getResourceId(CustomView_image, 0)
+        context.withStyledAttributes(attrs, ImageDescriptionView) {
+            title = getString(ImageDescriptionView_title) ?: ""
+            imageResource = getResourceId(ImageDescriptionView_image, 0)
         }
 
         binding.image.setImageResource(imageResource)

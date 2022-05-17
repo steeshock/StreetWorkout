@@ -6,13 +6,14 @@
     <attr name="favoriteIconColor" format="reference|color" />
     <attr name="mainBackgroundColor" format="reference|color" />
 
-    <declare-styleable name="CustomView">
+    <declare-styleable name="ImageDescriptionView">
         <attr format="string" name="title"/>
         <attr format="reference" name="image"/>
     </declare-styleable>
 
     <declare-styleable name="InputWithIconView">
-        <attr format="reference" name="image"/>
+        <attr format="reference" name="icon"/>
         <attr format="boolean" name="isProgressVisible"/>
+        <attr format="string" name="hint"/>
     </declare-styleable>
 </resources>
