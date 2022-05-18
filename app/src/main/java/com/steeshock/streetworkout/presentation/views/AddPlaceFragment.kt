@@ -101,7 +101,7 @@ class AddPlaceFragment : BaseFragment() {
             getPosition()
         }
 
-        binding.categoryButton.setOnClickListener {
+        binding.placeCategoriesInput.setOnButtonClickListener {
             showCategories()
         }
 
@@ -154,13 +154,15 @@ class AddPlaceFragment : BaseFragment() {
             binding.progressSending.gone()
         }
 
-        binding.placeCategories.isEnabled = !viewState.isSendingInProgress
+        binding.placeCategoriesInput.isEnabled = !viewState.isSendingInProgress
+        binding.placeCategoriesInput.imageButton.isClickable = !viewState.isSendingInProgress
+        binding.placeCategoriesInput.textInput.setText(viewState.selectedCategories)
+
         binding.placeTitle.isEnabled = !viewState.isSendingInProgress
         binding.placeDescription.isEnabled = !viewState.isSendingInProgress
         binding.placePosition.isEnabled = !viewState.isSendingInProgress
         binding.placeAddress.isEnabled = !viewState.isSendingInProgress
         binding.placeImages.isEnabled = !viewState.isSendingInProgress
-        binding.categoryButton.isClickable = !viewState.isSendingInProgress
         binding.placeImages.isClickable = !viewState.isSendingInProgress
         binding.takeImageButton.isClickable = !viewState.isSendingInProgress
         binding.clearButton.isClickable = !viewState.isSendingInProgress
@@ -168,7 +170,6 @@ class AddPlaceFragment : BaseFragment() {
         binding.myPositionButton.isClickable = !viewState.isSendingInProgress
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
-        binding.placeCategories.setText(viewState.selectedCategories)
 
         setLocationResult(viewState)
     }
@@ -228,7 +229,7 @@ class AddPlaceFragment : BaseFragment() {
             it.placeAddress.text?.clear()
             it.placePosition.text?.clear()
             it.placeImages.text?.clear()
-            it.placeCategories.text?.clear()
+            it.placeCategoriesInput.clearInput()
             it.progressLocationBar.gone()
             it.myPositionButton.visible()
             it.myPositionButton.isEnabled = true

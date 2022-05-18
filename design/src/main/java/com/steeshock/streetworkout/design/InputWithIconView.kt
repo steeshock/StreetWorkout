@@ -19,6 +19,9 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
     @StringRes private var hintResourceId: Int = 0
     private var isProgressVisible: Boolean = false
 
+    val textInput get() = binding.textInput
+    val imageButton get() = binding.imageButton
+
     init {
         context.withStyledAttributes(attrs, InputWithIconView) {
             iconResourceId = getResourceId(InputWithIconView_icon, 0)
@@ -28,5 +31,15 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
         binding.imageButton.setImageResource(iconResourceId)
         binding.progressBar.visibility = isProgressVisible.toVisibility()
         binding.textInputLayout.hint = context.getString(hintResourceId)
+    }
+
+    fun setOnButtonClickListener(action: () -> Unit) {
+        binding.imageButton.setOnClickListener {
+            action()
+        }
+    }
+
+    fun clearInput() {
+        binding.textInput.text?.clear()
     }
 }
