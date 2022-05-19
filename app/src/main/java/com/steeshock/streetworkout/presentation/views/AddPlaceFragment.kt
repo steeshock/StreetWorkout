@@ -97,7 +97,7 @@ class AddPlaceFragment : BaseFragment() {
             }
         }
 
-        binding.myPositionButton.setOnClickListener {
+        binding.placePositionInput.setOnButtonClickListener {
             getPosition()
         }
 
@@ -105,7 +105,7 @@ class AddPlaceFragment : BaseFragment() {
             showCategories()
         }
 
-        binding.takeImageButton.setOnClickListener {
+        binding.placeImagesInput.setOnButtonClickListener {
             openImagePicker()
         }
 
@@ -133,20 +133,20 @@ class AddPlaceFragment : BaseFragment() {
             resetFields()
         }
         if (viewState.isImagePickingInProgress) {
-            binding.takeImageButton.gone()
-            binding.progressImageBar.visible()
-            binding.placeImages.setText(R.string.hint_images_loading)
+            binding.placeImagesInput.imageButton.gone()
+            binding.placeImagesInput.progressBar.visible()
+            binding.placeImagesInput.textInput.setText(R.string.hint_images_loading)
         } else {
-            binding.takeImageButton.visible()
-            binding.progressImageBar.gone()
-            binding.placeImages.setText(getImagesHint(viewState.selectedImagesCount))
+            binding.placeImagesInput.imageButton.visible()
+            binding.placeImagesInput.progressBar.gone()
+            binding.placeImagesInput.textInput.setText(getImagesHint(viewState.selectedImagesCount))
         }
         if (viewState.isLocationInProgress) {
-            binding.myPositionButton.gone()
-            binding.progressLocationBar.visible()
+            binding.placePositionInput.imageButton.gone()
+            binding.placePositionInput.progressBar.visible()
         } else {
-            binding.myPositionButton.visible()
-            binding.progressLocationBar.gone()
+            binding.placePositionInput.imageButton.visible()
+            binding.placePositionInput.progressBar.gone()
         }
         if (viewState.isSendingInProgress) {
             binding.progressSending.visible()
@@ -154,20 +154,22 @@ class AddPlaceFragment : BaseFragment() {
             binding.progressSending.gone()
         }
 
-        binding.placeCategoriesInput.isEnabled = !viewState.isSendingInProgress
-        binding.placeCategoriesInput.imageButton.isClickable = !viewState.isSendingInProgress
-        binding.placeCategoriesInput.textInput.setText(viewState.selectedCategories)
-
         binding.placeTitle.isEnabled = !viewState.isSendingInProgress
         binding.placeDescription.isEnabled = !viewState.isSendingInProgress
-        binding.placePosition.isEnabled = !viewState.isSendingInProgress
         binding.placeAddress.isEnabled = !viewState.isSendingInProgress
-        binding.placeImages.isEnabled = !viewState.isSendingInProgress
-        binding.placeImages.isClickable = !viewState.isSendingInProgress
-        binding.takeImageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placeCategoriesInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placeCategoriesInput.textInput.setText(viewState.selectedCategories)
+        binding.placeCategoriesInput.imageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placePositionInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placePositionInput.imageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placeImagesInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placeImagesInput.imageButton.isClickable = !viewState.isSendingInProgress
+
         binding.clearButton.isClickable = !viewState.isSendingInProgress
         binding.sendButton.isClickable = !viewState.isSendingInProgress
-        binding.myPositionButton.isClickable = !viewState.isSendingInProgress
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
 
@@ -193,7 +195,7 @@ class AddPlaceFragment : BaseFragment() {
                     onPositiveAction = { viewModel.onAddNewPlace(
                         title = binding.placeTitle.text.toString(),
                         description = binding.placeDescription.text.toString(),
-                        position = binding.placePosition.text.toString(),
+                        position = binding.placePositionInput.textInput.text.toString(),
                         address = binding.placeAddress.text.toString(),
                     )},
                 )
@@ -227,12 +229,12 @@ class AddPlaceFragment : BaseFragment() {
             it.placeTitle.text?.clear()
             it.placeDescription.text?.clear()
             it.placeAddress.text?.clear()
-            it.placePosition.text?.clear()
-            it.placeImages.text?.clear()
+            it.placePositionInput.clearInput()
+            it.placeImagesInput.clearInput()
             it.placeCategoriesInput.clearInput()
-            it.progressLocationBar.gone()
-            it.myPositionButton.visible()
-            it.myPositionButton.isEnabled = true
+            it.placePositionInput.progressBar.gone()
+            it.placePositionInput.imageButton.visible()
+            it.placePositionInput.imageButton.isEnabled = true
             it.placeTitleInput.error = null
             it.placeAddressInput.error = null
         }
@@ -278,9 +280,9 @@ class AddPlaceFragment : BaseFragment() {
 
     private fun setLocationResult(viewState: AddPlaceViewState) {
         binding.placeAddress.setText(viewState.placeAddress)
-        binding.placePosition.text?.clear()
+        binding.placePositionInput.textInput.text?.clear()
         viewState.placeLocation?.let {
-            binding.placePosition.text?.append("${it.latitude} ${it.longitude}")
+            binding.placePositionInput.textInput.text?.append("${it.latitude} ${it.longitude}")
         }
     }
 

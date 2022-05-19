@@ -17,19 +17,17 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     @DrawableRes private var iconResourceId: Int = 0
     @StringRes private var hintResourceId: Int = 0
-    private var isProgressVisible: Boolean = false
 
     val textInput get() = binding.textInput
     val imageButton get() = binding.imageButton
+    val progressBar get() = binding.progressBar
 
     init {
         context.withStyledAttributes(attrs, InputWithIconView) {
             iconResourceId = getResourceId(InputWithIconView_icon, 0)
             hintResourceId = getResourceId(InputWithIconView_hint, 0)
-            isProgressVisible = getBoolean(InputWithIconView_isProgressVisible, false)
         }
         binding.imageButton.setImageResource(iconResourceId)
-        binding.progressBar.visibility = isProgressVisible.toVisibility()
         binding.textInputLayout.hint = context.getString(hintResourceId)
     }
 

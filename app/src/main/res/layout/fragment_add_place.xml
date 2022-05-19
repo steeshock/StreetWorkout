@@ -91,105 +91,31 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!--Координаты-->
-        <LinearLayout
-            android:id="@+id/place_position_layout"
+        <com.steeshock.streetworkout.design.InputWithIconView
+            android:id="@+id/placePositionInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.StreetWorkout.OutlinedTextInput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_marginBottom="@dimen/list_item_spacing"
-                android:layout_weight="1"
-                android:hint="@string/hint_place_position">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/place_position"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:inputType="textPersonName"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/myPositionButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_map_location_36dp"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/progress_location_bar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:orientation="horizontal"
-                android:visibility="gone" />
-        </LinearLayout>
+            android:layout_marginBottom="@dimen/list_item_spacing"
+            app:hint="@string/hint_place_position"
+            app:icon="@drawable/ic_map_location_36dp" />
 
         <!--Категории-->
         <com.steeshock.streetworkout.design.InputWithIconView
             android:id="@+id/placeCategoriesInput"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/list_item_spacing"
             app:hint="@string/hint_place_categories"
-            app:icon="@drawable/ic_add_circle_36dp"
-            android:layout_height="wrap_content"/>
+            app:icon="@drawable/ic_add_circle_36dp" />
 
         <!--Фотографии-->
-        <LinearLayout
-            android:id="@+id/images_layout"
+        <com.steeshock.streetworkout.design.InputWithIconView
+            android:id="@+id/placeImagesInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.StreetWorkout.OutlinedTextInput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/list_item_spacing"
-                android:layout_marginStart="@dimen/list_item_spacing"
-                android:layout_weight="1"
-                android:hint="@string/hint_place_images">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/place_images"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:clickable="false"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:inputType="textPersonName"
-                    android:maxLines="1" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/takeImageButton"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_add_image"
-                android:visibility="visible" />
-
-            <ProgressBar
-                android:id="@+id/progress_image_bar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/list_item_spacing"
-                android:orientation="horizontal"
-                android:visibility="gone" />
-        </LinearLayout>
+            android:layout_marginBottom="@dimen/list_item_spacing"
+            app:hint="@string/hint_place_images"
+            app:icon="@drawable/ic_add_image" />
 
         <LinearLayout
             android:layout_width="match_parent"
