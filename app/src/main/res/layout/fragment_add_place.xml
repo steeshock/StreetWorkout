@@ -106,7 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/list_item_spacing"
             app:hint="@string/hint_place_categories"
-            app:icon="@drawable/ic_add_circle_36dp" />
+            app:icon="@drawable/ic_add_circle_36dp"
+            app:isInputClickable="false" />
 
         <!--Фотографии-->
         <com.steeshock.streetworkout.design.InputWithIconView
@@ -115,7 +116,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/list_item_spacing"
             app:hint="@string/hint_place_images"
-            app:icon="@drawable/ic_add_image" />
+            app:icon="@drawable/ic_add_image"
+            app:isInputClickable="false" />
 
         <LinearLayout
             android:layout_width="match_parent"

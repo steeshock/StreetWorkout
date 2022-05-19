@@ -17,6 +17,7 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     @DrawableRes private var iconResourceId: Int = 0
     @StringRes private var hintResourceId: Int = 0
+    private var isInputClickable: Boolean = true
 
     val textInput get() = binding.textInput
     val imageButton get() = binding.imageButton
@@ -26,9 +27,13 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
         context.withStyledAttributes(attrs, InputWithIconView) {
             iconResourceId = getResourceId(InputWithIconView_icon, 0)
             hintResourceId = getResourceId(InputWithIconView_hint, 0)
+            isInputClickable = getBoolean(InputWithIconView_isInputClickable, true)
         }
         binding.imageButton.setImageResource(iconResourceId)
         binding.textInputLayout.hint = context.getString(hintResourceId)
+        binding.textInput.isClickable = isInputClickable
+        binding.textInput.isCursorVisible = isInputClickable
+        binding.textInput.isFocusable = isInputClickable
     }
 
     fun setOnButtonClickListener(action: () -> Unit) {

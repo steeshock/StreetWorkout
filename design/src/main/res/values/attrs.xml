@@ -13,7 +13,7 @@
 
     <declare-styleable name="InputWithIconView">
         <attr format="reference" name="icon"/>
-        <attr format="boolean" name="isProgressVisible"/>
+        <attr format="boolean" name="isInputClickable"/>
         <attr format="string" name="hint"/>
     </declare-styleable>
 </resources>
