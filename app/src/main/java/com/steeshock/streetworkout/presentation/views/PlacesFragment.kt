@@ -12,6 +12,9 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentPlacesBinding
+import com.steeshock.streetworkout.extensions.gone
+import com.steeshock.streetworkout.extensions.showAlertDialog
+import com.steeshock.streetworkout.extensions.visible
 import com.steeshock.streetworkout.presentation.adapters.CategoryAdapter
 import com.steeshock.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
@@ -20,9 +23,6 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
-import com.steeshock.streetworkout.utils.extensions.gone
-import com.steeshock.streetworkout.utils.extensions.showAlertDialog
-import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {
@@ -48,7 +48,7 @@ class PlacesFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlacesBinding.inflate(inflater, container, false)
-        (container?.context as MainActivity).setSupportActionBar(_binding?.toolbar)
+        (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
         return binding.root
     }
 

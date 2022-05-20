@@ -3,7 +3,6 @@ package com.steeshock.streetworkout.presentation.views
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -25,17 +23,15 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
+import com.steeshock.streetworkout.extensions.getAlertDialogBuilder
+import com.steeshock.streetworkout.extensions.gone
+import com.steeshock.streetworkout.extensions.showAlertDialog
+import com.steeshock.streetworkout.extensions.visible
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
 import com.steeshock.streetworkout.presentation.viewmodels.AddPlaceViewModel
 import com.steeshock.streetworkout.services.geolocation.FetchAddressIntentService
-import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
-import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
-import com.steeshock.streetworkout.utils.extensions.getAlertDialogBuilder
-import com.steeshock.streetworkout.utils.extensions.gone
-import com.steeshock.streetworkout.utils.extensions.showAlertDialog
-import com.steeshock.streetworkout.utils.extensions.visible
 import javax.inject.Inject
 
 class AddPlaceFragment : BaseFragment() {
@@ -101,15 +97,15 @@ class AddPlaceFragment : BaseFragment() {
             }
         }
 
-        binding.myPositionButton.setOnClickListener {
+        binding.placePositionInput.setOnButtonClickListener {
             getPosition()
         }
 
-        binding.categoryButton.setOnClickListener {
+        binding.placeCategoriesInput.setOnButtonClickListener {
             showCategories()
         }
 
-        binding.takeImageButton.setOnClickListener {
+        binding.placeImagesInput.setOnButtonClickListener {
             openImagePicker()
         }
 
@@ -137,20 +133,20 @@ class AddPlaceFragment : BaseFragment() {
             resetFields()
         }
         if (viewState.isImagePickingInProgress) {
-            binding.takeImageButton.gone()
-            binding.progressImageBar.visible()
-            binding.placeImages.setText(R.string.hint_images_loading)
+            binding.placeImagesInput.imageButton.gone()
+            binding.placeImagesInput.progressBar.visible()
+            binding.placeImagesInput.textInput.setText(R.string.hint_images_loading)
         } else {
-            binding.takeImageButton.visible()
-            binding.progressImageBar.gone()
-            binding.placeImages.setText(getImagesHint(viewState.selectedImagesCount))
+            binding.placeImagesInput.imageButton.visible()
+            binding.placeImagesInput.progressBar.gone()
+            binding.placeImagesInput.textInput.setText(getImagesHint(viewState.selectedImagesCount))
         }
         if (viewState.isLocationInProgress) {
-            binding.myPositionButton.gone()
-            binding.progressLocationBar.visible()
+            binding.placePositionInput.imageButton.gone()
+            binding.placePositionInput.progressBar.visible()
         } else {
-            binding.myPositionButton.visible()
-            binding.progressLocationBar.gone()
+            binding.placePositionInput.imageButton.visible()
+            binding.placePositionInput.progressBar.gone()
         }
         if (viewState.isSendingInProgress) {
             binding.progressSending.visible()
@@ -158,21 +154,24 @@ class AddPlaceFragment : BaseFragment() {
             binding.progressSending.gone()
         }
 
-        binding.placeCategories.isEnabled = !viewState.isSendingInProgress
         binding.placeTitle.isEnabled = !viewState.isSendingInProgress
         binding.placeDescription.isEnabled = !viewState.isSendingInProgress
-        binding.placePosition.isEnabled = !viewState.isSendingInProgress
         binding.placeAddress.isEnabled = !viewState.isSendingInProgress
-        binding.placeImages.isEnabled = !viewState.isSendingInProgress
-        binding.categoryButton.isClickable = !viewState.isSendingInProgress
-        binding.placeImages.isClickable = !viewState.isSendingInProgress
-        binding.takeImageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placeCategoriesInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placeCategoriesInput.textInput.setText(viewState.selectedCategories)
+        binding.placeCategoriesInput.imageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placePositionInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placePositionInput.imageButton.isClickable = !viewState.isSendingInProgress
+
+        binding.placeImagesInput.textInput.isEnabled = !viewState.isSendingInProgress
+        binding.placeImagesInput.imageButton.isClickable = !viewState.isSendingInProgress
+
         binding.clearButton.isClickable = !viewState.isSendingInProgress
         binding.sendButton.isClickable = !viewState.isSendingInProgress
-        binding.myPositionButton.isClickable = !viewState.isSendingInProgress
         binding.progressSending.progress = viewState.sendingProgress
         binding.progressSending.max = viewState.maxProgressValue
-        binding.placeCategories.setText(viewState.selectedCategories)
 
         setLocationResult(viewState)
     }
@@ -196,7 +195,7 @@ class AddPlaceFragment : BaseFragment() {
                     onPositiveAction = { viewModel.onAddNewPlace(
                         title = binding.placeTitle.text.toString(),
                         description = binding.placeDescription.text.toString(),
-                        position = binding.placePosition.text.toString(),
+                        position = binding.placePositionInput.textInput.text.toString(),
                         address = binding.placeAddress.text.toString(),
                     )},
                 )
@@ -230,12 +229,12 @@ class AddPlaceFragment : BaseFragment() {
             it.placeTitle.text?.clear()
             it.placeDescription.text?.clear()
             it.placeAddress.text?.clear()
-            it.placePosition.text?.clear()
-            it.placeImages.text?.clear()
-            it.placeCategories.text?.clear()
-            it.progressLocationBar.gone()
-            it.myPositionButton.visible()
-            it.myPositionButton.isEnabled = true
+            it.placePositionInput.clearInput()
+            it.placeImagesInput.clearInput()
+            it.placeCategoriesInput.clearInput()
+            it.placePositionInput.progressBar.gone()
+            it.placePositionInput.imageButton.visible()
+            it.placePositionInput.imageButton.isEnabled = true
             it.placeTitleInput.error = null
             it.placeAddressInput.error = null
         }
@@ -281,9 +280,9 @@ class AddPlaceFragment : BaseFragment() {
 
     private fun setLocationResult(viewState: AddPlaceViewState) {
         binding.placeAddress.setText(viewState.placeAddress)
-        binding.placePosition.text?.clear()
+        binding.placePositionInput.textInput.text?.clear()
         viewState.placeLocation?.let {
-            binding.placePosition.text?.append("${it.latitude} ${it.longitude}")
+            binding.placePositionInput.textInput.text?.append("${it.latitude} ${it.longitude}")
         }
     }
 

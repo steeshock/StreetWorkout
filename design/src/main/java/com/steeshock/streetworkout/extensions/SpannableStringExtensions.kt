@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.utils.extensions
+package com.steeshock.streetworkout.extensions
 
 import android.text.SpannableString
 import android.text.Spanned

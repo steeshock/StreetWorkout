@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.utils.extensions
+package com.steeshock.streetworkout.extensions
 
 import android.app.Activity
 import androidx.appcompat.app.AlertDialog

@@ -11,6 +11,7 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.databinding.FragmentProfileBinding
+import com.steeshock.streetworkout.extensions.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewState
@@ -24,7 +25,6 @@ import com.steeshock.streetworkout.presentation.viewmodels.ProfileViewModel
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
-import com.steeshock.streetworkout.utils.extensions.*
 import javax.inject.Inject
 
 class ProfileFragment : BaseFragment() {
