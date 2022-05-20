@@ -11,6 +11,7 @@ Application is **under development**, I always try to add useful features and ev
 
 ## Main features:
 Training spots loads from Firebase Realtime Database and persisted with Room. Images hosted in Cloud Storage. Spots will be always loaded from local database and synchronized with remote data. Some other features listed below:
+- Authorization in app with Firebase auth
 - Training spots list with photo slider, address, quick buttons
 - Search and filtering spots by category. Works mutually with each other
 - Authorise and publish your spots, share it with others!
@@ -18,7 +19,7 @@ Training spots loads from Firebase Realtime Database and persisted with Room. Im
 - Add interesting spots to favourites. Rollback ability if removed accidentally 
 - Handle empty list and search/filter states with a kind of humour ;)
 - Bottom navigation view without shift animation for better UX
-- Multiple language support and so on!
+- Multiple language support, night theme support and so on!
 
 # Technical Stack :hammer:
 - [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
@@ -34,7 +35,7 @@ Training spots loads from Firebase Realtime Database and persisted with Room. Im
 - [Firebase](https://firebase.google.com/) - Servless set of solutions for your app, helps you build and run successful apps.
 
 ## Upcoming features:
-- Authorization with Firebase Auth
+- New settings screen
 - Share spots functionality
 - First UI tests
 - **And many others!**
