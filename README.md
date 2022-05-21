@@ -7,7 +7,7 @@ Application is **under development**, I always try to add useful features and ev
 [![StreetWorkout](https://img.shields.io/badge/StreetWorkout-APK-red?style=for-the-badge&logo=android)](https://github.com/steeshock/StreetWorkout/releases/download/1.0.0/app-debug.apk)
 
 ## Screenshots:
-![](screenshots/app_screens.png)
+![](screenshots/app_screens_v2.png)
 
 ## Main features:
 Training spots loads from Firebase Realtime Database and persisted with Room. Images hosted in Cloud Storage. Spots will be always loaded from local database and synchronized with remote data. Some other features listed below:
