@@ -4,7 +4,7 @@ Application is **under development**, I always try to add useful features and ev
 
 ***Here is the latest version of StreetWorkout*** :arrow_down_small:
 
-[![StreetWorkout](https://img.shields.io/badge/StreetWorkout-APK-red?style=for-the-badge&logo=android)](https://github.com/steeshock/StreetWorkout/releases/download/1.0.0/app-debug.apk)
+[![StreetWorkout](https://img.shields.io/badge/StreetWorkout-APK-red?style=for-the-badge&logo=android)](https://github.com/steeshock/StreetWorkout/releases/download/0.0.1/app-debug.apk)
 
 ## Screenshots:
 ![](screenshots/app_screens_v2.png)
