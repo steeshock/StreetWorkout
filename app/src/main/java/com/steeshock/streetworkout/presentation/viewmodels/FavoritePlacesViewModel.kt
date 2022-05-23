@@ -19,7 +19,8 @@ class FavoritePlacesViewModel @Inject constructor(
 ) : ViewModel(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
 
-    val observablePlaces = MediatorLiveData<List<Place>>()
+    private val mediatorPlaces = MediatorLiveData<List<Place>>()
+    val observablePlaces: LiveData<List<Place>> = mediatorPlaces
 
     private val allFavoritePlaces: LiveData<List<Place>> = placesRepository.allFavoritePlaces
     private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
@@ -27,13 +28,13 @@ class FavoritePlacesViewModel @Inject constructor(
     private var lastSearchString: String? = null
 
     init {
-        observablePlaces.addSource(allFavoritePlaces) {
+        mediatorPlaces.addSource(allFavoritePlaces) {
             actualPlaces.value = it
             filterData()
         }
-        observablePlaces.addSource(actualPlaces) {
+        mediatorPlaces.addSource(actualPlaces) {
             setupEmptyState()
-            observablePlaces.value = it.sortedByDescending { i -> i.created }
+            mediatorPlaces.value = it.sortedByDescending { i -> i.created }
         }
     }
 
