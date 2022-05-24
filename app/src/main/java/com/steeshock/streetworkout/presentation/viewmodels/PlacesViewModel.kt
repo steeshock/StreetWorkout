@@ -2,10 +2,7 @@ package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
@@ -36,7 +33,9 @@ class PlacesViewModel @Inject constructor(
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
 
-    val observablePlaces = MediatorLiveData<List<Place>>()
+    private val mediatorPlaces = MediatorLiveData<List<Place>>()
+    val observablePlaces: LiveData<List<Place>> = mediatorPlaces
+
     val observableCategories = categoriesRepository.allCategories
 
     private val allPlaces = placesRepository.allPlaces
@@ -47,17 +46,17 @@ class PlacesViewModel @Inject constructor(
     private var lastSearchString: String? = null
 
     init {
-        observablePlaces.addSource(allPlaces) {
+        mediatorPlaces.addSource(allPlaces) {
             filteredPlaces.value = it
             filterData(filterList)
         }
-        observablePlaces.addSource(observableCategories) {
+        mediatorPlaces.addSource(observableCategories) {
             filterList = it.filter { category -> category.isSelected == true }.toMutableList()
             filterData(filterList)
         }
-        observablePlaces.addSource(actualPlaces) {
+        mediatorPlaces.addSource(actualPlaces) {
             setupEmptyState()
-            observablePlaces.value = it.sortedByDescending { i -> i.created }
+            mediatorPlaces.value = it.sortedByDescending { i -> i.created }
         }
         setupAppTheme()
     }
