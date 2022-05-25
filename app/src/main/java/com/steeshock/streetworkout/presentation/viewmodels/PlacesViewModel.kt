@@ -10,10 +10,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesReposit
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
-import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
@@ -31,7 +28,8 @@ class PlacesViewModel @Inject constructor(
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
-    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
+    ExceptionHandler by DefaultExceptionHandler() {
 
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
     val observablePlaces: LiveData<List<Place>> = mediatorPlaces
@@ -61,20 +59,18 @@ class PlacesViewModel @Inject constructor(
         setupAppTheme()
     }
 
-    fun fetchData() = viewModelScope.launch(Dispatchers.IO) {
+    fun fetchData() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        updateViewState(postValue = true) {
+            copy(isLoading = false)
+        }
+    }) {
         updateViewState(postValue = true) { copy(isLoading = true) }
-        try {
-            coroutineScope {
-                awaitAll(
-                    async { placesRepository.fetchPlaces() },
-                    async { categoriesRepository.fetchCategories() }
-                )
-                favoritesInteractor.syncFavoritePlaces()
-            }
-        } catch (e: Exception) {
-            handleError(e)
-        } finally {
-            updateViewState(postValue = true) { copy(isLoading = false) }
+        coroutineScope {
+            awaitAll(
+                async { placesRepository.fetchPlaces() },
+                async { categoriesRepository.fetchCategories() }
+            )
+            favoritesInteractor.syncFavoritePlaces()
         }
     }
 
