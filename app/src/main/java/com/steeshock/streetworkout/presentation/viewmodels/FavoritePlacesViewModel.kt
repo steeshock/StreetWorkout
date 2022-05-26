@@ -4,6 +4,8 @@ import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.presentation.delegates.DefaultExceptionHandler
+import com.steeshock.streetworkout.presentation.delegates.ExceptionHandler
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
@@ -17,7 +19,8 @@ class FavoritePlacesViewModel @Inject constructor(
     placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
-    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
+    ExceptionHandler by DefaultExceptionHandler() {
 
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
     val observablePlaces: LiveData<List<Place>> = mediatorPlaces
@@ -38,15 +41,14 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO) {
-        updateViewState(postValue = true) { copy(isLoading = true) }
-        try {
-            favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
-        } catch (e: Exception) {
-            handleError(e)
-        } finally {
-            updateViewState(postValue = true) { copy(isLoading = false) }
+    fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        updateViewState(postValue = true) {
+            copy(isLoading = false)
         }
+    }) {
+        updateViewState(postValue = true) { copy(isLoading = true) }
+        favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
+        updateViewState(postValue = true) { copy(isLoading = false) }
     }
 
     fun onFavoriteStateChanged(place: Place) = viewModelScope.launch(Dispatchers.IO) {
@@ -76,10 +78,10 @@ class FavoritePlacesViewModel @Inject constructor(
 
     private fun filterItemsBySearchString(lastSearchString: String?) {
         allFavoritePlaces.value?.let {
-            actualPlaces.value = if (lastSearchString.isNullOrEmpty()){
+            actualPlaces.value = if (lastSearchString.isNullOrEmpty()) {
                 it
             } else {
-                it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+                it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString) }
             }
         }
     }
@@ -101,13 +103,6 @@ class FavoritePlacesViewModel @Inject constructor(
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
-        }
-    }
-
-    // TODO Handle errors on UI
-    private fun handleError(exception: Exception) {
-        updateViewState(postValue = true) {
-            copy(isLoading = false)
         }
     }
 }

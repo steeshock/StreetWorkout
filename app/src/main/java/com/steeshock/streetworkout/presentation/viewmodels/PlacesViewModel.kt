@@ -71,6 +71,7 @@ class PlacesViewModel @Inject constructor(
                 async { categoriesRepository.fetchCategories() }
             )
             favoritesInteractor.syncFavoritePlaces()
+            updateViewState(postValue = true) { copy(isLoading = false) }
         }
     }
 
@@ -178,12 +179,5 @@ class PlacesViewModel @Inject constructor(
 
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
-    }
-
-    // TODO Handle errors on UI
-    private fun handleError(exception: Exception) {
-        updateViewState(postValue = true) {
-            copy(isLoading = false)
-        }
     }
 }
