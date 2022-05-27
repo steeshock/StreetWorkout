@@ -4,11 +4,10 @@ import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.presentation.delegates.DefaultExceptionHandler
-import com.steeshock.streetworkout.presentation.delegates.ExceptionHandler
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +18,7 @@ class FavoritePlacesViewModel @Inject constructor(
     placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
+    ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
     ExceptionHandler by DefaultExceptionHandler() {
 
@@ -42,6 +42,7 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
         updateViewState(postValue = true) {
             copy(isLoading = false)
         }

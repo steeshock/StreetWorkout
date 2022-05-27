@@ -60,6 +60,7 @@ class PlacesViewModel @Inject constructor(
     }
 
     fun fetchData() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
         updateViewState(postValue = true) {
             copy(isLoading = false)
         }
