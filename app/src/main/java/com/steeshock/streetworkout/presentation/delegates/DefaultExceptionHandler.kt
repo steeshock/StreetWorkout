@@ -7,7 +7,6 @@ interface ExceptionHandler {
 }
 
 class DefaultExceptionHandler : ExceptionHandler {
-
     override val defaultExceptionHandler: ((Throwable) -> Unit) -> CoroutineExceptionHandler
         get() = {
             CoroutineExceptionHandler { _, throwable ->

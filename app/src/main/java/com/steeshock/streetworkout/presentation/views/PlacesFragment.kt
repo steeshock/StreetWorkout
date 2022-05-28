@@ -142,6 +142,9 @@ class PlacesFragment : BaseFragment() {
             ShowAddToFavoritesAuthAlert -> {
                 showAddToFavoritesAuthAlert()
             }
+            NoInternetConnection -> {
+                showNoInternetAlert()
+            }
         }
     }
 
