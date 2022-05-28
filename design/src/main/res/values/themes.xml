@@ -9,7 +9,6 @@
         <item name="colorPrimary">@color/earthColor</item>
         <item name="colorPrimaryDark">@color/earthColor</item>
         <item name="colorAccent">@color/blackColor</item>
-
         <item name="snackbarActionTextColor">@color/purpleColor</item>
         <item name="snackbarBackgroundColor">@color/graphiteColor</item>
         <item name="buttonTextColor">@color/whiteColor</item>
