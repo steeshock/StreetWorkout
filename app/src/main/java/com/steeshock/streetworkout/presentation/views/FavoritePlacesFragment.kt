@@ -155,7 +155,7 @@ class FavoritePlacesFragment : BaseFragment() {
     // endregion
 
     private fun showRollbackSnack(item: Place) {
-        showSnackbar(
+        view.showSnackbar(
             message = "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
             action = { viewModel.returnPlaceToFavorites(item) },
             actionText = getString(R.string.rollback_place),

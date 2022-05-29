@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.presentation.views
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -12,7 +13,8 @@ import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
 import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
 
 @OptIn(NavigationUiSaveStateControl::class)
-class MainActivity : AppCompatActivity(), PermissionsDelegate by PermissionsDelegateImpl()  {
+class MainActivity : AppCompatActivity(), IBaseline,
+    PermissionsDelegate by PermissionsDelegateImpl() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -21,7 +23,8 @@ class MainActivity : AppCompatActivity(), PermissionsDelegate by PermissionsDele
         setContentView(binding.root)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
         NavigationUI.setupWithNavController(navView, navController, false)
@@ -29,7 +32,17 @@ class MainActivity : AppCompatActivity(), PermissionsDelegate by PermissionsDele
         registerPermissionDelegate(this)
     }
 
-    fun getBottomBaseline() = binding.bottomBaseline
+    override fun getBottomBaseline() = binding.bottomBaseline
 
-    fun getTopBaseline() = binding.topBaseline
+    override fun getBelowNavBarBaseline() = binding.bottomNavBarBaseline
+
+    override fun getTopBaseline() = binding.topBaseline
+}
+
+interface IBaseline {
+    fun getBottomBaseline(): View?
+
+    fun getBelowNavBarBaseline(): View?
+
+    fun getTopBaseline(): View?
 }

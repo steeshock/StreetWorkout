@@ -163,7 +163,7 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun showAddToFavoritesAuthAlert() {
-        showSnackbar(
+        view.showSnackbar(
             message = getString(R.string.sign_in_snackbar_message),
             actionText = getString(R.string.login_title),
             action = { navigateToProfile() }
