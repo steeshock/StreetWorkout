@@ -143,7 +143,7 @@ class PlacesFragment : BaseFragment() {
                 showAddToFavoritesAuthAlert()
             }
             NoInternetConnection -> {
-                showNoInternetAlert()
+                view.showNoInternetSnackbar()
             }
         }
     }

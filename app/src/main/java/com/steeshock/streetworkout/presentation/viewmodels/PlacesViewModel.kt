@@ -61,12 +61,10 @@ class PlacesViewModel @Inject constructor(
 
     fun fetchData() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
-        updateViewState(postValue = true) {
-            copy(isLoading = false)
-        }
+        updateViewState(postValue = true) { copy(isLoading = false) }
     }) {
-        updateViewState(postValue = true) { copy(isLoading = true) }
         coroutineScope {
+            updateViewState(postValue = true) { copy(isLoading = true) }
             awaitAll(
                 async { placesRepository.fetchPlaces() },
                 async { categoriesRepository.fetchCategories() }

@@ -10,6 +10,7 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -43,13 +44,13 @@ class FavoritePlacesViewModel @Inject constructor(
 
     fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
-        updateViewState(postValue = true) {
-            copy(isLoading = false)
-        }
-    }) {
-        updateViewState(postValue = true) { copy(isLoading = true) }
-        favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
         updateViewState(postValue = true) { copy(isLoading = false) }
+    }) {
+        coroutineScope {
+            updateViewState(postValue = true) { copy(isLoading = true) }
+            favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
+            updateViewState(postValue = true) { copy(isLoading = false) }
+        }
     }
 
     fun onFavoriteStateChanged(place: Place) = viewModelScope.launch(Dispatchers.IO) {

@@ -114,7 +114,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun renderViewEvent(viewEvent: PlacesViewEvent) {
         if (viewEvent == PlacesViewEvent.NoInternetConnection) {
-            showNoInternetAlert()
+            view.showNoInternetSnackbar()
         }
     }
 
