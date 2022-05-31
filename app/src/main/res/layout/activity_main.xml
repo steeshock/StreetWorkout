@@ -24,6 +24,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment" />
 
     <View
+        android:id="@+id/bottomNavBarBaseline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment" />
+
+    <View
         android:id="@+id/topBaseline"
         android:layout_width="match_parent"
         android:layout_height="1dp"

@@ -2,19 +2,21 @@ package com.steeshock.streetworkout.common
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
+import com.steeshock.streetworkout.presentation.delegates.SnackbarDelegate
+import com.steeshock.streetworkout.presentation.delegates.SnackbarDelegateImpl
+import com.steeshock.streetworkout.presentation.views.IBaseline
 import com.steeshock.streetworkout.presentation.views.MainActivity
 
-abstract class BaseFragment : Fragment() {
+
+abstract class BaseFragment : Fragment(), SnackbarDelegate by SnackbarDelegateImpl() {
 
     abstract fun injectComponent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        registerSnackbarDelegate(activity as IBaseline)
     }
 
     override fun onAttach(context: Context) {
@@ -28,34 +30,11 @@ abstract class BaseFragment : Fragment() {
         onCustomRationale: ((startPermissionRequestCallback: () -> Unit) -> Unit)? = null,
         onCustomDenied: (() -> Unit)? = null,
         showSettingsButton: Boolean = false,
-    ) = (activity as? MainActivity)?.checkPermission(permission,
+    ) = (activity as? MainActivity)?.checkPermission(
+        permission,
         onPermissionGranted,
         onCustomRationale,
         onCustomDenied,
         showSettingsButton,
     )
-
-    fun showSnackbar(
-        message: String?,
-        action: () -> Unit = {},
-        actionText: String? = null,
-        showOnTop: Boolean = false,
-    ) {
-        view?.let { view ->
-            message?.let { message ->
-                val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                snackbar.anchorView = if (showOnTop) getTopBaseline() else getBottomBaseline()
-                snackbar.setAction(actionText) { action.invoke() }
-                snackbar.show()
-            }
-        }
-    }
-
-    private fun getBottomBaseline(): View? {
-        return (activity as? MainActivity)?.getBottomBaseline()
-    }
-
-    private fun getTopBaseline(): View? {
-        return (activity as? MainActivity)?.getTopBaseline()
-    }
 }

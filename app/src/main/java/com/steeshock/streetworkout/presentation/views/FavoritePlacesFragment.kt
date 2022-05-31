@@ -15,6 +15,7 @@ import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.visible
 import com.steeshock.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.FavoritePlacesViewModel
 import javax.inject.Inject
@@ -80,6 +81,10 @@ class FavoritePlacesFragment : BaseFragment() {
                 renderViewState(it)
             }
 
+            viewEvent.observe(viewLifecycleOwner) {
+                renderViewEvent(it)
+            }
+
             binding.refresher.setOnRefreshListener {
                 updateFavoritePlaces()
             }
@@ -104,6 +109,12 @@ class FavoritePlacesFragment : BaseFragment() {
                 binding.emptyList.gone()
                 binding.emptyResults.gone()
             }
+        }
+    }
+
+    private fun renderViewEvent(viewEvent: PlacesViewEvent) {
+        if (viewEvent == PlacesViewEvent.NoInternetConnection) {
+            view.showNoInternetSnackbar()
         }
     }
 
@@ -144,7 +155,7 @@ class FavoritePlacesFragment : BaseFragment() {
     // endregion
 
     private fun showRollbackSnack(item: Place) {
-        showSnackbar(
+        view.showSnackbar(
             message = "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
             action = { viewModel.returnPlaceToFavorites(item) },
             actionText = getString(R.string.rollback_place),
@@ -153,7 +164,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     override fun onDestroyView() {
         viewModel.resetSearchFilter()
-       _binding = null
-       super.onDestroyView()    
+        _binding = null
+        super.onDestroyView()
     }
 }

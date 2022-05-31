@@ -147,18 +147,18 @@ class ProfileFragment : BaseFragment() {
         when (viewEvent) {
             is SignUpResult -> {
                 val message = handleSignUpResult(viewEvent)
-                showSnackbar(message)
+                view.showSnackbar(message)
             }
             is SignInResult -> {
                 val message = handleSignInResult(viewEvent)
-                showSnackbar(message)
+                view.showSnackbar(message)
             }
             is SignOut -> {
                 resetLoginFields()
                 showLoginPage()
             }
             else -> {
-                showSnackbar(getString(R.string.unknown_error))
+                view.showSnackbar(getString(R.string.unknown_error))
             }
         }
     }

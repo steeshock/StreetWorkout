@@ -4,11 +4,13 @@ import androidx.lifecycle.*
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
-import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
+import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
+import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -17,7 +19,9 @@ class FavoritePlacesViewModel @Inject constructor(
     placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
-    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }) {
+    ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
+    ExceptionHandler by DefaultExceptionHandler() {
 
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
     val observablePlaces: LiveData<List<Place>> = mediatorPlaces
@@ -38,13 +42,13 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO) {
-        updateViewState(postValue = true) { copy(isLoading = true) }
-        try {
+    fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
+        updateViewState(postValue = true) { copy(isLoading = false) }
+    }) {
+        coroutineScope {
+            updateViewState(postValue = true) { copy(isLoading = true) }
             favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
-        } catch (e: Exception) {
-            handleError(e)
-        } finally {
             updateViewState(postValue = true) { copy(isLoading = false) }
         }
     }
@@ -76,10 +80,10 @@ class FavoritePlacesViewModel @Inject constructor(
 
     private fun filterItemsBySearchString(lastSearchString: String?) {
         allFavoritePlaces.value?.let {
-            actualPlaces.value = if (lastSearchString.isNullOrEmpty()){
+            actualPlaces.value = if (lastSearchString.isNullOrEmpty()) {
                 it
             } else {
-                it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString)}
+                it.filter { place -> place.title.lowercase(Locale.ROOT).contains(lastSearchString) }
             }
         }
     }
@@ -101,13 +105,6 @@ class FavoritePlacesViewModel @Inject constructor(
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
-        }
-    }
-
-    // TODO Handle errors on UI
-    private fun handleError(exception: Exception) {
-        updateViewState(postValue = true) {
-            copy(isLoading = false)
         }
     }
 }
