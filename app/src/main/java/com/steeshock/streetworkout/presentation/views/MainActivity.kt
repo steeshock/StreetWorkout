@@ -34,15 +34,15 @@ class MainActivity : AppCompatActivity(), IBaseline,
 
     override fun getBottomBaseline() = binding.bottomBaseline
 
-    override fun getBelowNavBarBaseline() = binding.bottomNavBarBaseline
-
     override fun getTopBaseline() = binding.topBaseline
+
+    override fun getNavBarBaseline() = binding.navView
 }
 
 interface IBaseline {
     fun getBottomBaseline(): View?
 
-    fun getBelowNavBarBaseline(): View?
-
     fun getTopBaseline(): View?
+
+    fun getNavBarBaseline(): View?
 }

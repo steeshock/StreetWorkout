@@ -1,5 +1,6 @@
 package com.steeshock.streetworkout.presentation.delegates
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -76,15 +77,17 @@ class SnackbarDelegateImpl : SnackbarDelegate {
         snackbar.anchorView = when(position) {
             TOP -> baseline.getTopBaseline()
             BOTTOM -> baseline.getBottomBaseline()
-            BELOW_NAVBAR -> baseline.getBelowNavBarBaseline()
+            BELOW_NAVBAR -> baseline.getNavBarBaseline()
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun Snackbar.setErrorSettings(isError: Boolean) {
         if (isError) {
             val layoutParams = this.view.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(0, 0,0 ,0)
             this.view.layoutParams = layoutParams
+            this.view.background = this.view.resources.getDrawable(R.drawable.flat_rectangle, null)
             setBackgroundTint(this.view.resources.getColor(R.color.redColor, null))
             setTextColor(this.view.resources.getColor(R.color.whiteColor, null))
             animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
