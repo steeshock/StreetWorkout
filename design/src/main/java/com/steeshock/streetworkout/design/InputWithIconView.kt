@@ -1,7 +1,9 @@
 package com.steeshock.streetworkout.design
 
 import android.content.Context
+import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.SparseArray
 import android.view.LayoutInflater
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -9,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.withStyledAttributes
 import com.steeshock.streetworkout.design.R.styleable.*
 import com.steeshock.streetworkout.design.databinding.InputWithIconViewBinding
-import com.steeshock.streetworkout.extensions.toVisibility
 
 class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
@@ -34,6 +35,14 @@ class InputWithIconView(context: Context, attrs: AttributeSet) : ConstraintLayou
         binding.textInput.isClickable = isInputClickable
         binding.textInput.isCursorVisible = isInputClickable
         binding.textInput.isFocusable = isInputClickable
+    }
+
+    override fun dispatchSaveInstanceState(container: SparseArray<Parcelable?>?) {
+        dispatchFreezeSelfOnly(container)
+    }
+
+    override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable?>?) {
+        dispatchThawSelfOnly(container)
     }
 
     fun setOnButtonClickListener(action: () -> Unit) {
