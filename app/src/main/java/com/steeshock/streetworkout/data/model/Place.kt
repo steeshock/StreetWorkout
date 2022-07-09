@@ -37,7 +37,7 @@ data class Place(
     var categories: ArrayList<Int>? = null,
 
     @ColumnInfo(name = "images")
-    var images: ArrayList<String>? = null,
+    var images: List<String>? = null,
 
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,

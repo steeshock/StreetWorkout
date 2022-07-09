@@ -1,5 +1,6 @@
 package com.steeshock.streetworkout.data.repository.implementation.firebase
 
+import androidx.work.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -7,18 +8,24 @@ import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
-import kotlinx.coroutines.*
-import kotlinx.coroutines.tasks.await
+import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class FirebaseUserRepository(
     private val userDao: UserDao,
+    private val workManager: WorkManager,
 ) : IUserRepository {
 
     override suspend fun getOrCreateUser(signedUser: User): User? {
-        return fetchUser(signedUser.userId) ?: createUser(signedUser.userId, signedUser.displayName, signedUser.email)
+        return fetchUser(signedUser.userId) ?: createUser(signedUser.userId,
+            signedUser.displayName,
+            signedUser.email)
     }
 
     override suspend fun getUserFavorites(userId: String): List<String> {
@@ -31,8 +38,8 @@ class FirebaseUserRepository(
         favoritePlaceId: String?,
     ) {
         userDao.getUserById(userId)?.let { localUser ->
-            val updatedLocallyFavorites = updateUserFavoritesLocally(localUser, favorites, favoritePlaceId)
-            updateUserFavoritesRemote(localUser, updatedLocallyFavorites)
+            val locallyFavorites = updateUserFavoritesLocally(localUser, favorites, favoritePlaceId)
+            updateUserFavoritesRemote(localUser, locallyFavorites)
         }
     }
 
@@ -44,11 +51,11 @@ class FirebaseUserRepository(
         localUser: User,
         favorites: List<String>? = null,
         favoritePlaceId: String? = null,
-    ): ArrayList<String> {
+    ): List<String> {
         return suspendCoroutine { continuation ->
             val newFavorites = arrayListOf<String>().apply {
                 when {
-                    favoritePlaceId  != null  -> {
+                    favoritePlaceId != null -> {
                         val userFavorites = localUser.favorites?.toMutableList() ?: mutableListOf()
                         when {
                             userFavorites.contains(favoritePlaceId) -> {
@@ -74,16 +81,32 @@ class FirebaseUserRepository(
     }
 
     /**
-     * Request is cached with Firebase and send when internet is available
+     * Request send only when internet is available
+     * Using WorkManager to guarantee work is done for offline mode
      */
-    private suspend fun updateUserFavoritesRemote(
+    private fun updateUserFavoritesRemote(
         localUser: User,
-        updatedLocallyFavorites: ArrayList<String>,
+        locallyFavorites: List<String>,
     ) {
-        val database = Firebase.database(Constants.FIREBASE_PATH)
-        val userRef = database.getReference("users").child(localUser.userId)
-        val user = localUser.copy(favorites = updatedLocallyFavorites)
-        userRef.setValue(user).await()
+        val syncFavoritesRequest = OneTimeWorkRequestBuilder<SyncFavoritesWorker>()
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS)
+            .setConstraints(Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build())
+            .setInputData(workDataOf(
+                "FAVORITES_LIST" to locallyFavorites.toTypedArray(),
+                "USER_ID" to localUser.userId,
+            ))
+            .build()
+
+        workManager.enqueueUniqueWork(
+            "favoritesSync",
+            ExistingWorkPolicy.REPLACE,
+            syncFavoritesRequest
+        )
     }
 
     private suspend fun createUser(userId: String, displayName: String, email: String): User? {

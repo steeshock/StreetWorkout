@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.steeshock.streetworkout.data.converters.ArrayIntConverter
-import com.steeshock.streetworkout.data.converters.ArrayStringConverter
+import com.steeshock.streetworkout.data.converters.ListStringConverter
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.model.User
@@ -17,7 +17,7 @@ import com.steeshock.streetworkout.data.model.User
     version = 1,
     exportSchema = false
 )
-@TypeConverters(ArrayIntConverter::class, ArrayStringConverter::class)
+@TypeConverters(ArrayIntConverter::class, ListStringConverter::class)
 abstract class PlacesDatabase : RoomDatabase() {
 
     abstract fun getPlacesDao(): PlacesDao
