@@ -18,7 +18,7 @@ data class User(
     val email: String = "",
 
     @ColumnInfo(name = "favorites")
-    val favorites: ArrayList<String>? = null,
+    val favorites: List<String>? = null,
 ) {
     companion object {
         const val TABLE_NAME = "user_table"

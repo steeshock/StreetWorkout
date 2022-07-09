@@ -43,7 +43,7 @@ class AddPlaceViewModel @Inject constructor(
         get() = getCheckedCategories()
 
     private var selectedImages: MutableList<Uri> = mutableListOf()
-    private var downloadedImagesLinks: ArrayList<String> = arrayListOf()
+    private var downloadedImagesLinks: MutableList<String> = mutableListOf()
 
     private var sendingPlace: Place? = null
 

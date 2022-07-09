@@ -131,5 +131,8 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // WorkManager Kotlin + coroutines
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+
     implementation 'com.github.dhaval2404:imagepicker:2.1'
 }

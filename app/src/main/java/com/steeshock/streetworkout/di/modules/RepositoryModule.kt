@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.di.modules
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.database.PlacesDao
@@ -53,8 +54,9 @@ class RepositoryModule {
     @Singleton
     fun provideUserRepository(
         userDao: UserDao,
+        workManager: WorkManager,
     ): IUserRepository {
-        return FirebaseUserRepository(userDao)
+        return FirebaseUserRepository(userDao, workManager)
     }
 
     @Provides
