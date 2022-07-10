@@ -2,6 +2,7 @@ package com.steeshock.streetworkout.di.modules
 
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.domain.favorites.FavoritesInteractor
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
 import com.steeshock.streetworkout.domain.login.ILoginInteractor
@@ -18,11 +19,13 @@ class InteractorsModule {
         authService: IAuthService,
         placesRepository: IPlacesRepository,
         userRepository: IUserRepository,
+        workerService: IWorkerService,
     ): IFavoritesInteractor {
         return FavoritesInteractor(
             authService,
             placesRepository,
             userRepository,
+            workerService,
         )
     }
 

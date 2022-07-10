@@ -12,6 +12,7 @@ import com.steeshock.streetworkout.data.model.Place
 interface IFavoritesInteractor {
     /**
      * Sync favorite places of authorized user
+     * Perform sync only if the favorites sync worker successfully done his work
      *
      * [softSync] - Used soft "additive" merging - if not authorised user already add something in favorites,
      * we keep this data and just merge with fetched user data favorites, after that update

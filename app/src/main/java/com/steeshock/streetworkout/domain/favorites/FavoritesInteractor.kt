@@ -3,15 +3,23 @@ package com.steeshock.streetworkout.domain.favorites
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
+import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
+import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
 import com.steeshock.streetworkout.services.auth.IAuthService
 
 class FavoritesInteractor(
     private val authService: IAuthService,
     private val placesRepository: IPlacesRepository,
     private val userRepository: IUserRepository,
-
-    ) : IFavoritesInteractor {
+    private val workerService: IWorkerService,
+) : IFavoritesInteractor {
     override suspend fun syncFavoritePlaces(softSync: Boolean, reloadUserData: Boolean) {
+
+        if (!workerService.isUniqueWorkDone(SYNC_FAVORITES_WORK)) {
+            throw SyncFavoritesException()
+        }
+
         if (authService.isUserAuthorized) {
 
             if (reloadUserData) {
