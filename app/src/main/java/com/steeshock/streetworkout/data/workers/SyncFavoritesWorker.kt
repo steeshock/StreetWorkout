@@ -11,13 +11,14 @@ import com.steeshock.streetworkout.data.model.User
 import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 
-class SyncFavoritesWorker(appContext: Context, workerParams: WorkerParameters) :
+class SyncFavoritesWorker(appContext: Context, private val workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
 
     companion object {
         const val USER_ID_DATA = "USER_ID_DATA"
         const val FAVORITES_DATA = "FAVORITES_DATA"
         const val SYNC_FAVORITES_WORK = "SYNC_FAVORITES_WORK"
+        const val MAX_RETRY_ATTEMPTS = 5
 
         class SyncFavoritesException : Exception("Sending offline favorites not completed")
     }
@@ -42,7 +43,11 @@ class SyncFavoritesWorker(appContext: Context, workerParams: WorkerParameters) :
                 latch.countDown()
             }
             .addOnFailureListener {
-                workResult = Result.retry()
+                workResult = if (workerParams.runAttemptCount >= MAX_RETRY_ATTEMPTS) {
+                    Result.failure()
+                } else {
+                    Result.retry()
+                }
                 latch.countDown()
             }
         latch.await()
