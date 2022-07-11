@@ -10,7 +10,6 @@ import dagger.Provides
 
 @Module
 object DatabaseModule {
-
     @Provides
     fun providePlacesDao(appContext: Context): PlacesDao {
         return PlacesDatabase

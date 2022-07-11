@@ -12,7 +12,6 @@ import dagger.Provides
 
 @Module
 interface NetworkModule {
-
     @Binds
     fun bindConnectivityService(connectivityService: ConnectivityService): IConnectivityService
 

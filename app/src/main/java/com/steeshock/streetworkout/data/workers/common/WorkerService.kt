@@ -33,7 +33,11 @@ class WorkerService @Inject constructor(private val workManager: WorkManager) : 
     }
 
     override fun isUniqueWorkDone(uniqueWorkName: String): Boolean {
-        val workState = workManager.getWorkInfosForUniqueWork(uniqueWorkName).get().first().state
-        return workState == WorkInfo.State.SUCCEEDED || workState == WorkInfo.State.FAILED
+        return try {
+            val workState = workManager.getWorkInfosForUniqueWork(uniqueWorkName).get().first().state
+            workState == WorkInfo.State.SUCCEEDED || workState == WorkInfo.State.FAILED
+        } catch (e: NoSuchElementException) {
+            true
+        }
     }
 }
