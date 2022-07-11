@@ -10,9 +10,9 @@ import dagger.Subcomponent
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class ProfileModule {
+interface ProfileModule {
     @[Binds IntoMap ViewModelKey(ProfileViewModel::class)]
-    abstract fun bindProfileViewModel(viewModel: ProfileViewModel): ViewModel
+    fun bindProfileViewModel(viewModel: ProfileViewModel): ViewModel
 }
 
 @Subcomponent(modules = [ProfileModule::class])

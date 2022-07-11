@@ -7,7 +7,7 @@ import dagger.Provides
 import javax.inject.Provider
 
 @Module
-abstract class ViewModelModule {
+interface ViewModelModule {
     companion object {
         @Provides
         fun viewModelFactory(providerMap: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>): ViewModelProvider.Factory =

@@ -10,9 +10,9 @@ import dagger.Subcomponent
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class FavoritePlacesModule {
+interface FavoritePlacesModule {
     @[Binds IntoMap ViewModelKey(FavoritePlacesViewModel::class)]
-    abstract fun bindFavoritePlacesViewModel(viewModel: FavoritePlacesViewModel): ViewModel
+    fun bindFavoritePlacesViewModel(viewModel: FavoritePlacesViewModel): ViewModel
 }
 
 @Subcomponent(modules = [FavoritePlacesModule::class])

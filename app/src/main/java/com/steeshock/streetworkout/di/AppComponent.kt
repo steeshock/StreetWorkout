@@ -13,14 +13,19 @@ import dagger.Component
 import javax.inject.Singleton
 
 @Component(modules = [
+    ApplicationModule::class,
     RepositoryModule::class,
     InteractorsModule::class,
     NetworkModule::class,
     ViewModelModule::class,
-    ApplicationModule::class,
 ])
 @Singleton
 interface AppComponent {
+
+    @Component.Factory
+    interface Factory {
+        fun create(applicationModule: ApplicationModule): AppComponent
+    }
 
     fun providePlacesComponent(): PlacesComponent
 

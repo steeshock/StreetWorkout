@@ -8,10 +8,11 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
 
-class DataStoreRepository(
+class DataStoreRepository @Inject constructor(
     private val context: Context,
 ) : IDataStoreRepository {
 

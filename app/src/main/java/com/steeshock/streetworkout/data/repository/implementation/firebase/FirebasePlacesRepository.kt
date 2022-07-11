@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -23,7 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Repository for work with Firebase Realtime Database
  */
-open class FirebasePlacesRepository(
+open class FirebasePlacesRepository @Inject constructor(
     private val placesDao: PlacesDao
 ) : IPlacesRepository {
 

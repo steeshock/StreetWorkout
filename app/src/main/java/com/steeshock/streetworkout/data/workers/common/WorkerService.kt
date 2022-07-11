@@ -6,8 +6,9 @@ import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.FA
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.USER_ID_DATA
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class WorkerService(private val workManager: WorkManager) : IWorkerService {
+class WorkerService @Inject constructor(private val workManager: WorkManager) : IWorkerService {
 
     override fun syncFavorites(userId: String, locallyFavorites: List<String>) {
         val syncFavoritesRequest = OneTimeWorkRequestBuilder<SyncFavoritesWorker>()

@@ -6,24 +6,23 @@ import com.steeshock.streetworkout.services.auth.FirebaseAuthService
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.connectivity.ConnectivityService
 import com.steeshock.streetworkout.services.connectivity.IConnectivityService
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
 @Module
-class NetworkModule {
+interface NetworkModule {
 
-    @Provides
-    fun provideConnectivityService(): IConnectivityService {
-        return ConnectivityService()
-    }
+    @Binds
+    fun bindConnectivityService(connectivityService: ConnectivityService): IConnectivityService
 
-    @Provides
-    fun providePlacesApi(): PlacesAPI {
-        return ApiUtils.getInstance()
-    }
+    @Binds
+    fun bindAuthService(authService: FirebaseAuthService): IAuthService
 
-    @Provides
-    fun provideAuthService(): IAuthService {
-        return FirebaseAuthService()
+    companion object {
+        @Provides
+        fun providePlacesApi(): PlacesAPI {
+            return ApiUtils.getInstance()
+        }
     }
 }
