@@ -1,6 +1,5 @@
 package com.steeshock.streetworkout.data.repository.implementation.firebase
 
-import androidx.work.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -8,18 +7,17 @@ import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
 import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
-import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class FirebaseUserRepository(
     private val userDao: UserDao,
-    private val workManager: WorkManager,
+    private val workerService: IWorkerService,
 ) : IUserRepository {
 
     override suspend fun getOrCreateUser(signedUser: User): User? {
@@ -32,6 +30,10 @@ class FirebaseUserRepository(
         return userDao.getUserById(userId)?.favorites ?: listOf()
     }
 
+    /**
+     * Request send updated favorites only when internet is available
+     * Using WorkManager to guarantee work is done for offline mode
+     */
     override suspend fun updateUserFavoriteList(
         userId: String,
         favorites: List<String>?,
@@ -39,7 +41,7 @@ class FirebaseUserRepository(
     ) {
         userDao.getUserById(userId)?.let { localUser ->
             val locallyFavorites = updateUserFavoritesLocally(localUser, favorites, favoritePlaceId)
-            updateUserFavoritesRemote(localUser, locallyFavorites)
+            workerService.syncFavorites(localUser.userId, locallyFavorites)
         }
     }
 
@@ -78,35 +80,6 @@ class FirebaseUserRepository(
                 continuation.resume(newFavorites)
             }
         }
-    }
-
-    /**
-     * Request send only when internet is available
-     * Using WorkManager to guarantee work is done for offline mode
-     */
-    private fun updateUserFavoritesRemote(
-        localUser: User,
-        locallyFavorites: List<String>,
-    ) {
-        val syncFavoritesRequest = OneTimeWorkRequestBuilder<SyncFavoritesWorker>()
-            .setBackoffCriteria(
-                BackoffPolicy.LINEAR,
-                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                TimeUnit.MILLISECONDS)
-            .setConstraints(Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build())
-            .setInputData(workDataOf(
-                "FAVORITES_LIST" to locallyFavorites.toTypedArray(),
-                "USER_ID" to localUser.userId,
-            ))
-            .build()
-
-        workManager.enqueueUniqueWork(
-            "favoritesSync",
-            ExistingWorkPolicy.REPLACE,
-            syncFavoritesRequest
-        )
     }
 
     private suspend fun createUser(userId: String, displayName: String, email: String): User? {

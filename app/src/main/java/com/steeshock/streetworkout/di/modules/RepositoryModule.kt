@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.di.modules
 
 import android.content.Context
-import androidx.work.WorkManager
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.database.PlacesDao
@@ -15,6 +14,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesReposit
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -54,9 +54,9 @@ class RepositoryModule {
     @Singleton
     fun provideUserRepository(
         userDao: UserDao,
-        workManager: WorkManager,
+        workerService: IWorkerService,
     ): IUserRepository {
-        return FirebaseUserRepository(userDao, workManager)
+        return FirebaseUserRepository(userDao, workerService)
     }
 
     @Provides
