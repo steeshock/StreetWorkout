@@ -4,12 +4,10 @@
     android:id="@+id/categoryCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/chips_margin_half"
-    android:layout_marginTop="@dimen/chips_margin"
-    android:layout_marginEnd="@dimen/chips_margin_half"
-    android:layout_marginBottom="@dimen/chips_margin"
-    android:elevation="4dp"
+    android:layout_marginHorizontal="@dimen/chips_margin_half"
+    android:layout_marginVertical="@dimen/chips_margin"
     android:backgroundTint="@color/lightGrayColor"
+    android:elevation="4dp"
     android:padding="0dp"
     app:cardCornerRadius="@dimen/chips_corner_radius">
 

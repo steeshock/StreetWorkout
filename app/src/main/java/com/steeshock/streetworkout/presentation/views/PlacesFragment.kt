@@ -1,12 +1,15 @@
 package com.steeshock.streetworkout.presentation.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
@@ -45,7 +48,7 @@ class PlacesFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPlacesBinding.inflate(inflater, container, false)
         (container?.context as MainActivity).setSupportActionBar(binding.toolbar)
@@ -55,34 +58,45 @@ class PlacesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
-                override fun onPlaceClicked(place: Place) {}
+        initFab()
+        initPlacesRecycler()
+        initCategoriesRecycler()
+        initData()
+    }
 
-                override fun onLikeClicked(place: Place) {
-                    viewModel.onLikeClicked(place)
-                }
-
-                override fun onPlaceLocationClicked(place: Place) {
-                    navigateToMap(place)
-                }
-            })
-
-        categoriesAdapter = CategoryAdapter {
-            viewModel.onFilterByCategory(it)
-        }
-
+    private fun initFab() {
         binding.fab.setOnClickListener {
             viewModel.onAddNewPlaceClicked()
         }
+    }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun initPlacesRecycler() {
+        placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
+            override fun onPlaceClicked(place: Place) {}
+
+            override fun onLikeClicked(place: Place) {
+                viewModel.onLikeClicked(place)
+            }
+
+            override fun onPlaceLocationClicked(place: Place) {
+                navigateToMap(place)
+            }
+        })
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.list_item_divider, null))
+        binding.placesRecycler.addItemDecoration(dividerItemDecoration)
         binding.placesRecycler.setHasFixedSize(true)
         binding.placesRecycler.adapter = placesAdapter
+    }
 
-        binding.categoriesRecycler.adapter = categoriesAdapter
+    private fun initCategoriesRecycler() {
+        categoriesAdapter = CategoryAdapter {
+            viewModel.onFilterByCategory(it)
+        }
         binding.categoriesRecycler.layoutManager =
             LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-
-        initData()
+        binding.categoriesRecycler.adapter = categoriesAdapter
     }
 
     private fun initData() {
@@ -132,7 +146,7 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun renderViewEvent(viewEvent: PlacesViewEvent) {
-        when(viewEvent) {
+        when (viewEvent) {
             ShowAddPlaceFragment -> {
                 showAddPlaceFragment()
             }
@@ -224,7 +238,7 @@ class PlacesFragment : BaseFragment() {
 
     override fun onDestroyView() {
         viewModel.resetSearchFilter()
-       _binding = null
-       super.onDestroyView()    
+        _binding = null
+        super.onDestroyView()
     }
 }
