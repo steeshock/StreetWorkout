@@ -6,8 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/card_margin"
-    android:layout_marginTop="@dimen/card_margin"
-    android:layout_marginBottom="@dimen/card_margin_half"
     app:cardBackgroundColor="@color/design_default_color_background"
     app:cardCornerRadius="@dimen/card_corner_radius"
     tools:ignore="ContentDescription">
@@ -29,14 +27,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
             <ImageView
                 android:id="@+id/likeImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/icon_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +44,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/icon_margin"
                 android:src="@drawable/ic_share_36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/locationImageView"
@@ -57,7 +54,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/icon_margin"
                 android:src="@drawable/ic_map_location_36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
