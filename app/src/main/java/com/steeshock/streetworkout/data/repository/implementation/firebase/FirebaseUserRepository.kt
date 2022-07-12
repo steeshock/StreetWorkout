@@ -11,11 +11,12 @@ import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseUserRepository(
+class FirebaseUserRepository @Inject constructor(
     private val userDao: UserDao,
     private val workerService: IWorkerService,
 ) : IUserRepository {

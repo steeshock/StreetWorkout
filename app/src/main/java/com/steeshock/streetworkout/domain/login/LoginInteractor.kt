@@ -4,8 +4,9 @@ import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.UserCredentials
+import javax.inject.Inject
 
-class LoginInteractor(
+class LoginInteractor @Inject constructor(
     private val authService: IAuthService,
     private val userRepository: IUserRepository,
 ) : ILoginInteractor {

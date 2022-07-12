@@ -1,7 +1,9 @@
 package com.steeshock.streetworkout.services.connectivity
 
+import javax.inject.Inject
 
-class ConnectivityService : IConnectivityService {
+
+class ConnectivityService @Inject constructor() : IConnectivityService {
 
     companion object {
         private const val PING_COMMAND = "/system/bin/ping -c 1 www.google.com"

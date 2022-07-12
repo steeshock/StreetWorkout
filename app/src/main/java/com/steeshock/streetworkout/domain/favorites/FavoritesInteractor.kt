@@ -7,8 +7,9 @@ import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
 import com.steeshock.streetworkout.services.auth.IAuthService
+import javax.inject.Inject
 
-class FavoritesInteractor(
+class FavoritesInteractor @Inject constructor(
     private val authService: IAuthService,
     private val placesRepository: IPlacesRepository,
     private val userRepository: IUserRepository,

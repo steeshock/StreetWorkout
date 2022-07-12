@@ -10,79 +10,36 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserRepository
+import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiCategoriesRepository
+import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module
-class RepositoryModule {
-
-    @Provides
+@Module(includes = [DatabaseModule::class])
+interface RepositoryModule {
+    @Binds
     @Singleton
-    fun providePlacesRepository(
-        placesDao: PlacesDao,
-        placesAPI: PlacesAPI,
-    ): IPlacesRepository {
+    fun bindPlacesRepository(placesRepository: FirebasePlacesRepository): IPlacesRepository
+    //fun bindPlacesRepository(placesRepository: SimpleApiPlacesRepository): IPlacesRepository
 
-        // Реализация для работы с Firebase Realtime Database
-        return FirebasePlacesRepository(placesDao)
-
-        // Реализация для работы с Mock API на сервере
-        //return MockApiPlacesRepository(placesDao, placesAPI)
-    }
-
-    @Provides
+    @Binds
     @Singleton
-    fun provideCategoriesRepository(
-        categoriesDao: CategoriesDao,
-        placesAPI: PlacesAPI,
-    ): ICategoriesRepository {
+    fun bindCategoriesRepository(categoriesRepository: FirebaseCategoriesRepository): ICategoriesRepository
+    //fun bindPlacesRepository(categoriesRepository: SimpleApiCategoriesRepository): ICategoriesRepository
 
-        // Реализация для работы с Firebase Realtime Database
-        return FirebaseCategoriesRepository(categoriesDao)
-
-        // Реализация для работы с Mock API на сервере
-        //return MockApiCategoriesRepository(categoriesDao, placesAPI)
-    }
-
-    @Provides
+    @Binds
     @Singleton
-    fun provideUserRepository(
-        userDao: UserDao,
-        workerService: IWorkerService,
-    ): IUserRepository {
-        return FirebaseUserRepository(userDao, workerService)
-    }
+    fun bindUserRepository(userRepository: FirebaseUserRepository): IUserRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideDataStoreRepository(appContext: Context): IDataStoreRepository {
-        return DataStoreRepository(appContext)
-    }
+    fun bindDataStoreRepository(dataStoreRepository: DataStoreRepository): IDataStoreRepository
 
-    @Provides
-    fun providePlacesDao(appContext: Context): PlacesDao {
-        return PlacesDatabase
-            .getInstance(appContext)
-            .getPlacesDao()
-    }
-
-    @Provides
-    fun provideCategoriesDao(appContext: Context): CategoriesDao {
-        return PlacesDatabase
-            .getInstance(appContext)
-            .getCategoriesDao()
-    }
-
-    @Provides
-    fun provideUserDao(appContext: Context): UserDao {
-        return PlacesDatabase
-            .getInstance(appContext)
-            .getUserDao()
-    }
 }

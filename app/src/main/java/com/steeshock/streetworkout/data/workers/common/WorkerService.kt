@@ -6,8 +6,9 @@ import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.FA
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.USER_ID_DATA
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class WorkerService(private val workManager: WorkManager) : IWorkerService {
+class WorkerService @Inject constructor(private val workManager: WorkManager) : IWorkerService {
 
     override fun syncFavorites(userId: String, locallyFavorites: List<String>) {
         val syncFavoritesRequest = OneTimeWorkRequestBuilder<SyncFavoritesWorker>()
@@ -32,7 +33,11 @@ class WorkerService(private val workManager: WorkManager) : IWorkerService {
     }
 
     override fun isUniqueWorkDone(uniqueWorkName: String): Boolean {
-        val workState = workManager.getWorkInfosForUniqueWork(uniqueWorkName).get().first().state
-        return workState == WorkInfo.State.SUCCEEDED || workState == WorkInfo.State.FAILED
+        return try {
+            val workState = workManager.getWorkInfosForUniqueWork(uniqueWorkName).get().first().state
+            workState == WorkInfo.State.SUCCEEDED || workState == WorkInfo.State.FAILED
+        } catch (e: NoSuchElementException) {
+            true
+        }
     }
 }

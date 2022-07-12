@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -19,7 +20,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Repository for work with Firebase Realtime Database
  */
-open class FirebaseCategoriesRepository(
+open class FirebaseCategoriesRepository @Inject constructor(
     private val categoriesDao: CategoriesDao
 ) : ICategoriesRepository {
 

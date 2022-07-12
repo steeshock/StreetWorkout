@@ -7,11 +7,12 @@ import com.steeshock.streetworkout.data.model.User
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseAuthService : IAuthService {
+class FirebaseAuthService @Inject constructor() : IAuthService {
 
     private var auth: FirebaseAuth = Firebase.auth
 

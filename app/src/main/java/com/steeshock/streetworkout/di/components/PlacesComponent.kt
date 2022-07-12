@@ -12,12 +12,12 @@ import dagger.Subcomponent
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class PlacesModule {
+interface PlacesModule {
     @[Binds IntoMap ViewModelKey(PlacesViewModel::class)]
-    abstract fun bindPlacesViewModel(viewModel: PlacesViewModel): ViewModel
+    fun bindPlacesViewModel(viewModel: PlacesViewModel): ViewModel
 
     @[Binds IntoMap ViewModelKey(AddPlaceViewModel::class)]
-    abstract fun bindAddPlaceViewModel(viewModel: AddPlaceViewModel): ViewModel
+    fun bindAddPlaceViewModel(viewModel: AddPlaceViewModel): ViewModel
 }
 
 @Subcomponent(modules = [PlacesModule::class])
