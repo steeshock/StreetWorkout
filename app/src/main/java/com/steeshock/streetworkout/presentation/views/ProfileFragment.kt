@@ -242,7 +242,7 @@ class ProfileFragment : BaseFragment() {
         binding.loginLayout.passwordEditText.text = null
     }
 
-    private fun getEmail() = binding.loginLayout.emailEditText.text.toString()
+    private fun getEmail() = binding.loginLayout.emailEditText.text.toString().trim()
 
     private fun getPassword() = binding.loginLayout.passwordEditText.text.toString()
 
