@@ -1,11 +1,14 @@
 package com.steeshock.streetworkout.presentation.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
@@ -49,26 +52,31 @@ class FavoritePlacesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        placesAdapter =
-            PlaceAdapter(object :
-                PlaceAdapter.Callback {
-                override fun onPlaceClicked(place: Place) {}
-
-                override fun onLikeClicked(place: Place) {
-                    viewModel.onFavoriteStateChanged(place)
-                    showRollbackSnack(place)
-                }
-
-                override fun onPlaceLocationClicked(place: Place) {
-                    view.findNavController().navigate(
-                        FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
-                            place.placeId)
-                    )
-                }
-            })
-
-        binding.placesRecycler.adapter = placesAdapter
+        initPlacesRecycler()
         initData()
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun initPlacesRecycler() {
+        placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
+            override fun onPlaceClicked(place: Place) {}
+
+            override fun onLikeClicked(place: Place) {
+                viewModel.onFavoriteStateChanged(place)
+                showRollbackSnack(place)
+            }
+
+            override fun onPlaceLocationClicked(place: Place) {
+                view?.findNavController()?.navigate(
+                    FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
+                        place.placeId)
+                )
+            }
+        })
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.list_item_divider, null))
+        binding.placesRecycler.addItemDecoration(dividerItemDecoration)
+        binding.placesRecycler.adapter = placesAdapter
     }
 
     private fun initData() {
