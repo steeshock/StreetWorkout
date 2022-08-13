@@ -85,9 +85,9 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
     // Room
-    implementation("androidx.room:room-runtime:2.4.2")
-    implementation("androidx.room:room-ktx:2.4.2")
-    kapt("androidx.room:room-compiler:2.4.2")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     // RXJava
     implementation("io.reactivex.rxjava3:rxjava:3.0.5")
