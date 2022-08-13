@@ -39,11 +39,16 @@ android {
 }
 
 dependencies {
+
     implementation(projects.design)
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.20")
+    // Retrofit
+    implementation(libs.bundles.retrofit)
 
-    implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
@@ -76,23 +81,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
-
     // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
-
-    // RXJava
-    implementation("io.reactivex.rxjava3:rxjava:3.0.5")
-    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
-    implementation("com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0")
 
     // Maps and location
     implementation("com.google.android.gms:play-services-maps:18.0.2")
@@ -129,5 +119,7 @@ dependencies {
     // WorkManager Kotlin + coroutines
     implementation("androidx.work:work-runtime-ktx:2.7.1")
 
+
+    implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
     implementation("com.github.dhaval2404:imagepicker:2.1")
 }

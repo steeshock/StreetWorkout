@@ -5,11 +5,12 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
+import javax.inject.Inject
 
 /**
  * Repository for work with REST endpoints
  */
-open class SimpleApiCategoriesRepository(
+open class SimpleApiCategoriesRepository @Inject constructor(
     private val categoriesDao: CategoriesDao,
     private val placesAPI: PlacesAPI,
 ) : ICategoriesRepository {
