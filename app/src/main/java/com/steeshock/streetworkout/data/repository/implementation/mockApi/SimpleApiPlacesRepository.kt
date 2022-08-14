@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -22,7 +23,7 @@ import kotlin.coroutines.suspendCoroutine
 /**
  * Repository for work with REST endpoints
  */
-open class SimpleApiPlacesRepository(
+open class SimpleApiPlacesRepository @Inject constructor(
     private val placesDao: PlacesDao,
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {

@@ -1,4 +1,0 @@
-include ':app'
-include ':design'
-rootProject.name = "StreetWorkout"
-

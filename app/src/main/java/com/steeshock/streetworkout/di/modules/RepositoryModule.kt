@@ -32,7 +32,7 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindCategoriesRepository(categoriesRepository: FirebaseCategoriesRepository): ICategoriesRepository
-    //fun bindPlacesRepository(categoriesRepository: SimpleApiCategoriesRepository): ICategoriesRepository
+    //fun bindCategoriesRepository(categoriesRepository: SimpleApiCategoriesRepository): ICategoriesRepository
 
     @Binds
     @Singleton
