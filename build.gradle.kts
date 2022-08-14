@@ -4,10 +4,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.1.2")
-        classpath("com.google.gms:google-services:4.3.10")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.4.1")
+        classpath("com.android.tools.build:gradle:7.1.3")
+        classpath("com.google.gms:google-services:4.3.13")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20")
+    }
+    extra.apply {
+        set("compose_version", "1.0.3")
     }
 }
 

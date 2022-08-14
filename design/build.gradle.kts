@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.appcompat:appcompat:1.4.1")
-    implementation ("com.google.android.material:material:1.6.0")
+    implementation (libs.material)
+    implementation (libs.androidx.coreKtx)
+    implementation (libs.androidx.appcompat)
 }

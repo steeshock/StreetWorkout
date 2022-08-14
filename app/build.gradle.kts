@@ -5,7 +5,6 @@ plugins {
     id("androidx.navigation.safeargs")
     id("com.google.gms.google-services")
 }
-
 android {
     defaultConfig {
         applicationId = "com.steeshock.streetworkout"
@@ -42,64 +41,34 @@ dependencies {
 
     implementation(projects.design)
 
-    implementation(libs.bundles.retrofit)
-    implementation(libs.bundles.lifecycle)
-    implementation(libs.bundles.kotlinx.coroutines)
-    testImplementation(testLibs.bundles.unitTests)
-    testImplementation(testLibs.bundles.instrumentationTests)
-
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
-
-    // Maps and location
+    implementation(libs.material)
+    implementation(libs.dagger)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragmentKtx)
+    implementation(libs.androidx.activityKtx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.workmanager)
     implementation(libs.playServices.maps)
     implementation(libs.playServices.location)
+    implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.androidx.lifecycle)
+    implementation(libs.bundles.kotlinx.coroutines)
+    implementation(libs.bundles.androidx.navigation)
+    implementation(libs.imageSlider)
+    implementation(libs.imagePicker)
 
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:28.2.0"))
-
-    // Firebase Realtime Database
+    implementation(platform(libs.firebaseBom))
     implementation("com.google.firebase:firebase-database-ktx")
-
-    // Firebase Authentication
     implementation("com.google.firebase:firebase-auth-ktx")
-
-    // Declare the dependency for the Cloud Storage library
     implementation("com.google.firebase:firebase-storage-ktx")
 
-    // Support Libraries
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.6.0")
-    implementation ("androidx.legacy:legacy-support-v4:1.0.0")
+    kapt(libs.androidx.room.compiler)
+    kapt(libs.dagger.compiler)
 
-    // Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.4.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.4.2")
-
-    //For runBlockingTest, CoroutineDispatcher etc.
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
-    //For InstantTaskExecutorRule
-    testImplementation("androidx.arch.core:core-testing:2.1.0")
-
-    // Dagger
-    implementation("com.google.dagger:dagger:2.40.5")
-    kapt("com.google.dagger:dagger-compiler:2.40.5")
-
-    // Fragments
-    implementation("androidx.activity:activity-ktx:1.4.0")
-    implementation("androidx.fragment:fragment-ktx:1.4.1")
-
-    // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    // WorkManager Kotlin + coroutines
-    implementation("androidx.work:work-runtime-ktx:2.7.1")
-
-
-    implementation("com.github.denzcoskun:ImageSlideshow:0.1.0")
-    implementation("com.github.dhaval2404:imagepicker:2.1")
+    testImplementation(testLibs.bundles.unitTests)
+    androidTestImplementation(testLibs.bundles.instrumentationTests)
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 }
