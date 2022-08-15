@@ -10,4 +10,5 @@ enum class PlacePayloadType {
     IMAGES_PAYLOAD,
     ADDRESS_PAYLOAD,
     TITLE_PAYLOAD,
+    PLACE_OWNER_PAYLOAD,
 }

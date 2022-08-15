@@ -54,6 +54,7 @@ class PlacesViewModel @Inject constructor(
         }
         mediatorPlaces.addSource(actualPlaces) {
             setupEmptyState()
+            updatePlacesOwnerStates(it)
             mediatorPlaces.value = it.sortedByDescending { i -> i.created }
         }
         setupAppTheme()
@@ -178,5 +179,11 @@ class PlacesViewModel @Inject constructor(
 
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
+    }
+
+    private fun updatePlacesOwnerStates(places: List<Place>) {
+        if (authService.isUserAuthorized) {
+            places.forEach { it.authorizedUserIsPlaceOwner =  it.userId == authService.currentUserId}
+        }
     }
 }

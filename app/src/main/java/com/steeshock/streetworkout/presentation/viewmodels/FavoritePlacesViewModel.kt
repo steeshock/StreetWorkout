@@ -9,6 +9,7 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
+import com.steeshock.streetworkout.services.auth.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class FavoritePlacesViewModel @Inject constructor(
     placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
+    private val authService: IAuthService,
 ) : ViewModel(),
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
@@ -38,6 +40,7 @@ class FavoritePlacesViewModel @Inject constructor(
         }
         mediatorPlaces.addSource(actualPlaces) {
             setupEmptyState()
+            updatePlacesOwnerStates(it)
             mediatorPlaces.value = it.sortedByDescending { i -> i.created }
         }
     }
@@ -105,6 +108,12 @@ class FavoritePlacesViewModel @Inject constructor(
                     copy(emptyState = EmptyViewState.NOT_EMPTY)
                 }
             }
+        }
+    }
+
+    private fun updatePlacesOwnerStates(places: List<Place>) {
+        if (authService.isUserAuthorized) {
+            places.forEach { it.authorizedUserIsPlaceOwner =  it.userId == authService.currentUserId}
         }
     }
 }

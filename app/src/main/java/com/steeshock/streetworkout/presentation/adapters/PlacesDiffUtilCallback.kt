@@ -20,7 +20,7 @@ class PlacesDiffUtilCallback(
         return oldList[oldItemPosition]== newList[newItemPosition]
     }
 
-    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {
         val payloads: MutableList<PlacePayloadType> = mutableListOf()
         if (oldList[oldItemPosition].isFavorite != newList[newItemPosition].isFavorite) {
             payloads.add(FAVORITE_PAYLOAD)
@@ -33,6 +33,9 @@ class PlacesDiffUtilCallback(
         }
         if (oldList[oldItemPosition].address != newList[newItemPosition].address) {
             payloads.add(ADDRESS_PAYLOAD)
+        }
+        if (oldList[oldItemPosition].authorizedUserIsPlaceOwner != newList[newItemPosition].authorizedUserIsPlaceOwner) {
+            payloads.add(PLACE_OWNER_PAYLOAD)
         }
         return payloads
     }

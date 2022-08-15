@@ -10,6 +10,7 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.PlaceItemBinding
+import com.steeshock.streetworkout.extensions.toVisibility
 import com.steeshock.streetworkout.presentation.adapters.PlacePayloadType.*
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
@@ -38,6 +39,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
                         }
                         ADDRESS_PAYLOAD -> {
                             holder.bindAddress(items[position])
+                        }
+                        PLACE_OWNER_PAYLOAD -> {
+                            holder.bindPlaceOwnerState(items[position])
                         }
                         IMAGES_PAYLOAD,
                         TITLE_PAYLOAD,
@@ -76,6 +80,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
                 bindAddress(item)
                 bindImageSlider(item)
                 bindFavoriteState(item)
+                bindPlaceOwnerState(item)
             }
         }
 
@@ -119,6 +124,10 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             } else {
                 binding.likeImageView.setImageResource(R.drawable.ic_heart_gray_36dp)
             }
+        }
+
+        fun bindPlaceOwnerState(item: Place) {
+            binding.deletePlaceButton.visibility = item.authorizedUserIsPlaceOwner.toVisibility()
         }
     }
 

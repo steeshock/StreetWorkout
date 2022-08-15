@@ -42,6 +42,11 @@ data class Place(
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,
 
+    /**
+     * true if current authorized user created this place
+     */
+    var authorizedUserIsPlaceOwner: Boolean = false,
+
     ) {
     init {
         if (title.isEmpty()) title = "Случайное место"
