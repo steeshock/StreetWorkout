@@ -76,7 +76,7 @@ class FavoritePlacesViewModel @Inject constructor(
     }
 
     fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized && place.authorizedUserIsPlaceOwner) {
+        if (authService.isUserAuthorized && place.isUserPlaceOwner) {
             postViewEvent(PlacesViewEvent.ShowDeletePlaceAlert(place))
         }
     }
@@ -130,7 +130,7 @@ class FavoritePlacesViewModel @Inject constructor(
 
     private fun updatePlacesOwnerStates(places: List<Place>) {
         if (authService.isUserAuthorized) {
-            places.forEach { it.authorizedUserIsPlaceOwner =  it.userId == authService.currentUserId}
+            places.forEach { it.isUserPlaceOwner =  it.userId == authService.currentUserId}
         }
     }
 }

@@ -34,21 +34,17 @@ open class FirebasePlacesRepository @Inject constructor(
         return suspendCoroutine { continuation ->
             val database = Firebase.database(FIREBASE_PATH)
             val places: MutableList<Place> = mutableListOf()
-
             database.getReference("places").get().addOnSuccessListener {
-
                 for (child in it.children) {
                     val place = child.getValue<Place>()
                     val isFavorite = allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
                     place?.isFavorite = isFavorite == true
                     place?.let { p -> places.add(p) }
                 }
-
                 CoroutineScope(Dispatchers.IO).launch {
                     placesDao.insertAllPlaces(places)
                     continuation.resume(true)
                 }
-
             }.addOnFailureListener {
                 continuation.resumeWithException(it)
             }

@@ -34,7 +34,7 @@ class PlacesDiffUtilCallback(
         if (oldList[oldItemPosition].address != newList[newItemPosition].address) {
             payloads.add(ADDRESS_PAYLOAD)
         }
-        if (oldList[oldItemPosition].authorizedUserIsPlaceOwner != newList[newItemPosition].authorizedUserIsPlaceOwner) {
+        if (oldList[oldItemPosition].isUserPlaceOwner != newList[newItemPosition].isUserPlaceOwner) {
             payloads.add(PLACE_OWNER_PAYLOAD)
         }
         return payloads

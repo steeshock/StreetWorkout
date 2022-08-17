@@ -130,7 +130,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
 
         fun bindPlaceOwnerState(item: Place) {
-            binding.deletePlaceButton.visibility = item.authorizedUserIsPlaceOwner.toVisibility()
+            binding.deletePlaceButton.visibility = item.isUserPlaceOwner.toVisibility()
         }
     }
 
