@@ -17,7 +17,7 @@ import java.util.*
 import javax.inject.Inject
 
 class FavoritePlacesViewModel @Inject constructor(
-    placesRepository: IPlacesRepository,
+    private val placesRepository: IPlacesRepository,
     private val favoritesInteractor: IFavoritesInteractor,
     private val authService: IAuthService,
 ) : ViewModel(),
@@ -73,6 +73,23 @@ class FavoritePlacesViewModel @Inject constructor(
         if (!lastSearchString.isNullOrEmpty()) {
             filterDataBySearchString(null)
         }
+    }
+
+    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && place.authorizedUserIsPlaceOwner) {
+            postViewEvent(PlacesViewEvent.ShowDeletePlaceAlert(place))
+        }
+    }
+
+    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
+    }) {
+        updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
+        if (placesRepository.deletePlace(place)) {
+            postViewEvent(PlacesViewEvent.ShowDeletePlaceSuccess)
+        }
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
     }
 
     private fun filterData() {

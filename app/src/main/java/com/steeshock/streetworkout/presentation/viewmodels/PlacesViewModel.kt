@@ -110,8 +110,7 @@ class PlacesViewModel @Inject constructor(
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
     }) {
         updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
-        val successResult = placesRepository.deletePlace(place)
-        if (successResult) {
+        if (placesRepository.deletePlace(place)) {
             postViewEvent(ShowDeletePlaceSuccess)
         }
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }

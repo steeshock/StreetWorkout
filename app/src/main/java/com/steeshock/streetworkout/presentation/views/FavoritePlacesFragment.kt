@@ -15,6 +15,7 @@ import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.streetworkout.extensions.gone
+import com.steeshock.streetworkout.extensions.showAlertDialog
 import com.steeshock.streetworkout.extensions.visible
 import com.steeshock.streetworkout.presentation.adapters.PlaceAdapter
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
@@ -74,7 +75,7 @@ class FavoritePlacesFragment : BaseFragment() {
             }
 
             override fun onPlaceDeleteClicked(place: Place) {
-                TODO("Not yet implemented")
+                viewModel.onPlaceDeleteClicked(place)
             }
         })
         val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
@@ -105,6 +106,7 @@ class FavoritePlacesFragment : BaseFragment() {
 
     private fun renderViewState(viewState: PlacesViewState) {
         binding.refresher.isRefreshing = viewState.isPlacesLoading
+        setFullscreenLoader(viewState.showFullscreenLoader)
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()
@@ -125,8 +127,13 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     private fun renderViewEvent(viewEvent: PlacesViewEvent) {
-        if (viewEvent == PlacesViewEvent.NoInternetConnection) {
-            view.showNoInternetSnackbar()
+        when (viewEvent) {
+            PlacesViewEvent.NoInternetConnection -> {
+                view.showNoInternetSnackbar()
+            }
+            is PlacesViewEvent.ShowDeletePlaceAlert -> {
+                showDeletePlaceAlert(viewEvent.place)
+            }
         }
     }
 
@@ -171,6 +178,16 @@ class FavoritePlacesFragment : BaseFragment() {
             message = "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
             action = { viewModel.returnPlaceToFavorites(item) },
             actionText = getString(R.string.rollback_place),
+        )
+    }
+
+    private fun showDeletePlaceAlert(place: Place) {
+        requireActivity().showAlertDialog(
+            title = getString(R.string.attention_title),
+            message = getString(R.string.delete_place_dialog_message),
+            positiveText = getString(R.string.ok_item),
+            negativeText = getString(R.string.cancel_item),
+            onPositiveAction = { viewModel.deletePlace(place) },
         )
     }
 
