@@ -13,7 +13,7 @@ import com.steeshock.streetworkout.services.permissions.PermissionsDelegate
 import com.steeshock.streetworkout.services.permissions.PermissionsDelegateImpl
 
 @OptIn(NavigationUiSaveStateControl::class)
-class MainActivity : AppCompatActivity(), IBaseline,
+class MainActivity : AppCompatActivity(), IMainActivity,
     PermissionsDelegate by PermissionsDelegateImpl() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -23,8 +23,7 @@ class MainActivity : AppCompatActivity(), IBaseline,
         setContentView(binding.root)
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
         NavigationUI.setupWithNavController(navView, navController, false)
@@ -37,12 +36,16 @@ class MainActivity : AppCompatActivity(), IBaseline,
     override fun getTopBaseline() = binding.topBaseline
 
     override fun getNavBarBaseline() = binding.navView
+
+    override fun getFullscreenLoader() = binding.fullscreenLoader
 }
 
-interface IBaseline {
+interface IMainActivity {
     fun getBottomBaseline(): View?
 
     fun getTopBaseline(): View?
 
     fun getNavBarBaseline(): View?
+
+    fun getFullscreenLoader(): View?
 }

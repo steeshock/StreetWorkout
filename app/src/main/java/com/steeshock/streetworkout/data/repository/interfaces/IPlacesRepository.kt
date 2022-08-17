@@ -46,6 +46,11 @@ interface IPlacesRepository {
     suspend fun updatePlace(place: Place)
 
     /**
+     * Delete place in local and remote storage
+     */
+    suspend fun deletePlace(place: Place): Boolean
+
+    /**
      * Remove all data from Places table
      */
     suspend fun clearPlacesTable()

@@ -72,6 +72,10 @@ class FavoritePlacesFragment : BaseFragment() {
                         place.placeId)
                 )
             }
+
+            override fun onPlaceDeleteClicked(place: Place) {
+                TODO("Not yet implemented")
+            }
         })
         val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.list_item_divider, null))
@@ -100,7 +104,7 @@ class FavoritePlacesFragment : BaseFragment() {
     }
 
     private fun renderViewState(viewState: PlacesViewState) {
-        binding.refresher.isRefreshing = viewState.isLoading
+        binding.refresher.isRefreshing = viewState.isPlacesLoading
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()

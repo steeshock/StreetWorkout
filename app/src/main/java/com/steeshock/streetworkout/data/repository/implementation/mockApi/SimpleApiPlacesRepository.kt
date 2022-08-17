@@ -84,6 +84,10 @@ open class SimpleApiPlacesRepository @Inject constructor(
         placesDao.updatePlace(place)
     }
 
+    override suspend fun deletePlace(place: Place): Boolean {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun clearPlacesTable() {
         placesDao.clearPlacesTable()
     }

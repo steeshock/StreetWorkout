@@ -47,12 +47,12 @@ class FavoritePlacesViewModel @Inject constructor(
 
     fun updateFavoritePlaces() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
-        updateViewState(postValue = true) { copy(isLoading = false) }
+        updateViewState(postValue = true) { copy(isPlacesLoading = false) }
     }) {
         coroutineScope {
-            updateViewState(postValue = true) { copy(isLoading = true) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = true) }
             favoritesInteractor.syncFavoritePlaces(softSync = false, reloadUserData = true)
-            updateViewState(postValue = true) { copy(isLoading = false) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = false) }
         }
     }
 

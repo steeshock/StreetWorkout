@@ -33,4 +33,7 @@ interface PlacesDao {
 
     @Update
     fun updatePlace(place: Place)
+
+    @Delete
+    fun deletePlace(place: Place)
 }

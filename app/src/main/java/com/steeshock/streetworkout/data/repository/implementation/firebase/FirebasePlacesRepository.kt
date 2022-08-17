@@ -12,7 +12,6 @@ import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -25,7 +24,7 @@ import kotlin.coroutines.suspendCoroutine
  * Repository for work with Firebase Realtime Database
  */
 open class FirebasePlacesRepository @Inject constructor(
-    private val placesDao: PlacesDao
+    private val placesDao: PlacesDao,
 ) : IPlacesRepository {
 
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
@@ -92,6 +91,24 @@ open class FirebasePlacesRepository @Inject constructor(
 
     override suspend fun updatePlace(place: Place) {
         placesDao.updatePlace(place)
+    }
+
+    override suspend fun deletePlace(place: Place): Boolean {
+        return suspendCoroutine { continuation ->
+            val database = Firebase.database(FIREBASE_PATH)
+            database.getReference("places").child(place.placeId).get()
+                .addOnSuccessListener { dataSnapshot ->
+                    dataSnapshot.ref.removeValue().addOnSuccessListener {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            placesDao.deletePlace(place)
+                            continuation.resume(true)
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
     }
 
     override suspend fun clearPlacesTable() {

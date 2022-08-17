@@ -52,10 +52,6 @@ class AddPlaceFragment : BaseFragment() {
         context?.appComponent?.providePlacesComponent()?.inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -187,23 +183,27 @@ class AddPlaceFragment : BaseFragment() {
                     resources.getString(R.string.required_field_empty_error)
             }
             SuccessValidation -> {
-                requireActivity().showAlertDialog(
-                    title = getString(R.string.attention_title),
-                    message = getString(R.string.publish_permission_dialog_message),
-                    positiveText = getString(R.string.ok_item),
-                    negativeText = getString(R.string.cancel_item),
-                    onPositiveAction = { viewModel.onAddNewPlace(
-                        title = binding.placeTitle.text.toString(),
-                        description = binding.placeDescription.text.toString(),
-                        position = binding.placePositionInput.textInput.text.toString(),
-                        address = binding.placeAddress.text.toString(),
-                    )},
-                )
+                showPublishPlaceAlertDialog()
             }
             is LocationResult -> {
                 handleLocationEvent(viewEvent)
             }
         }
+    }
+
+    private fun showPublishPlaceAlertDialog() {
+        requireActivity().showAlertDialog(
+            title = getString(R.string.attention_title),
+            message = getString(R.string.publish_permission_dialog_message),
+            positiveText = getString(R.string.ok_item),
+            negativeText = getString(R.string.cancel_item),
+            onPositiveAction = { viewModel.onAddNewPlace(
+                title = binding.placeTitle.text.toString(),
+                description = binding.placeDescription.text.toString(),
+                position = binding.placePositionInput.textInput.text.toString(),
+                address = binding.placeAddress.text.toString(),
+            )},
+        )
     }
 
     private fun getImagesHint(selectedImagesCount: Int): String {

@@ -73,6 +73,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             binding.locationImageView.setOnClickListener {
                 callback.onPlaceLocationClicked(items[layoutPosition])
             }
+            binding.deletePlaceButton.setOnClickListener {
+                callback.onPlaceDeleteClicked(items[layoutPosition])
+            }
         }
 
         fun bind(item: Place) {
@@ -135,5 +138,6 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         fun onPlaceClicked(place: Place)
         fun onLikeClicked(place: Place)
         fun onPlaceLocationClicked(place: Place)
+        fun onPlaceDeleteClicked(place: Place)
     }
 }

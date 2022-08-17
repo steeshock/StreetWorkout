@@ -1,5 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewStates.places
 
+import com.steeshock.streetworkout.data.model.Place
+
 /**
  * Single view events for Places page
  */
@@ -18,6 +20,16 @@ sealed class PlacesViewEvent {
      * Show alert when add to favorites for non-authorized users
      */
     object ShowAddToFavoritesAuthAlert : PlacesViewEvent()
+
+    /**
+     * Show alert when user try to delete place
+     */
+    data class ShowDeletePlaceAlert(val place: Place) : PlacesViewEvent()
+
+    /**
+     * Show snackbar if place deleted successfully
+     */
+    object ShowDeletePlaceSuccess : PlacesViewEvent()
 
     /**
      * Show notification when there is no active internet connection

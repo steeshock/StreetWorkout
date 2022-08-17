@@ -62,16 +62,16 @@ class PlacesViewModel @Inject constructor(
 
     fun fetchData() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
-        updateViewState(postValue = true) { copy(isLoading = false) }
+        updateViewState(postValue = true) { copy(isPlacesLoading = false) }
     }) {
         coroutineScope {
-            updateViewState(postValue = true) { copy(isLoading = true) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = true) }
             awaitAll(
                 async { placesRepository.fetchPlaces() },
                 async { categoriesRepository.fetchCategories() }
             )
             favoritesInteractor.syncFavoritePlaces()
-            updateViewState(postValue = true) { copy(isLoading = false) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = false) }
         }
     }
 
@@ -79,24 +79,6 @@ class PlacesViewModel @Inject constructor(
     fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
         placesRepository.clearPlacesTable()
         categoriesRepository.clearCategoriesTable()
-    }
-
-    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        if (!authService.isUserAuthorized && !place.isFavorite) {
-            postViewEvent(ShowAddToFavoritesAuthAlert)
-        }
-        favoritesInteractor.updatePlaceFavoriteState(place)
-    }
-
-    fun onFilterByCategory(category: Category) {
-        category.changeSelectedState()
-        if (filterList.find { it.category_name == category.category_name } != null) {
-            filterList.remove(category)
-        } else {
-            filterList.add(category)
-        }
-        filterData(filterList)
-        updateCategory(category)
     }
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
@@ -108,6 +90,42 @@ class PlacesViewModel @Inject constructor(
                 postViewEvent(ShowAddPlaceAuthAlert)
             }
         }
+    }
+
+    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (!authService.isUserAuthorized && !place.isFavorite) {
+            postViewEvent(ShowAddToFavoritesAuthAlert)
+        }
+        favoritesInteractor.updatePlaceFavoriteState(place)
+    }
+
+    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && place.authorizedUserIsPlaceOwner) {
+            postViewEvent(ShowDeletePlaceAlert(place))
+        }
+    }
+
+    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
+    }) {
+        updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
+        val successResult = placesRepository.deletePlace(place)
+        if (successResult) {
+            postViewEvent(ShowDeletePlaceSuccess)
+        }
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
+    }
+
+    fun onFilterByCategory(category: Category) {
+        category.changeSelectedState()
+        if (filterList.find { it.category_name == category.category_name } != null) {
+            filterList.remove(category)
+        } else {
+            filterList.add(category)
+        }
+        filterData(filterList)
+        updateCategory(category)
     }
 
     fun resetSearchFilter() {
