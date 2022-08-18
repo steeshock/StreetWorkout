@@ -199,8 +199,12 @@ class PlacesViewModel @Inject constructor(
     }
 
     private fun updatePlacesOwnerStates(places: List<Place>) {
-        if (authService.isUserAuthorized) {
-            places.forEach { it.isUserPlaceOwner =  it.userId == authService.currentUserId}
+        places.forEach {
+            it.isUserPlaceOwner = if (authService.isUserAuthorized) {
+                it.userId == authService.currentUserId
+            } else {
+                false
+            }
         }
     }
 }
