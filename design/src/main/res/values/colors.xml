@@ -11,4 +11,5 @@
     <color name="lightGrayColor">#ABABAB</color>
     <color name="greenColor">#8bf70a</color>
     <color name="blackColor">#000000</color>
+    <color name="loader_background_color">#8FFFFFFF</color>
 </resources>

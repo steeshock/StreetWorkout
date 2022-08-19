@@ -82,6 +82,10 @@ class PlacesFragment : BaseFragment() {
             override fun onPlaceLocationClicked(place: Place) {
                 navigateToMap(place)
             }
+
+            override fun onPlaceDeleteClicked(place: Place) {
+                viewModel.onPlaceDeleteClicked(place)
+            }
         })
         val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.list_item_divider, null))
@@ -125,7 +129,8 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun renderViewState(viewState: PlacesViewState) {
-        binding.refresher.isRefreshing = viewState.isLoading
+        binding.refresher.isRefreshing = viewState.isPlacesLoading
+        setFullscreenLoader(viewState.showFullscreenLoader)
         when (viewState.emptyState) {
             EMPTY_PLACES -> {
                 binding.placesRecycler.gone()
@@ -159,6 +164,12 @@ class PlacesFragment : BaseFragment() {
             NoInternetConnection -> {
                 view.showNoInternetSnackbar()
             }
+            is ShowDeletePlaceAlert -> {
+                showDeletePlaceAlert(viewEvent.place)
+            }
+            ShowDeletePlaceSuccess -> {
+                showDeletePlaceSuccess()
+            }
         }
     }
 
@@ -182,6 +193,20 @@ class PlacesFragment : BaseFragment() {
             actionText = getString(R.string.login_title),
             action = { navigateToProfile() }
         )
+    }
+
+    private fun showDeletePlaceAlert(place: Place) {
+        requireActivity().showAlertDialog(
+            title = getString(R.string.attention_title),
+            message = getString(R.string.delete_place_dialog_message),
+            positiveText = getString(R.string.ok_item),
+            negativeText = getString(R.string.cancel_item),
+            onPositiveAction = { viewModel.deletePlace(place) },
+        )
+    }
+
+    private fun showDeletePlaceSuccess() {
+        view.showSnackbar(getString(R.string.delete_place_success_message))
     }
 
     private fun navigateToMap(place: Place) {

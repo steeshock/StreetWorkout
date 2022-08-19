@@ -7,11 +7,11 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.presentation.delegates.SnackbarPosition.*
-import com.steeshock.streetworkout.presentation.views.IBaseline
+import com.steeshock.streetworkout.presentation.views.IMainActivity
 
 interface SnackbarDelegate {
 
-    fun registerSnackbarDelegate(baseline: IBaseline)
+    fun registerSnackbarDelegate(baseline: IMainActivity)
 
     fun View?.showSnackbar(
         message: String?,
@@ -31,9 +31,9 @@ interface SnackbarDelegate {
 
 class SnackbarDelegateImpl : SnackbarDelegate {
 
-    private lateinit var baseline: IBaseline
+    private lateinit var baseline: IMainActivity
 
-    override fun registerSnackbarDelegate(baseline: IBaseline) {
+    override fun registerSnackbarDelegate(baseline: IMainActivity) {
         this.baseline = baseline
     }
 

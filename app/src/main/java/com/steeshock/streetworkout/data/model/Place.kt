@@ -39,8 +39,16 @@ data class Place(
     @ColumnInfo(name = "images")
     var images: List<String>? = null,
 
+    /**
+     * true if place added to favorites list
+     */
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean = false,
+
+    /**
+     * true if current authorized user created this place
+     */
+    var isUserPlaceOwner: Boolean = false,
 
     ) {
     init {

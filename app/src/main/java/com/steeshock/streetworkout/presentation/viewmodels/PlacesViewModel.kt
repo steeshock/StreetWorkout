@@ -54,6 +54,7 @@ class PlacesViewModel @Inject constructor(
         }
         mediatorPlaces.addSource(actualPlaces) {
             setupEmptyState()
+            updatePlacesOwnerStates(it)
             mediatorPlaces.value = it.sortedByDescending { i -> i.created }
         }
         setupAppTheme()
@@ -61,16 +62,16 @@ class PlacesViewModel @Inject constructor(
 
     fun fetchData() = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
-        updateViewState(postValue = true) { copy(isLoading = false) }
+        updateViewState(postValue = true) { copy(isPlacesLoading = false) }
     }) {
         coroutineScope {
-            updateViewState(postValue = true) { copy(isLoading = true) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = true) }
             awaitAll(
                 async { placesRepository.fetchPlaces() },
                 async { categoriesRepository.fetchCategories() }
             )
             favoritesInteractor.syncFavoritePlaces()
-            updateViewState(postValue = true) { copy(isLoading = false) }
+            updateViewState(postValue = true) { copy(isPlacesLoading = false) }
         }
     }
 
@@ -78,24 +79,6 @@ class PlacesViewModel @Inject constructor(
     fun clearDatabase() = viewModelScope.launch(Dispatchers.IO) {
         placesRepository.clearPlacesTable()
         categoriesRepository.clearCategoriesTable()
-    }
-
-    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        if (!authService.isUserAuthorized && !place.isFavorite) {
-            postViewEvent(ShowAddToFavoritesAuthAlert)
-        }
-        favoritesInteractor.updatePlaceFavoriteState(place)
-    }
-
-    fun onFilterByCategory(category: Category) {
-        category.changeSelectedState()
-        if (filterList.find { it.category_name == category.category_name } != null) {
-            filterList.remove(category)
-        } else {
-            filterList.add(category)
-        }
-        filterData(filterList)
-        updateCategory(category)
     }
 
     fun onAddNewPlaceClicked() = viewModelScope.launch(Dispatchers.IO) {
@@ -107,6 +90,41 @@ class PlacesViewModel @Inject constructor(
                 postViewEvent(ShowAddPlaceAuthAlert)
             }
         }
+    }
+
+    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (!authService.isUserAuthorized && !place.isFavorite) {
+            postViewEvent(ShowAddToFavoritesAuthAlert)
+        }
+        favoritesInteractor.updatePlaceFavoriteState(place)
+    }
+
+    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && place.isUserPlaceOwner) {
+            postViewEvent(ShowDeletePlaceAlert(place))
+        }
+    }
+
+    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+        postViewEvent(NoInternetConnection)
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
+    }) {
+        updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
+        if (placesRepository.deletePlace(place)) {
+            postViewEvent(ShowDeletePlaceSuccess)
+        }
+        updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
+    }
+
+    fun onFilterByCategory(category: Category) {
+        category.changeSelectedState()
+        if (filterList.find { it.category_name == category.category_name } != null) {
+            filterList.remove(category)
+        } else {
+            filterList.add(category)
+        }
+        filterData(filterList)
+        updateCategory(category)
     }
 
     fun resetSearchFilter() {
@@ -178,5 +196,15 @@ class PlacesViewModel @Inject constructor(
 
     private fun updateCategory(category: Category) = viewModelScope.launch(Dispatchers.IO) {
         categoriesRepository.updateCategory(category)
+    }
+
+    private fun updatePlacesOwnerStates(places: List<Place>) {
+        places.forEach {
+            it.isUserPlaceOwner = if (authService.isUserAuthorized) {
+                it.userId == authService.currentUserId
+            } else {
+                false
+            }
+        }
     }
 }

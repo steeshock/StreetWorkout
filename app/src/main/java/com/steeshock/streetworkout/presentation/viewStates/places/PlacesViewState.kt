@@ -7,7 +7,9 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
  */
 data class PlacesViewState(
 
-    val isLoading: Boolean = false,
+    val isPlacesLoading: Boolean = false,
+
+    val showFullscreenLoader: Boolean = false,
 
     val emptyState: EmptyViewState = EmptyViewState.NOT_EMPTY,
 )

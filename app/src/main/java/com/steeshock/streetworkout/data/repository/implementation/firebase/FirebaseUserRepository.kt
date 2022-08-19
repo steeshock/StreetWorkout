@@ -22,9 +22,7 @@ class FirebaseUserRepository @Inject constructor(
 ) : IUserRepository {
 
     override suspend fun getOrCreateUser(signedUser: User): User? {
-        return fetchUser(signedUser.userId) ?: createUser(signedUser.userId,
-            signedUser.displayName,
-            signedUser.email)
+        return fetchUser(signedUser.userId) ?: createUser(signedUser.userId, signedUser.displayName, signedUser.email)
     }
 
     override suspend fun getUserFavorites(userId: String): List<String> {

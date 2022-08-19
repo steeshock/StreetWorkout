@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.streetworkout.data.database.PlacesDao
@@ -15,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -25,7 +28,7 @@ import kotlin.coroutines.suspendCoroutine
  * Repository for work with Firebase Realtime Database
  */
 open class FirebasePlacesRepository @Inject constructor(
-    private val placesDao: PlacesDao
+    private val placesDao: PlacesDao,
 ) : IPlacesRepository {
 
     override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
@@ -35,21 +38,18 @@ open class FirebasePlacesRepository @Inject constructor(
         return suspendCoroutine { continuation ->
             val database = Firebase.database(FIREBASE_PATH)
             val places: MutableList<Place> = mutableListOf()
-
             database.getReference("places").get().addOnSuccessListener {
-
                 for (child in it.children) {
                     val place = child.getValue<Place>()
-                    val isFavorite = allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
+                    val isFavorite =
+                        allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
                     place?.isFavorite = isFavorite == true
                     place?.let { p -> places.add(p) }
                 }
-
                 CoroutineScope(Dispatchers.IO).launch {
                     placesDao.insertAllPlaces(places)
                     continuation.resume(true)
                 }
-
             }.addOnFailureListener {
                 continuation.resumeWithException(it)
             }
@@ -94,6 +94,24 @@ open class FirebasePlacesRepository @Inject constructor(
         placesDao.updatePlace(place)
     }
 
+    //TODO Do requests in parallel
+    override suspend fun deletePlace(place: Place): Boolean {
+        return suspendCoroutine { continuation ->
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    if (removePlaceRemote(place) && removeRelatedImagesRemote(place)) {
+                        placesDao.deletePlace(place)
+                        continuation.resume(true)
+                    } else {
+                        continuation.resume(false)
+                    }
+                } catch (e: Exception) {
+                    continuation.resumeWithException(e)
+                }
+            }
+        }
+    }
+
     override suspend fun clearPlacesTable() {
         placesDao.clearPlacesTable()
     }
@@ -109,6 +127,58 @@ open class FirebasePlacesRepository @Inject constructor(
         placesDao.getAllPlaces().apply {
             forEach { it.isFavorite = false }
             placesDao.insertAllPlaces(this)
+        }
+    }
+
+    private suspend fun removePlaceRemote(place: Place): Boolean {
+        return suspendCoroutine { continuation ->
+            val database = Firebase.database(FIREBASE_PATH)
+            database.getReference("places").child(place.placeId).get()
+                .addOnSuccessListener { dataSnapshot ->
+                    dataSnapshot.ref.removeValue().addOnSuccessListener {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            continuation.resume(true)
+                        }
+                    }
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    /**
+     * Try to delete place's related images from Firebase Storage
+     * If images doesn't exist - Firebase returns error code -13010
+     */
+    private suspend fun removeRelatedImagesRemote(place: Place): Boolean {
+        return suspendCoroutine { continuation ->
+            Firebase.storage.reference.child(place.placeId).listAll()
+                .addOnSuccessListener { images ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        images.items.forEach { deleteSingleImage(it) }
+                        continuation.resume(true)
+                    }
+                }
+                .addOnFailureListener {
+                    if ((it as? StorageException)?.errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                        continuation.resume(true)
+                    } else {
+                        continuation.resumeWithException(it)
+                    }
+                }
+        }
+    }
+
+    private suspend fun deleteSingleImage(storageReference: StorageReference): Boolean {
+        return suspendCoroutine { continuation ->
+            storageReference.delete()
+                .addOnSuccessListener {
+                    continuation.resume(true)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
         }
     }
 }
