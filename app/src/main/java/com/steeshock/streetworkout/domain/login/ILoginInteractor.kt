@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.domain.login
 
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.services.auth.IAuthService
 
 /**

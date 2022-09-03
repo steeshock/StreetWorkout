@@ -3,7 +3,9 @@ package com.steeshock.streetworkout.services.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.mappers.UserMapper.mapToModel
+import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
@@ -47,12 +49,12 @@ class FirebaseAuthService @Inject constructor() : IAuthService {
                     )
                 }
             }.addOnSuccessListener {
-                val user = User(
+                val user = UserDto(
                     userId = currentUserId,
                     displayName = currentUserDisplayName,
                     email = currentUserEmail,
                 )
-                continuation.resume(user)
+                continuation.resume(user.mapToModel())
             }.addOnFailureListener {
                 continuation.resumeWithException(it)
             }

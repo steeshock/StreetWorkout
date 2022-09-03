@@ -7,7 +7,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
 import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 
@@ -35,7 +35,7 @@ class SyncFavoritesWorker(appContext: Context, private val workerParams: WorkerP
         val userByIdRef = database.getReference("users").child(userId)
         userByIdRef.get()
             .addOnSuccessListener { snapshot ->
-                workResult = snapshot.getValue<User>()?.let {
+                workResult = snapshot.getValue<UserDto>()?.let {
                     val updatedUser = it.copy(favorites = favorites)
                     userByIdRef.setValue(updatedUser)
                     Result.success()

@@ -2,10 +2,10 @@ package com.steeshock.streetworkout.domain.favorites
 
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
+import com.steeshock.streetworkout.domain.repository.IUserRepository
 import com.steeshock.streetworkout.services.auth.IAuthService
 import javax.inject.Inject
 

@@ -9,11 +9,11 @@ import com.steeshock.streetworkout.data.converters.ArrayIntConverter
 import com.steeshock.streetworkout.data.converters.ListStringConverter
 import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
 
 
 @Database(
-    entities = [Place::class, Category::class, User::class],
+    entities = [Place::class, Category::class, UserDto::class],
     version = 1,
     exportSchema = false
 )

@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.domain.login
 
-import com.steeshock.streetworkout.data.model.User
-import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.services.auth.IAuthService
 import com.steeshock.streetworkout.services.auth.UserCredentials
 import javax.inject.Inject

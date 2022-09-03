@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
 import com.steeshock.streetworkout.databinding.FragmentProfileBinding
+import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.extensions.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*

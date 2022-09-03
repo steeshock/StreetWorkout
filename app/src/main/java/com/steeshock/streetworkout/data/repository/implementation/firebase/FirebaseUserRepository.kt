@@ -5,9 +5,11 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
-import com.steeshock.streetworkout.data.model.User
-import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
+import com.steeshock.streetworkout.data.mappers.mapToModel
+import com.steeshock.streetworkout.data.model.UserDto
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.repository.IUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,7 +51,7 @@ class FirebaseUserRepository @Inject constructor(
     }
 
     private suspend fun updateUserFavoritesLocally(
-        localUser: User,
+        localUserDto: UserDto,
         favorites: List<String>? = null,
         favoritePlaceId: String? = null,
     ): List<String> {
@@ -57,7 +59,7 @@ class FirebaseUserRepository @Inject constructor(
             val newFavorites = arrayListOf<String>().apply {
                 when {
                     favoritePlaceId != null -> {
-                        val userFavorites = localUser.favorites?.toMutableList() ?: mutableListOf()
+                        val userFavorites = localUserDto.favorites?.toMutableList() ?: mutableListOf()
                         when {
                             userFavorites.contains(favoritePlaceId) -> {
                                 userFavorites.remove(favoritePlaceId)
@@ -74,7 +76,7 @@ class FirebaseUserRepository @Inject constructor(
                 }
             }
             CoroutineScope(Dispatchers.IO).launch {
-                userDao.updateUser(localUser.copy(favorites = newFavorites))
+                userDao.updateUser(localUserDto.copy(favorites = newFavorites))
             }.invokeOnCompletion {
                 continuation.resume(newFavorites)
             }
@@ -85,13 +87,13 @@ class FirebaseUserRepository @Inject constructor(
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
             val newUserRef = database.getReference("users").child(userId)
-            val user = User(userId, displayName, email)
+            val user = UserDto(userId, displayName, email)
             newUserRef.setValue(user)
                 .addOnSuccessListener {
                     CoroutineScope(Dispatchers.IO).launch {
                         userDao.insertUser(user)
                     }.invokeOnCompletion {
-                        continuation.resume(user)
+                        continuation.resume(user.mapToModel())
                     }
                 }
                 .addOnFailureListener {
@@ -106,7 +108,7 @@ class FirebaseUserRepository @Inject constructor(
             val userByIdRef = database.getReference("users").child(userId)
             userByIdRef.get()
                 .addOnSuccessListener { snapshot ->
-                    when (val existentUser = snapshot.getValue<User>()) {
+                    when (val existentUser = snapshot.getValue<UserDto>()) {
                         null -> {
                             continuation.resume(existentUser)
                         }
@@ -114,7 +116,7 @@ class FirebaseUserRepository @Inject constructor(
                             CoroutineScope(Dispatchers.IO).launch {
                                 userDao.insertUser(existentUser)
                             }.invokeOnCompletion {
-                                continuation.resume(existentUser)
+                                continuation.resume(existentUser.mapToModel())
                             }
                         }
                     }
