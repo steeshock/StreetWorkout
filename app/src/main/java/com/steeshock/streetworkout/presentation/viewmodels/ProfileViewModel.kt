@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.steeshock.streetworkout.data.model.UserDto
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.*
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.domain.login.ILoginInteractor
+import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.extensions.getThemeByIndex
 import com.steeshock.streetworkout.extensions.isEmailValid
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
@@ -25,10 +27,6 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationR
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
-import com.steeshock.streetworkout.services.auth.IAuthService
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

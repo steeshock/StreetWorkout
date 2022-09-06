@@ -1,7 +1,8 @@
-package com.steeshock.streetworkout.services.auth
+package com.steeshock.streetworkout.domain.repository
 
-import com.steeshock.streetworkout.data.model.UserDto
 import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.UserCredentials
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
 
 interface IAuthService {
     /**
@@ -37,21 +38,4 @@ interface IAuthService {
      * Logout current authorized user
      */
     suspend fun signOut()
-
-    /**
-     * For security reasons, we should not check
-     * the password length while user Sing In
-     *
-     * That's why we should separate validation for Sign Up and Sing In
-     */
-    enum class SignPurpose {
-        SIGN_UP,
-        SIGN_IN;
-
-        companion object {
-            fun fromString(value: String?): SignPurpose {
-                return values().firstOrNull { it.name == value } ?: SIGN_UP
-            }
-        }
-    }
 }

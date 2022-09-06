@@ -17,7 +17,7 @@ import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
-import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.services.geolocation.GeolocationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

@@ -5,7 +5,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
-import com.steeshock.streetworkout.data.mappers.mapToModel
+import com.steeshock.streetworkout.data.mappers.mapToEntity
 import com.steeshock.streetworkout.data.model.UserDto
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.domain.entity.User
@@ -93,7 +93,7 @@ class FirebaseUserRepository @Inject constructor(
                     CoroutineScope(Dispatchers.IO).launch {
                         userDao.insertUser(user)
                     }.invokeOnCompletion {
-                        continuation.resume(user.mapToModel())
+                        continuation.resume(user.mapToEntity())
                     }
                 }
                 .addOnFailureListener {
@@ -116,7 +116,7 @@ class FirebaseUserRepository @Inject constructor(
                             CoroutineScope(Dispatchers.IO).launch {
                                 userDao.insertUser(existentUser)
                             }.invokeOnCompletion {
-                                continuation.resume(existentUser.mapToModel())
+                                continuation.resume(existentUser.mapToEntity())
                             }
                         }
                     }
