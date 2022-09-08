@@ -32,7 +32,7 @@ class AddPlaceViewModel @Inject constructor(
     private val geolocationService: GeolocationService,
 ) : ViewModel(),
     ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
-    ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl({AddPlaceViewState()}) {
+    ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl(::AddPlaceViewState) {
 
     val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories
 

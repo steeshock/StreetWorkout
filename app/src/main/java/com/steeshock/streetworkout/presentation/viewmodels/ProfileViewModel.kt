@@ -37,7 +37,7 @@ class ProfileViewModel @Inject constructor(
     private val loginInteractor: ILoginInteractor,
 ) : ViewModel(),
     ViewEventDelegate<AuthViewEvent> by ViewEventDelegateImpl(),
-    ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl({ AuthViewState() }) {
+    ViewStateDelegate<AuthViewState> by ViewStateDelegateImpl(::AuthViewState) {
 
     private companion object {
         private const val MIN_PASSWORD_LENGTH = 8
