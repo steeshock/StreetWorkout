@@ -28,7 +28,7 @@ class PlacesViewModel @Inject constructor(
     private val favoritesInteractor: IFavoritesInteractor,
 ) : ViewModel(),
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
-    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl(::PlacesViewState),
     ExceptionHandler by DefaultExceptionHandler() {
 
     private val mediatorPlaces = MediatorLiveData<List<Place>>()

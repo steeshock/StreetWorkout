@@ -22,7 +22,7 @@ class FavoritePlacesViewModel @Inject constructor(
     private val authService: IAuthService,
 ) : ViewModel(),
     ViewEventDelegate<PlacesViewEvent> by ViewEventDelegateImpl(),
-    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl({ PlacesViewState() }),
+    ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl(::PlacesViewState),
     ExceptionHandler by DefaultExceptionHandler() {
 
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
