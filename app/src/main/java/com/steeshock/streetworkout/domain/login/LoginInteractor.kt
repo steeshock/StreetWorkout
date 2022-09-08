@@ -1,9 +1,11 @@
 package com.steeshock.streetworkout.domain.login
 
-import com.steeshock.streetworkout.data.model.User
-import com.steeshock.streetworkout.data.repository.interfaces.IUserRepository
-import com.steeshock.streetworkout.services.auth.IAuthService
-import com.steeshock.streetworkout.services.auth.UserCredentials
+import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.UserCredentials
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import javax.inject.Inject
 
 class LoginInteractor @Inject constructor(
@@ -13,7 +15,7 @@ class LoginInteractor @Inject constructor(
     override suspend fun signUser(
         email: String,
         password: String,
-        signPurpose: IAuthService.SignPurpose,
+        signPurpose: SignPurpose,
     ): User? {
         val userCredentials = UserCredentials(email, password)
         val signedUser = authService.sign(userCredentials, signPurpose)

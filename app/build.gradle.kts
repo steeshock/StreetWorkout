@@ -40,6 +40,7 @@ android {
 dependencies {
 
     implementation(projects.design)
+    implementation(projects.domain)
 
     implementation(libs.material)
     implementation(libs.dagger)

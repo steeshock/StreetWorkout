@@ -3,7 +3,7 @@ package com.steeshock.streetworkout.di.modules
 import com.steeshock.streetworkout.data.api.ApiUtils
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.services.auth.FirebaseAuthService
-import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.services.connectivity.ConnectivityService
 import com.steeshock.streetworkout.services.connectivity.IConnectivityService
 import dagger.Binds

@@ -1,6 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewStates.auth
 
-import com.steeshock.streetworkout.data.model.User
+import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.domain.entity.User
 
 sealed class SignInResponse {
 

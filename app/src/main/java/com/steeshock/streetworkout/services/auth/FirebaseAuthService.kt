@@ -3,10 +3,14 @@ package com.steeshock.streetworkout.services.auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.steeshock.streetworkout.data.model.User
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.data.mappers.mapToEntity
+import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.UserCredentials
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -47,12 +51,12 @@ class FirebaseAuthService @Inject constructor() : IAuthService {
                     )
                 }
             }.addOnSuccessListener {
-                val user = User(
+                val user = UserDto(
                     userId = currentUserId,
                     displayName = currentUserDisplayName,
                     email = currentUserEmail,
                 )
-                continuation.resume(user)
+                continuation.resume(user.mapToEntity())
             }.addOnFailureListener {
                 continuation.resumeWithException(it)
             }

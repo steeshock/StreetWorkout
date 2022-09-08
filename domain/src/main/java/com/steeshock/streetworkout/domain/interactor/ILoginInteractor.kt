@@ -1,7 +1,7 @@
-package com.steeshock.streetworkout.domain.login
+package com.steeshock.streetworkout.domain.interactor
 
-import com.steeshock.streetworkout.data.model.User
-import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
 
 /**
  * Interactor to signIn/signUp user with Auth service
@@ -16,6 +16,6 @@ interface ILoginInteractor {
     suspend fun signUser(
         email: String,
         password: String,
-        signPurpose: IAuthService.SignPurpose,
+        signPurpose: SignPurpose,
     ): User?
 }

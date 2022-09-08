@@ -89,3 +89,4 @@ dependencyResolutionManagement {
     }
 }
 
+include(":domain")

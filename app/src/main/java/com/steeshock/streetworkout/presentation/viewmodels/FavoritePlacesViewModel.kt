@@ -9,7 +9,7 @@ import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
-import com.steeshock.streetworkout.services.auth.IAuthService
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

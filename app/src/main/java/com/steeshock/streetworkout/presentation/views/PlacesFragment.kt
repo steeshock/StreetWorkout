@@ -15,6 +15,8 @@ import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentPlacesBinding
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.showAlertDialog
 import com.steeshock.streetworkout.extensions.visible
@@ -25,7 +27,6 @@ import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEven
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
-import com.steeshock.streetworkout.services.auth.IAuthService.SignPurpose.SIGN_IN
 import javax.inject.Inject
 
 class PlacesFragment : BaseFragment() {

@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.services.auth
+package com.steeshock.streetworkout.domain.entity
 
 data class UserCredentials(
     val email: String,
