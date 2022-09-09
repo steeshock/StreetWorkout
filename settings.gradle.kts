@@ -35,7 +35,8 @@ dependencyResolutionManagement {
             // region Lifecycle
             library("androidx-lifecycle-extensions", "androidx.lifecycle:lifecycle-extensions:2.2.0")
             library("androidx-lifecycle-viewmodel", "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
-            bundle("androidx-lifecycle", listOf("androidx-lifecycle-extensions", "androidx-lifecycle-viewmodel"))
+            library("androidx-lifecycle-livedata", "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+            bundle("androidx-lifecycle", listOf("androidx-lifecycle-extensions", "androidx-lifecycle-viewmodel", "androidx-lifecycle-livedata"))
             // endregion
 
             // region Maps and location

@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.presentation.viewStates.places
 
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 
 /**
  * Single view events for Places page
@@ -24,7 +24,7 @@ sealed class PlacesViewEvent {
     /**
      * Show alert when user try to delete place
      */
-    data class ShowDeletePlaceAlert(val place: Place) : PlacesViewEvent()
+    data class ShowDeletePlaceAlert(val placeDto: PlaceDto) : PlacesViewEvent()
 
     /**
      * Show snackbar if place deleted successfully

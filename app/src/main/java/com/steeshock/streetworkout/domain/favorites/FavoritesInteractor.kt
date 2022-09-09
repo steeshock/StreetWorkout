@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.domain.favorites
 
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
@@ -47,17 +47,17 @@ class FavoritesInteractor @Inject constructor(
         }
     }
 
-    override suspend fun updatePlaceFavoriteState(place: Place, newState: Boolean?) {
+    override suspend fun updatePlaceFavoriteState(placeDto: PlaceDto, newState: Boolean?) {
         when (newState) {
             null -> {
-                placesRepository.updatePlace(place.copy(isFavorite = !place.isFavorite))
+                placesRepository.updatePlace(placeDto.copy(isFavorite = !placeDto.isFavorite))
             }
             else -> {
-                placesRepository.updatePlace(place.copy(isFavorite = newState))
+                placesRepository.updatePlace(placeDto.copy(isFavorite = newState))
             }
         }
         if (authService.isUserAuthorized) {
-            userRepository.updateUserFavoriteList(authService.currentUserId, favoritePlaceId = place.placeId)
+            userRepository.updateUserFavoriteList(authService.currentUserId, favoritePlaceId = placeDto.placeId)
         }
     }
 

@@ -1,10 +1,13 @@
 package com.steeshock.streetworkout.data.repository.implementation.mockApi
 
-import androidx.lifecycle.LiveData
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
+import com.steeshock.streetworkout.data.mappers.mapToDto
+import com.steeshock.streetworkout.data.mappers.mapToEntity
+import com.steeshock.streetworkout.domain.entity.Category
+import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -15,27 +18,21 @@ open class SimpleApiCategoriesRepository @Inject constructor(
     private val placesAPI: PlacesAPI,
 ) : ICategoriesRepository {
 
-    override val allCategories: LiveData<List<Category>> = categoriesDao.getCategoriesLive()
+    override val allCategories: Flow<List<Category>> = categoriesDao.getCategoriesFlow().map { categories ->
+        categories.map { it.mapToEntity() }
+    }
 
     override suspend fun fetchCategories(): Boolean {
         val result = placesAPI.getCategories()
         if (result.isSuccessful) {
-            result.body()?.let { insertAllCategories(it) }
+            result.body()?.let { categoriesDao.insertAllCategories(it) }
             return true
         }
         return false
     }
 
-    override suspend fun insertCategoryLocal(newCategory: Category) {
-        categoriesDao.insertCategory(newCategory)
-    }
-
-    override suspend fun insertAllCategories(categories: List<Category>) {
-        categoriesDao.insertAllCategories(categories)
-    }
-
     override suspend fun updateCategory(category: Category) {
-        categoriesDao.updateCategory(category)
+        categoriesDao.updateCategory(category.mapToDto())
     }
 
     override suspend fun clearCategoriesTable() {

@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout
 
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.CategoryDto
+import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiPlacesRepository
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
@@ -16,8 +16,8 @@ class PlacesViewModelTest {
     private val simpleCategoriesViewModelRepository: SimpleApiCategoriesRepository =
         mock(SimpleApiCategoriesRepository::class.java)
 
-    private lateinit var places: MutableList<Place>
-    private lateinit var categories: MutableList<Category>
+    private lateinit var placeDtos: MutableList<PlaceDto>
+    private lateinit var categoryDtos: MutableList<CategoryDto>
     private lateinit var placesViewModel: PlacesViewModel
 
     @Before

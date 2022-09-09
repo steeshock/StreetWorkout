@@ -269,7 +269,7 @@ class AddPlaceFragment : BaseFragment() {
             onPositiveAction = { viewModel.onCategorySelectionConfirmed() },
         )
             .setMultiChoiceItems(
-                viewModel.allCategories.value?.map { i -> i.category_name }?.toTypedArray(),
+                viewModel.allCategories.value?.map { i -> i.categoryName }?.toTypedArray(),
                 viewModel.checkedCategoriesArray,
             ) { _, selectedItemId, isChecked ->
                 viewModel.onCategoryItemClicked(isChecked, selectedItemId)

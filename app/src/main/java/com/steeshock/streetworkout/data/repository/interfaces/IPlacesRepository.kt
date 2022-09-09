@@ -2,12 +2,12 @@ package com.steeshock.streetworkout.data.repository.interfaces
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 
 interface IPlacesRepository {
 
-    val allPlaces: LiveData<List<Place>>
-    val allFavoritePlaces: LiveData<List<Place>>
+    val allPlaces: LiveData<List<PlaceDto>>
+    val allFavoritePlaces: LiveData<List<PlaceDto>>
 
     /**
      * Fetch places from remote source and save data to local storage
@@ -28,27 +28,27 @@ interface IPlacesRepository {
     /**
      * Insert new place in local Places table
      */
-    suspend fun insertPlaceLocal(newPlace: Place)
+    suspend fun insertPlaceLocal(newPlaceDto: PlaceDto)
 
     /**
      * Insert new place in Remote Places storage
      */
-    suspend fun insertPlaceRemote(newPlace: Place)
+    suspend fun insertPlaceRemote(newPlaceDto: PlaceDto)
 
     /**
      * Insert list of places in Places table
      */
-    suspend fun insertAllPlaces(places: List<Place>)
+    suspend fun insertAllPlaces(placeDtos: List<PlaceDto>)
 
     /**
      * Update place in Places table
      */
-    suspend fun updatePlace(place: Place)
+    suspend fun updatePlace(placeDto: PlaceDto)
 
     /**
      * Delete place in local and remote storage
      */
-    suspend fun deletePlace(place: Place): Boolean
+    suspend fun deletePlace(placeDto: PlaceDto): Boolean
 
     /**
      * Remove all data from Places table

@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
-import com.steeshock.streetworkout.data.model.Category
 import com.steeshock.streetworkout.databinding.CategoryItemBinding
+import com.steeshock.streetworkout.domain.entity.Category
 
 class CategoryAdapter(val callback: (Category) -> Unit) :
     RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
@@ -46,7 +46,7 @@ class CategoryAdapter(val callback: (Category) -> Unit) :
 
         fun bind(item: Category) {
             binding.apply {
-                categoryTextView.text = item.category_name
+                categoryTextView.text = item.categoryName
                 setupSelectedState(this, item)
             }
         }

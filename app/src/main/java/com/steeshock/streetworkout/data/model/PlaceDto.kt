@@ -3,10 +3,10 @@ package com.steeshock.streetworkout.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.steeshock.streetworkout.data.model.Place.Companion.TABLE_NAME
+import com.steeshock.streetworkout.data.model.PlaceDto.Companion.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
-data class Place(
+data class PlaceDto(
 
     @PrimaryKey
     @ColumnInfo(name = "placeId")

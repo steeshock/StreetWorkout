@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.databinding.FragmentFavoritePlacesBinding
 import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.showAlertDialog
@@ -60,22 +60,22 @@ class FavoritePlacesFragment : BaseFragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initPlacesRecycler() {
         placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
-            override fun onPlaceClicked(place: Place) {}
+            override fun onPlaceClicked(placeDto: PlaceDto) {}
 
-            override fun onLikeClicked(place: Place) {
-                viewModel.onFavoriteStateChanged(place)
-                showRollbackSnack(place)
+            override fun onLikeClicked(placeDto: PlaceDto) {
+                viewModel.onFavoriteStateChanged(placeDto)
+                showRollbackSnack(placeDto)
             }
 
-            override fun onPlaceLocationClicked(place: Place) {
+            override fun onPlaceLocationClicked(placeDto: PlaceDto) {
                 view?.findNavController()?.navigate(
                     FavoritePlacesFragmentDirections.actionNavigationFavoritesToNavigationMap(
-                        place.placeId)
+                        placeDto.placeId)
                 )
             }
 
-            override fun onPlaceDeleteClicked(place: Place) {
-                viewModel.onPlaceDeleteClicked(place)
+            override fun onPlaceDeleteClicked(placeDto: PlaceDto) {
+                viewModel.onPlaceDeleteClicked(placeDto)
             }
         })
         val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
@@ -132,7 +132,7 @@ class FavoritePlacesFragment : BaseFragment() {
                 view.showNoInternetSnackbar()
             }
             is PlacesViewEvent.ShowDeletePlaceAlert -> {
-                showDeletePlaceAlert(viewEvent.place)
+                showDeletePlaceAlert(viewEvent.placeDto)
             }
         }
     }
@@ -173,7 +173,7 @@ class FavoritePlacesFragment : BaseFragment() {
     }
     // endregion
 
-    private fun showRollbackSnack(item: Place) {
+    private fun showRollbackSnack(item: PlaceDto) {
         view.showSnackbar(
             message = "\"${item.title}\" ${resources.getString(R.string.place_removed)}",
             action = { viewModel.returnPlaceToFavorites(item) },
@@ -181,13 +181,13 @@ class FavoritePlacesFragment : BaseFragment() {
         )
     }
 
-    private fun showDeletePlaceAlert(place: Place) {
+    private fun showDeletePlaceAlert(placeDto: PlaceDto) {
         requireActivity().showAlertDialog(
             title = getString(R.string.attention_title),
             message = getString(R.string.delete_place_dialog_message),
             positiveText = getString(R.string.ok_item),
             negativeText = getString(R.string.cancel_item),
-            onPositiveAction = { viewModel.deletePlace(place) },
+            onPositiveAction = { viewModel.deletePlace(placeDto) },
         )
     }
 

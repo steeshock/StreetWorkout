@@ -8,14 +8,14 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.streetworkout.R
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.databinding.PlaceItemBinding
 import com.steeshock.streetworkout.extensions.toVisibility
 import com.steeshock.streetworkout.presentation.adapters.PlacePayloadType.*
 
 class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.PlaceHolder>() {
 
-    private var items = emptyList<Place>()
+    private var items = emptyList<PlaceDto>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         PlaceHolder(PlaceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -54,9 +54,9 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
         }
     }
 
-    internal fun setPlaces(places: List<Place>) {
-        val result = DiffUtil.calculateDiff(PlacesDiffUtilCallback(this.items, places), false)
-        this.items = places
+    internal fun setPlaces(placeDtos: List<PlaceDto>) {
+        val result = DiffUtil.calculateDiff(PlacesDiffUtilCallback(this.items, placeDtos), false)
+        this.items = placeDtos
         result.dispatchUpdatesTo(this)
     }
 
@@ -78,7 +78,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             }
         }
 
-        fun bind(item: Place) {
+        fun bind(item: PlaceDto) {
             binding.apply {
                 bindAddress(item)
                 bindImageSlider(item)
@@ -87,11 +87,11 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             }
         }
 
-        fun bindAddress(item: Place) {
+        fun bindAddress(item: PlaceDto) {
             binding.placeAddressTextView.text = item.address
         }
 
-        fun bindImageSlider(item: Place) {
+        fun bindImageSlider(item: PlaceDto) {
 
             val imageList = ArrayList<SlideModel>()
 
@@ -121,7 +121,7 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             })
         }
 
-        fun bindFavoriteState(item: Place) {
+        fun bindFavoriteState(item: PlaceDto) {
             if (item.isFavorite) {
                 binding.likeImageView.setImageResource(R.drawable.ic_heart_red_36dp)
             } else {
@@ -129,15 +129,15 @@ class PlaceAdapter(val callback: Callback) : RecyclerView.Adapter<PlaceAdapter.P
             }
         }
 
-        fun bindPlaceOwnerState(item: Place) {
+        fun bindPlaceOwnerState(item: PlaceDto) {
             binding.deletePlaceButton.visibility = item.isUserPlaceOwner.toVisibility()
         }
     }
 
     interface Callback {
-        fun onPlaceClicked(place: Place)
-        fun onLikeClicked(place: Place)
-        fun onPlaceLocationClicked(place: Place)
-        fun onPlaceDeleteClicked(place: Place)
+        fun onPlaceClicked(placeDto: PlaceDto)
+        fun onLikeClicked(placeDto: PlaceDto)
+        fun onPlaceLocationClicked(placeDto: PlaceDto)
+        fun onPlaceDeleteClicked(placeDto: PlaceDto)
     }
 }

@@ -3,19 +3,19 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
-import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
 import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.domain.entity.Category
 import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
-import com.steeshock.streetworkout.domain.repository.IAuthService
 import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
@@ -31,14 +31,14 @@ class PlacesViewModel @Inject constructor(
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl(::PlacesViewState),
     ExceptionHandler by DefaultExceptionHandler() {
 
-    private val mediatorPlaces = MediatorLiveData<List<Place>>()
-    val observablePlaces: LiveData<List<Place>> = mediatorPlaces
+    private val mediatorPlaces = MediatorLiveData<List<PlaceDto>>()
+    val observablePlaces: LiveData<List<PlaceDto>> = mediatorPlaces
 
-    val observableCategories = categoriesRepository.allCategories
+    val observableCategories = categoriesRepository.allCategories.asLiveData()
 
     private val allPlaces = placesRepository.allPlaces
-    private val filteredPlaces: MutableLiveData<List<Place>> = MutableLiveData()
-    private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
+    private val filteredPlaces: MutableLiveData<List<PlaceDto>> = MutableLiveData()
+    private val actualPlaces: MutableLiveData<List<PlaceDto>> = MutableLiveData()
 
     private var filterList: MutableList<Category> = mutableListOf()
     private var lastSearchString: String? = null
@@ -92,25 +92,25 @@ class PlacesViewModel @Inject constructor(
         }
     }
 
-    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        if (!authService.isUserAuthorized && !place.isFavorite) {
+    fun onLikeClicked(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
+        if (!authService.isUserAuthorized && !placeDto.isFavorite) {
             postViewEvent(ShowAddToFavoritesAuthAlert)
         }
-        favoritesInteractor.updatePlaceFavoriteState(place)
+        favoritesInteractor.updatePlaceFavoriteState(placeDto)
     }
 
-    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized && place.isUserPlaceOwner) {
-            postViewEvent(ShowDeletePlaceAlert(place))
+    fun onPlaceDeleteClicked(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && placeDto.isUserPlaceOwner) {
+            postViewEvent(ShowDeletePlaceAlert(placeDto))
         }
     }
 
-    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+    fun deletePlace(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
     }) {
         updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
-        if (placesRepository.deletePlace(place)) {
+        if (placesRepository.deletePlace(placeDto)) {
             postViewEvent(ShowDeletePlaceSuccess)
         }
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
@@ -118,7 +118,7 @@ class PlacesViewModel @Inject constructor(
 
     fun onFilterByCategory(category: Category) {
         category.changeSelectedState()
-        if (filterList.find { it.category_name == category.category_name } != null) {
+        if (filterList.find { it.categoryName == category.categoryName } != null) {
             filterList.remove(category)
         } else {
             filterList.add(category)
@@ -153,7 +153,7 @@ class PlacesViewModel @Inject constructor(
             actualPlaces.value = if (filterList.isEmpty()) {
                 it
             } else {
-                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true }
+                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.categoryId }) == true }
             }
 
             filteredPlaces.value = actualPlaces.value
@@ -198,8 +198,8 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.updateCategory(category)
     }
 
-    private fun updatePlacesOwnerStates(places: List<Place>) {
-        places.forEach {
+    private fun updatePlacesOwnerStates(placeDtos: List<PlaceDto>) {
+        placeDtos.forEach {
             it.isUserPlaceOwner = if (authService.isUserAuthorized) {
                 it.userId == authService.currentUserId
             } else {
