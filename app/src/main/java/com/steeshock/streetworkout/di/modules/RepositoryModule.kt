@@ -5,7 +5,7 @@ import com.steeshock.streetworkout.data.repository.implementation.firebase.Fireb
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserRepository
 import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
+import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
 import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import com.steeshock.streetworkout.interactor.repository.IUserRepository
 import dagger.Binds

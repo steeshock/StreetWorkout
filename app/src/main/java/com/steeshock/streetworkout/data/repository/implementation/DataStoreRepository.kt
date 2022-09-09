@@ -6,11 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
+import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
-
-private const val USER_PREFERENCES_NAME = "user_preferences"
 
 class DataStoreRepository @Inject constructor(
     private val context: Context,
@@ -18,20 +16,21 @@ class DataStoreRepository @Inject constructor(
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_PREFERENCES_NAME)
 
-    companion object PreferencesKeys {
-        val NIGHT_MODE_PREFERENCES_KEY = intPreferencesKey("night_mode")
+    companion object {
+        const val NIGHT_MODE_PREFERENCES_KEY = "night_mode"
+        private const val USER_PREFERENCES_NAME = "user_preferences"
     }
 
-    override suspend fun putInt(preferencesKey: Preferences.Key<Int>, value: Int) {
+    override suspend fun putInt(preferencesKey: String, value: Int) {
         context.dataStore.edit { preferences ->
-            preferences[preferencesKey] = value
+            preferences[intPreferencesKey(preferencesKey)] = value
         }
     }
 
-    override suspend fun getInt(preferencesKey: Preferences.Key<Int>): Int? {
+    override suspend fun getInt(preferencesKey: String): Int? {
         return try {
             val preferences = context.dataStore.data.first()
-            preferences[preferencesKey]
+            preferences[intPreferencesKey(preferencesKey)]
         } catch (e: Exception) {
             e.printStackTrace()
             null
