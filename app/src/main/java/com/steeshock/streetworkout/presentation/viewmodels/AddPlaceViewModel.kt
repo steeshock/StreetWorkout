@@ -35,7 +35,7 @@ class AddPlaceViewModel @Inject constructor(
     ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl(::AddPlaceViewState) {
 
-    val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories.asLiveData()
+    val allCategories = categoriesRepository.allCategories.asLiveData()
 
     private val selectedCategories: ArrayList<Int> = arrayListOf()
     private val tempSelectedCategories: ArrayList<Int> = arrayListOf()

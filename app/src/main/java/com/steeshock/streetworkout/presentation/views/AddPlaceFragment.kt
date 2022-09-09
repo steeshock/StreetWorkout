@@ -67,6 +67,8 @@ class AddPlaceFragment : BaseFragment() {
 
         initViews()
 
+        viewModel.allCategories.observe(viewLifecycleOwner){}
+
         viewModel.viewState.observe(viewLifecycleOwner) {
             renderViewState(it)
         }
