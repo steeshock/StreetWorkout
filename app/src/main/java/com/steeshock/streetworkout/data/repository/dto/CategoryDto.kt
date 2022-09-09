@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.model
+package com.steeshock.streetworkout.data.repository.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

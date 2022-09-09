@@ -7,9 +7,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.steeshock.streetworkout.data.converters.ArrayIntConverter
 import com.steeshock.streetworkout.data.converters.ListStringConverter
-import com.steeshock.streetworkout.data.model.CategoryDto
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.repository.dto.UserDto
 
 
 @Database(

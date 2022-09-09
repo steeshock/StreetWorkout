@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.domain.entity
+package com.steeshock.streetworkout.interactor.entity
 
 data class Place(
     var placeId: String = "",

@@ -1,9 +1,7 @@
 package com.steeshock.streetworkout.data.mappers
 
-import com.steeshock.streetworkout.data.model.CategoryDto
-import com.steeshock.streetworkout.data.model.UserDto
-import com.steeshock.streetworkout.domain.entity.Category
-import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.interactor.entity.Category
 
 fun CategoryDto.mapToEntity(): Category {
     return Category(

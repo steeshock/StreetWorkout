@@ -4,8 +4,8 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.domain.entity.Category
-import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import com.steeshock.streetworkout.interactor.entity.Category
+import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

@@ -13,7 +13,7 @@ import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentFavoritePlacesBinding
-import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.interactor.entity.Place
 import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.showAlertDialog
 import com.steeshock.streetworkout.extensions.visible

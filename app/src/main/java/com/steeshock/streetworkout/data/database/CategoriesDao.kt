@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.database
 
 import androidx.room.*
-import com.steeshock.streetworkout.data.model.CategoryDto
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao

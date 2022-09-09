@@ -1,7 +1,7 @@
-package com.steeshock.streetworkout.domain.interactor
+package com.steeshock.streetworkout.interactor.interactor
 
-import com.steeshock.streetworkout.domain.entity.User
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.interactor.entity.User
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
 
 /**
  * Interactor to signIn/signUp user with Auth service

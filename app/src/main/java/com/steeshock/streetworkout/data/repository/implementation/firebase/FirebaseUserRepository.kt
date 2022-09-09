@@ -6,10 +6,10 @@ import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.database.UserDao
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.repository.dto.UserDto
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
-import com.steeshock.streetworkout.domain.entity.User
-import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.interactor.entity.User
+import com.steeshock.streetworkout.interactor.repository.IUserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

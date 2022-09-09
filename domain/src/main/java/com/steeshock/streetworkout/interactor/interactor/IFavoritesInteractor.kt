@@ -1,6 +1,6 @@
-package com.steeshock.streetworkout.domain.interactor
+package com.steeshock.streetworkout.interactor.interactor
 
-import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.interactor.entity.Place
 
 /**
  * Interactor to update/reset places with favorites list from

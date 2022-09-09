@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.presentation.viewStates.places
 
-import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.interactor.entity.Place
 
 /**
  * Single view events for Places page

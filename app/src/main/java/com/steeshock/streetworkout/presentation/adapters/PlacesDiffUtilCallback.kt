@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.presentation.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.interactor.entity.Place
 import com.steeshock.streetworkout.presentation.adapters.PlacePayloadType.*
 
 class PlacesDiffUtilCallback(

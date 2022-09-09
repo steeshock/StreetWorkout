@@ -9,8 +9,8 @@ import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.domain.entity.Place
-import com.steeshock.streetworkout.domain.repository.IPlacesRepository
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map

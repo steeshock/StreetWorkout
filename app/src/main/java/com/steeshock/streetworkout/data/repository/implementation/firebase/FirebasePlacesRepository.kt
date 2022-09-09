@@ -11,12 +11,11 @@ import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
-import com.steeshock.streetworkout.domain.repository.IPlacesRepository
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

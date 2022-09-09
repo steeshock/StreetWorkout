@@ -1,6 +1,6 @@
-package com.steeshock.streetworkout.domain.repository
+package com.steeshock.streetworkout.interactor.repository
 
-import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.interactor.entity.User
 
 interface IUserRepository {
     /**

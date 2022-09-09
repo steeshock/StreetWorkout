@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.domain.entity.enums
+package com.steeshock.streetworkout.interactor.entity.enums
 
 /**
  * For security reasons, we should not check

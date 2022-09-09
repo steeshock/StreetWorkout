@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.api
 
-import com.steeshock.streetworkout.data.model.CategoryDto
-import com.steeshock.streetworkout.data.model.PlaceDto
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
 import retrofit2.Response
 import retrofit2.http.GET
 

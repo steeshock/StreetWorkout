@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.databinding.CategoryItemBinding
-import com.steeshock.streetworkout.domain.entity.Category
+import com.steeshock.streetworkout.interactor.entity.Category
 
 class CategoryAdapter(val callback: (Category) -> Unit) :
     RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
