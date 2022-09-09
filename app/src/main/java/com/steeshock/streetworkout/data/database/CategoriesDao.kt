@@ -1,23 +1,26 @@
 package com.steeshock.streetworkout.data.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.steeshock.streetworkout.data.model.Category
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoriesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCategory(category: Category)
+    fun insertCategory(categoryDto: CategoryDto)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllCategories(category: List<Category>)
+    fun insertAllCategories(categoryDto: List<CategoryDto>)
 
-    @Query("SELECT * FROM ${Category.TABLE_NAME}")
-    fun getCategoriesLive(): LiveData<List<Category>>
+    @Query("SELECT * FROM ${CategoryDto.TABLE_NAME}")
+    fun getCategoriesFlow(): Flow<List<CategoryDto>>
 
-    @Query("DELETE FROM ${Category.TABLE_NAME}")
+    @Query("SELECT * FROM ${CategoryDto.TABLE_NAME} WHERE categoryId = :categoryId")
+    fun getCategoryById(categoryId: Int?): CategoryDto?
+
+    @Query("DELETE FROM ${CategoryDto.TABLE_NAME}")
     fun clearCategoriesTable()
 
     @Update
-    fun updateCategory(category: Category)
+    fun updateCategory(categoryDto: CategoryDto)
 }

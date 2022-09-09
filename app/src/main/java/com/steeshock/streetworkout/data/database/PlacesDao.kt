@@ -1,39 +1,39 @@
 package com.steeshock.streetworkout.data.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
 interface PlacesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPlace(place: Place)
+    fun insertPlace(placeDto: PlaceDto)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAllPlaces(places: List<Place>)
+    fun insertAllPlaces(places: List<PlaceDto>)
 
-    @Query("SELECT * FROM ${Place.TABLE_NAME}")
-    fun getPlacesLive(): LiveData<List<Place>>
+    @Query("SELECT * FROM ${PlaceDto.TABLE_NAME}")
+    fun getPlacesFlow(): Flow<List<PlaceDto>>
 
-    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE isFavorite")
-    fun getFavoritePlacesLive(): LiveData<List<Place>>
+    @Query("SELECT * FROM ${PlaceDto.TABLE_NAME} WHERE isFavorite")
+    fun getFavoritePlacesFlow(): Flow<List<PlaceDto>>
 
-    @Query("DELETE FROM ${Place.TABLE_NAME}")
+    @Query("DELETE FROM ${PlaceDto.TABLE_NAME}")
     fun clearPlacesTable()
 
-    @Query("SELECT * FROM ${Place.TABLE_NAME}")
-    fun getAllPlaces(): List<Place>
+    @Query("SELECT * FROM ${PlaceDto.TABLE_NAME}")
+    fun getAllPlaces(): List<PlaceDto>
 
-    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE isFavorite")
-    fun getFavoritePlaces(): List<Place>
+    @Query("SELECT * FROM ${PlaceDto.TABLE_NAME} WHERE isFavorite")
+    fun getFavoritePlaces(): List<PlaceDto>
 
-    @Query("SELECT * FROM ${Place.TABLE_NAME} WHERE placeId IN (:placesId)")
-    fun getPlacesByIds(placesId: List<String>): List<Place>
+    @Query("SELECT * FROM ${PlaceDto.TABLE_NAME} WHERE placeId = :placeId")
+    fun getPlaceById(placeId: String?): PlaceDto?
 
     @Update
-    fun updatePlace(place: Place)
+    fun updatePlace(placeDto: PlaceDto)
 
     @Delete
-    fun deletePlace(place: Place)
+    fun deletePlace(placeDto: PlaceDto)
 }

@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.data.repository.implementation.firebase
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -10,14 +9,16 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.streetworkout.data.database.PlacesDao
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.data.mappers.mapToDto
+import com.steeshock.streetworkout.data.mappers.mapToEntity
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -31,22 +32,25 @@ open class FirebasePlacesRepository @Inject constructor(
     private val placesDao: PlacesDao,
 ) : IPlacesRepository {
 
-    override val allPlaces: LiveData<List<Place>> = placesDao.getPlacesLive()
-    override val allFavoritePlaces: LiveData<List<Place>> = placesDao.getFavoritePlacesLive()
+    override val allPlaces = placesDao.getPlacesFlow().map { places ->
+        places.map { it.mapToEntity() }
+    }
+    override val allFavoritePlaces = placesDao.getFavoritePlacesFlow().map { places ->
+            places.map { it.mapToEntity() }
+    }
 
     override suspend fun fetchPlaces(): Boolean {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(FIREBASE_PATH)
-            val places: MutableList<Place> = mutableListOf()
+            val places: MutableList<PlaceDto> = mutableListOf()
             database.getReference("places").get().addOnSuccessListener {
-                for (child in it.children) {
-                    val place = child.getValue<Place>()
-                    val isFavorite =
-                        allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
-                    place?.isFavorite = isFavorite == true
-                    place?.let { p -> places.add(p) }
-                }
                 CoroutineScope(Dispatchers.IO).launch {
+                    for (child in it.children) {
+                        val place = child.getValue<PlaceDto>()
+                        val isFavorite = placesDao.getPlaceById(place?.placeId)?.isFavorite
+                        place?.isFavorite = isFavorite == true
+                        place?.let { p -> places.add(p) }
+                    }
                     placesDao.insertAllPlaces(places)
                     continuation.resume(true)
                 }
@@ -60,14 +64,14 @@ open class FirebasePlacesRepository @Inject constructor(
         return placesDao.getFavoritePlaces().map { it.placeId }
     }
 
-    override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
+    override suspend fun uploadImage(uri: String, placeId: String?): String? {
         return suspendCoroutine { continuation ->
             val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
             CoroutineScope(Dispatchers.IO).launch {
-                reference.putFile(uri).await()
+                reference.putFile(Uri.parse(uri)).await()
                 reference.downloadUrl
                     .addOnSuccessListener {
-                        continuation.resume(it)
+                        continuation.resume(it.toString())
                     }
                     .addOnFailureListener {
                         continuation.resumeWithException(it)
@@ -77,7 +81,7 @@ open class FirebasePlacesRepository @Inject constructor(
     }
 
     override suspend fun insertPlaceLocal(newPlace: Place) {
-        placesDao.insertPlace(newPlace)
+        placesDao.insertPlace(newPlace.mapToDto())
     }
 
     override suspend fun insertPlaceRemote(newPlace: Place) {
@@ -86,12 +90,8 @@ open class FirebasePlacesRepository @Inject constructor(
         myRef.setValue(newPlace).await()
     }
 
-    override suspend fun insertAllPlaces(places: List<Place>) {
-        placesDao.insertAllPlaces(places)
-    }
-
     override suspend fun updatePlace(place: Place) {
-        placesDao.updatePlace(place)
+        placesDao.updatePlace(place.mapToDto())
     }
 
     //TODO Do requests in parallel
@@ -100,7 +100,7 @@ open class FirebasePlacesRepository @Inject constructor(
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     if (removePlaceRemote(place) && removeRelatedImagesRemote(place)) {
-                        placesDao.deletePlace(place)
+                        placesDao.deletePlace(place.mapToDto())
                         continuation.resume(true)
                     } else {
                         continuation.resume(false)

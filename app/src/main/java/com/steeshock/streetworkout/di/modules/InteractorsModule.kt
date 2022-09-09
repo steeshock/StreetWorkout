@@ -1,9 +1,9 @@
 package com.steeshock.streetworkout.di.modules
 
-import com.steeshock.streetworkout.domain.favorites.FavoritesInteractor
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
-import com.steeshock.streetworkout.domain.login.LoginInteractor
+import com.steeshock.streetworkout.interactor.FavoritesInteractor
+import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.interactor.ILoginInteractor
+import com.steeshock.streetworkout.interactor.LoginInteractor
 import dagger.Binds
 import dagger.Module
 

@@ -5,11 +5,13 @@ import android.location.Location
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.interactor.entity.Category
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -17,7 +19,6 @@ import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegateImpl
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.addPlace.AddPlaceViewState
-import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.services.geolocation.GeolocationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,7 +35,7 @@ class AddPlaceViewModel @Inject constructor(
     ViewEventDelegate<AddPlaceViewEvent> by ViewEventDelegateImpl(),
     ViewStateDelegate<AddPlaceViewState> by ViewStateDelegateImpl(::AddPlaceViewState) {
 
-    val allCategories: LiveData<List<Category>> = categoriesRepository.allCategories
+    val allCategories = categoriesRepository.allCategories.asLiveData()
 
     private val selectedCategories: ArrayList<Int> = arrayListOf()
     private val tempSelectedCategories: ArrayList<Int> = arrayListOf()
@@ -106,7 +107,7 @@ class AddPlaceViewModel @Inject constructor(
     }
 
     fun onCategoryItemClicked(isChecked: Boolean, selectedItemId: Int) {
-        val selectedCategoryId = allCategories.value?.get(selectedItemId)?.category_id
+        val selectedCategoryId = allCategories.value?.get(selectedItemId)?.categoryId
         when {
             isChecked -> selectedCategoryId?.let { tempSelectedCategories.add(it) }
             else -> selectedCategoryId?.let { tempSelectedCategories.remove(it) }
@@ -119,8 +120,8 @@ class AddPlaceViewModel @Inject constructor(
         tempSelectedCategories.clear()
 
         val selectedCategoriesString = allCategories.value
-            ?.filter { category -> selectedCategories.contains(category.category_id) }
-            ?.map { it.category_name }
+            ?.filter { category -> selectedCategories.contains(category.categoryId) }
+            ?.map { it.categoryName }
             ?.toString()
             ?.removeSurrounding("[", "]")
             ?: ""
@@ -210,7 +211,7 @@ class AddPlaceViewModel @Inject constructor(
 
     private fun uploadDataToFirebase(selectedImages: MutableList<Uri>, placeId: String?) = viewModelScope.launch {
         selectedImages.forEach { uri ->
-            val result = placesRepository.uploadImage(uri, placeId)
+            val result = placesRepository.uploadImage(uri.toString(), placeId)
             downloadedImagesLinks.add(result.toString())
 
             updateViewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
@@ -251,7 +252,7 @@ class AddPlaceViewModel @Inject constructor(
         tempSelectedCategories.clear()
         tempSelectedCategories.addAll(selectedCategories)
         return allCategories.value?.map {
-            selectedCategories.contains(it.category_id)
+            selectedCategories.contains(it.categoryId)
         }?.toBooleanArray()
     }
 }

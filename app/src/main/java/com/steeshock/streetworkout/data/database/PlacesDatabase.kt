@@ -7,13 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.steeshock.streetworkout.data.converters.ArrayIntConverter
 import com.steeshock.streetworkout.data.converters.ListStringConverter
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.repository.dto.UserDto
 
 
 @Database(
-    entities = [Place::class, Category::class, UserDto::class],
+    entities = [PlaceDto::class, CategoryDto::class, UserDto::class],
     version = 1,
     exportSchema = false
 )

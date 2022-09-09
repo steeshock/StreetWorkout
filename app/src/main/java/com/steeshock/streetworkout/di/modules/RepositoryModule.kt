@@ -4,10 +4,10 @@ import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepos
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseUserRepository
-import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
+import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
+import com.steeshock.streetworkout.interactor.repository.IUserRepository
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton

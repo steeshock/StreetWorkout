@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.database
 
 import androidx.room.*
-import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.repository.dto.UserDto
 
 @Dao
 interface UserDao {

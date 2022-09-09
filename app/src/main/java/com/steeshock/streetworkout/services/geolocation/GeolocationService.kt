@@ -12,7 +12,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class GeolocationService @Inject constructor(private val context: Context) {
+class GeolocationService @Inject constructor(context: Context) {
 
     private var fusedLocationClient: FusedLocationProviderClient? = null
 

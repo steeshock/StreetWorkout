@@ -10,10 +10,10 @@ import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentProfileBinding
-import com.steeshock.streetworkout.domain.entity.User
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_IN
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.interactor.entity.User
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_UP
 import com.steeshock.streetworkout.extensions.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.auth.AuthViewEvent.*

@@ -17,8 +17,8 @@ import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.CustomMarker
-import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentMapBinding
+import com.steeshock.streetworkout.interactor.entity.Place
 import com.steeshock.streetworkout.presentation.viewmodels.MapViewModel
 import javax.inject.Inject
 

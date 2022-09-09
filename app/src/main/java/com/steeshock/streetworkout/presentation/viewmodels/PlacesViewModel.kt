@@ -3,19 +3,19 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.model.Category
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
-import com.steeshock.streetworkout.data.repository.interfaces.ICategoriesRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
+import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
+import com.steeshock.streetworkout.interactor.entity.Category
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
-import com.steeshock.streetworkout.domain.repository.IAuthService
 import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
@@ -34,9 +34,9 @@ class PlacesViewModel @Inject constructor(
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
     val observablePlaces: LiveData<List<Place>> = mediatorPlaces
 
-    val observableCategories = categoriesRepository.allCategories
+    val observableCategories = categoriesRepository.allCategories.asLiveData()
 
-    private val allPlaces = placesRepository.allPlaces
+    private val allPlaces = placesRepository.allPlaces.asLiveData()
     private val filteredPlaces: MutableLiveData<List<Place>> = MutableLiveData()
     private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
@@ -118,7 +118,7 @@ class PlacesViewModel @Inject constructor(
 
     fun onFilterByCategory(category: Category) {
         category.changeSelectedState()
-        if (filterList.find { it.category_name == category.category_name } != null) {
+        if (filterList.find { it.categoryName == category.categoryName } != null) {
             filterList.remove(category)
         } else {
             filterList.add(category)
@@ -153,7 +153,7 @@ class PlacesViewModel @Inject constructor(
             actualPlaces.value = if (filterList.isEmpty()) {
                 it
             } else {
-                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.category_id }) == true }
+                it.filter { place -> place.categories?.containsAll(filterList.map { i -> i.categoryId }) == true }
             }
 
             filteredPlaces.value = actualPlaces.value

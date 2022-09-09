@@ -1,12 +1,13 @@
-package com.steeshock.streetworkout.domain.favorites
+package com.steeshock.streetworkout.interactor
 
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
-import com.steeshock.streetworkout.domain.repository.IUserRepository
-import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
+import com.steeshock.streetworkout.interactor.repository.IUserRepository
 import javax.inject.Inject
 
 class FavoritesInteractor @Inject constructor(
@@ -47,17 +48,17 @@ class FavoritesInteractor @Inject constructor(
         }
     }
 
-    override suspend fun updatePlaceFavoriteState(place: Place, newState: Boolean?) {
+    override suspend fun updatePlaceFavoriteState(placeDto: Place, newState: Boolean?) {
         when (newState) {
             null -> {
-                placesRepository.updatePlace(place.copy(isFavorite = !place.isFavorite))
+                placesRepository.updatePlace(placeDto.copy(isFavorite = !placeDto.isFavorite))
             }
             else -> {
-                placesRepository.updatePlace(place.copy(isFavorite = newState))
+                placesRepository.updatePlace(placeDto.copy(isFavorite = newState))
             }
         }
         if (authService.isUserAuthorized) {
-            userRepository.updateUserFavoriteList(authService.currentUserId, favoritePlaceId = place.placeId)
+            userRepository.updateUserFavoriteList(authService.currentUserId, favoritePlaceId = placeDto.placeId)
         }
     }
 

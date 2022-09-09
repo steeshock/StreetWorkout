@@ -1,13 +1,12 @@
-package com.steeshock.streetworkout.data.repository.interfaces
+package com.steeshock.streetworkout.interactor.repository
 
-import android.net.Uri
-import androidx.lifecycle.LiveData
-import com.steeshock.streetworkout.data.model.Place
+import com.steeshock.streetworkout.interactor.entity.Place
+import kotlinx.coroutines.flow.Flow
 
 interface IPlacesRepository {
 
-    val allPlaces: LiveData<List<Place>>
-    val allFavoritePlaces: LiveData<List<Place>>
+    val allPlaces: Flow<List<Place>>
+    val allFavoritePlaces: Flow<List<Place>>
 
     /**
      * Fetch places from remote source and save data to local storage
@@ -23,7 +22,7 @@ interface IPlacesRepository {
      * Upload image with file [uri] to Firebase Storage
      * @return Uri with uploaded file
      */
-    suspend fun uploadImage(uri: Uri, placeId: String?): Uri?
+    suspend fun uploadImage(uri: String, placeId: String?): String?
 
     /**
      * Insert new place in local Places table
@@ -34,11 +33,6 @@ interface IPlacesRepository {
      * Insert new place in Remote Places storage
      */
     suspend fun insertPlaceRemote(newPlace: Place)
-
-    /**
-     * Insert list of places in Places table
-     */
-    suspend fun insertAllPlaces(places: List<Place>)
 
     /**
      * Update place in Places table

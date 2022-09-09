@@ -7,7 +7,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
-import com.steeshock.streetworkout.data.model.UserDto
+import com.steeshock.streetworkout.data.repository.dto.UserDto
 import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 

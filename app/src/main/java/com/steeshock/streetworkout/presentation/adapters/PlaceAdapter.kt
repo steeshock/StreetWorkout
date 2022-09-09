@@ -8,8 +8,8 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.steeshock.streetworkout.R
-import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.PlaceItemBinding
+import com.steeshock.streetworkout.interactor.entity.Place
 import com.steeshock.streetworkout.extensions.toVisibility
 import com.steeshock.streetworkout.presentation.adapters.PlacePayloadType.*
 

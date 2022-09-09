@@ -6,16 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
-import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.domain.entity.User
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.*
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
-import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
-import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.extensions.getThemeByIndex
 import com.steeshock.streetworkout.extensions.isEmailValid
+import com.steeshock.streetworkout.interactor.entity.User
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.interactor.ILoginInteractor
+import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -27,7 +28,10 @@ import com.steeshock.streetworkout.presentation.viewStates.auth.EmailValidationR
 import com.steeshock.streetworkout.presentation.viewStates.auth.PasswordValidationResult.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignInResponse.*
 import com.steeshock.streetworkout.presentation.viewStates.auth.SignUpResponse.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(

@@ -1,15 +1,15 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.model.Place
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
-import com.steeshock.streetworkout.domain.repository.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -28,7 +28,7 @@ class FavoritePlacesViewModel @Inject constructor(
     private val mediatorPlaces = MediatorLiveData<List<Place>>()
     val observablePlaces: LiveData<List<Place>> = mediatorPlaces
 
-    private val allFavoritePlaces: LiveData<List<Place>> = placesRepository.allFavoritePlaces
+    private val allFavoritePlaces: LiveData<List<Place>> = placesRepository.allFavoritePlaces.asLiveData()
     private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
     private var lastSearchString: String? = null

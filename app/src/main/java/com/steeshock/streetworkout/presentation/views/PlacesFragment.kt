@@ -13,10 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.Place
 import com.steeshock.streetworkout.databinding.FragmentPlacesBinding
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
-import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_IN
+import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.showAlertDialog
 import com.steeshock.streetworkout.extensions.visible
