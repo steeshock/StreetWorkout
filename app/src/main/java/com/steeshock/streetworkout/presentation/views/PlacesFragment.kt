@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
-import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.databinding.FragmentPlacesBinding
+import com.steeshock.streetworkout.domain.entity.Place
 import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_IN
 import com.steeshock.streetworkout.extensions.gone
 import com.steeshock.streetworkout.extensions.showAlertDialog
@@ -73,18 +73,18 @@ class PlacesFragment : BaseFragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initPlacesRecycler() {
         placesAdapter = PlaceAdapter(object : PlaceAdapter.Callback {
-            override fun onPlaceClicked(placeDto: PlaceDto) {}
+            override fun onPlaceClicked(place: Place) {}
 
-            override fun onLikeClicked(placeDto: PlaceDto) {
-                viewModel.onLikeClicked(placeDto)
+            override fun onLikeClicked(place: Place) {
+                viewModel.onLikeClicked(place)
             }
 
-            override fun onPlaceLocationClicked(placeDto: PlaceDto) {
-                navigateToMap(placeDto)
+            override fun onPlaceLocationClicked(place: Place) {
+                navigateToMap(place)
             }
 
-            override fun onPlaceDeleteClicked(placeDto: PlaceDto) {
-                viewModel.onPlaceDeleteClicked(placeDto)
+            override fun onPlaceDeleteClicked(place: Place) {
+                viewModel.onPlaceDeleteClicked(place)
             }
         })
         val dividerItemDecoration = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
@@ -165,7 +165,7 @@ class PlacesFragment : BaseFragment() {
                 view.showNoInternetSnackbar()
             }
             is ShowDeletePlaceAlert -> {
-                showDeletePlaceAlert(viewEvent.placeDto)
+                showDeletePlaceAlert(viewEvent.place)
             }
             ShowDeletePlaceSuccess -> {
                 showDeletePlaceSuccess()
@@ -195,13 +195,13 @@ class PlacesFragment : BaseFragment() {
         )
     }
 
-    private fun showDeletePlaceAlert(placeDto: PlaceDto) {
+    private fun showDeletePlaceAlert(place: Place) {
         requireActivity().showAlertDialog(
             title = getString(R.string.attention_title),
             message = getString(R.string.delete_place_dialog_message),
             positiveText = getString(R.string.ok_item),
             negativeText = getString(R.string.cancel_item),
-            onPositiveAction = { viewModel.deletePlace(placeDto) },
+            onPositiveAction = { viewModel.deletePlace(place) },
         )
     }
 
@@ -209,9 +209,9 @@ class PlacesFragment : BaseFragment() {
         view.showSnackbar(getString(R.string.delete_place_success_message))
     }
 
-    private fun navigateToMap(placeDto: PlaceDto) {
+    private fun navigateToMap(place: Place) {
         findNavController().navigate(
-            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(placeDto.placeId)
+            PlacesFragmentDirections.actionNavigationPlacesToNavigationMap(place.placeId)
         )
     }
 

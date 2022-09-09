@@ -1,13 +1,12 @@
-package com.steeshock.streetworkout.data.repository.interfaces
+package com.steeshock.streetworkout.domain.repository
 
-import android.net.Uri
-import androidx.lifecycle.LiveData
-import com.steeshock.streetworkout.data.model.PlaceDto
+import com.steeshock.streetworkout.domain.entity.Place
+import kotlinx.coroutines.flow.Flow
 
 interface IPlacesRepository {
 
-    val allPlaces: LiveData<List<PlaceDto>>
-    val allFavoritePlaces: LiveData<List<PlaceDto>>
+    val allPlaces: Flow<List<Place>>
+    val allFavoritePlaces: Flow<List<Place>>
 
     /**
      * Fetch places from remote source and save data to local storage
@@ -23,32 +22,27 @@ interface IPlacesRepository {
      * Upload image with file [uri] to Firebase Storage
      * @return Uri with uploaded file
      */
-    suspend fun uploadImage(uri: Uri, placeId: String?): Uri?
+    suspend fun uploadImage(uri: String, placeId: String?): String?
 
     /**
      * Insert new place in local Places table
      */
-    suspend fun insertPlaceLocal(newPlaceDto: PlaceDto)
+    suspend fun insertPlaceLocal(newPlace: Place)
 
     /**
      * Insert new place in Remote Places storage
      */
-    suspend fun insertPlaceRemote(newPlaceDto: PlaceDto)
-
-    /**
-     * Insert list of places in Places table
-     */
-    suspend fun insertAllPlaces(placeDtos: List<PlaceDto>)
+    suspend fun insertPlaceRemote(newPlace: Place)
 
     /**
      * Update place in Places table
      */
-    suspend fun updatePlace(placeDto: PlaceDto)
+    suspend fun updatePlace(place: Place)
 
     /**
      * Delete place in local and remote storage
      */
-    suspend fun deletePlace(placeDto: PlaceDto): Boolean
+    suspend fun deletePlace(place: Place): Boolean
 
     /**
      * Remove all data from Places table

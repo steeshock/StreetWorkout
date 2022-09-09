@@ -1,12 +1,12 @@
 package com.steeshock.streetworkout.presentation.adapters
 
 import androidx.recyclerview.widget.DiffUtil
-import com.steeshock.streetworkout.data.model.PlaceDto
+import com.steeshock.streetworkout.domain.entity.Place
 import com.steeshock.streetworkout.presentation.adapters.PlacePayloadType.*
 
 class PlacesDiffUtilCallback(
-    private val oldList: List<PlaceDto>,
-    private val newList: List<PlaceDto>,
+    private val oldList: List<Place>,
+    private val newList: List<Place>,
 ) : DiffUtil.Callback() {
     override fun getOldListSize() = oldList.size
 

@@ -1,6 +1,6 @@
-package com.steeshock.streetworkout.domain.favorites
+package com.steeshock.streetworkout.domain.interactor
 
-import com.steeshock.streetworkout.data.model.PlaceDto
+import com.steeshock.streetworkout.domain.entity.Place
 
 /**
  * Interactor to update/reset places with favorites list from
@@ -30,7 +30,7 @@ interface IFavoritesInteractor {
      *
      * [newState] - set favorite state to particular value, not inverted
      */
-    suspend fun updatePlaceFavoriteState(placeDto: PlaceDto, newState: Boolean? = null)
+    suspend fun updatePlaceFavoriteState(placeDto: Place, newState: Boolean? = null)
 
     /**
      * Reset all favorite places, commonly after logout

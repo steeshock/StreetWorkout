@@ -17,8 +17,8 @@ import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.data.model.CustomMarker
-import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.databinding.FragmentMapBinding
+import com.steeshock.streetworkout.domain.entity.Place
 import com.steeshock.streetworkout.presentation.viewmodels.MapViewModel
 import javax.inject.Inject
 
@@ -82,16 +82,16 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun showAllPlaces(placeDtos: List<PlaceDto>) {
+    private fun showAllPlaces(places: List<Place>) {
 
-        if (placeDtos.isNotEmpty()) {
+        if (places.isNotEmpty()) {
 
             lateinit var pin: LatLng
             lateinit var bounds: LatLngBounds
             val pinsPositions = mutableListOf<LatLng>()
             val builder = LatLngBounds.Builder()
 
-            for (place in placeDtos) {
+            for (place in places) {
                 pin = LatLng(place.latitude, place.longitude)
                 val marker = mMap.addMarker(MarkerOptions().position(pin).title(place.title))
                 pinsPositions.add(pin)

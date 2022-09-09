@@ -1,17 +1,19 @@
 package com.steeshock.streetworkout.data.repository.implementation.mockApi
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.database.PlacesDao
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.data.mappers.mapToDto
+import com.steeshock.streetworkout.data.mappers.mapToEntity
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
@@ -28,13 +30,17 @@ open class SimpleApiPlacesRepository @Inject constructor(
     private val placesAPI: PlacesAPI
 ) : IPlacesRepository {
 
-    override val allPlaces: LiveData<List<PlaceDto>> = placesDao.getPlacesLive()
-    override val allFavoritePlaces: LiveData<List<PlaceDto>> = placesDao.getFavoritePlacesLive()
+    override val allPlaces = placesDao.getPlacesFlow().map { places ->
+        places.map { it.mapToEntity() }
+    }
+    override val allFavoritePlaces = placesDao.getFavoritePlacesFlow().map { places ->
+        places.map { it.mapToEntity() }
+    }
 
     override suspend fun fetchPlaces(): Boolean {
         val result = placesAPI.getPlaces()
         if (result.isSuccessful) {
-            result.body()?.let { insertAllPlaces(it) }
+            result.body()?.let { placesDao.insertAllPlaces(it) }
             return true
         }
         return false
@@ -47,14 +53,14 @@ open class SimpleApiPlacesRepository @Inject constructor(
     /**
      * Firebase realization because of none implementation on Mock API
      */
-    override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
+    override suspend fun uploadImage(uri: String, placeId: String?): String? {
         return suspendCoroutine { continuation ->
             val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
             CoroutineScope(Dispatchers.IO).launch {
-                reference.putFile(uri).await()
+                reference.putFile(Uri.parse(uri)).await()
                 reference.downloadUrl
                     .addOnSuccessListener {
-                        continuation.resume(it)
+                        continuation.resume(it.toString())
                     }
                     .addOnFailureListener {
                         continuation.resumeWithException(it)
@@ -63,28 +69,24 @@ open class SimpleApiPlacesRepository @Inject constructor(
         }
     }
 
-    override suspend fun insertPlaceLocal(newPlaceDto: PlaceDto) {
-        placesDao.insertPlace(newPlaceDto)
+    override suspend fun insertPlaceLocal(newPlace: Place) {
+        placesDao.insertPlace(newPlace.mapToDto())
     }
 
     /**
      * Firebase realization because of none implementation on Mock API
      */
-    override suspend fun insertPlaceRemote(newPlaceDto: PlaceDto) {
+    override suspend fun insertPlaceRemote(newPlace: Place) {
         val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlaceDto.placeId)
-        myRef.setValue(newPlaceDto).await()
+        val myRef = database.getReference("places").child(newPlace.placeId)
+        myRef.setValue(newPlace).await()
     }
 
-    override suspend fun insertAllPlaces(placeDtos: List<PlaceDto>) {
-        placesDao.insertAllPlaces(placeDtos)
+    override suspend fun updatePlace(place: Place) {
+        placesDao.updatePlace(place.mapToDto())
     }
 
-    override suspend fun updatePlace(placeDto: PlaceDto) {
-        placesDao.updatePlace(placeDto)
-    }
-
-    override suspend fun deletePlace(placeDto: PlaceDto): Boolean {
+    override suspend fun deletePlace(place: Place): Boolean {
         TODO("Not yet implemented")
     }
 

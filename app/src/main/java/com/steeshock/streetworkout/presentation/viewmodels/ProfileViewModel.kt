@@ -11,7 +11,7 @@ import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreReposito
 import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
 import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.*
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
 import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
 import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.extensions.getThemeByIndex

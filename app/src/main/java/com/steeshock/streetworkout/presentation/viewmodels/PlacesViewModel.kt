@@ -3,14 +3,14 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.model.PlaceDto
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.PreferencesKeys.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.data.repository.interfaces.IDataStoreRepository
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.entity.Category
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
 import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState.*
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
@@ -31,14 +31,14 @@ class PlacesViewModel @Inject constructor(
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl(::PlacesViewState),
     ExceptionHandler by DefaultExceptionHandler() {
 
-    private val mediatorPlaces = MediatorLiveData<List<PlaceDto>>()
-    val observablePlaces: LiveData<List<PlaceDto>> = mediatorPlaces
+    private val mediatorPlaces = MediatorLiveData<List<Place>>()
+    val observablePlaces: LiveData<List<Place>> = mediatorPlaces
 
     val observableCategories = categoriesRepository.allCategories.asLiveData()
 
-    private val allPlaces = placesRepository.allPlaces
-    private val filteredPlaces: MutableLiveData<List<PlaceDto>> = MutableLiveData()
-    private val actualPlaces: MutableLiveData<List<PlaceDto>> = MutableLiveData()
+    private val allPlaces = placesRepository.allPlaces.asLiveData()
+    private val filteredPlaces: MutableLiveData<List<Place>> = MutableLiveData()
+    private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
     private var filterList: MutableList<Category> = mutableListOf()
     private var lastSearchString: String? = null
@@ -92,25 +92,25 @@ class PlacesViewModel @Inject constructor(
         }
     }
 
-    fun onLikeClicked(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
-        if (!authService.isUserAuthorized && !placeDto.isFavorite) {
+    fun onLikeClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (!authService.isUserAuthorized && !place.isFavorite) {
             postViewEvent(ShowAddToFavoritesAuthAlert)
         }
-        favoritesInteractor.updatePlaceFavoriteState(placeDto)
+        favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
-    fun onPlaceDeleteClicked(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized && placeDto.isUserPlaceOwner) {
-            postViewEvent(ShowDeletePlaceAlert(placeDto))
+    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && place.isUserPlaceOwner) {
+            postViewEvent(ShowDeletePlaceAlert(place))
         }
     }
 
-    fun deletePlace(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
     }) {
         updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
-        if (placesRepository.deletePlace(placeDto)) {
+        if (placesRepository.deletePlace(place)) {
             postViewEvent(ShowDeletePlaceSuccess)
         }
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
@@ -198,8 +198,8 @@ class PlacesViewModel @Inject constructor(
         categoriesRepository.updateCategory(category)
     }
 
-    private fun updatePlacesOwnerStates(placeDtos: List<PlaceDto>) {
-        placeDtos.forEach {
+    private fun updatePlacesOwnerStates(places: List<Place>) {
+        places.forEach {
             it.isUserPlaceOwner = if (authService.isUserAuthorized) {
                 it.userId == authService.currentUserId
             } else {

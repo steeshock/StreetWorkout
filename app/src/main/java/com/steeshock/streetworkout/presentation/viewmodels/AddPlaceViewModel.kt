@@ -7,11 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
 import com.steeshock.streetworkout.domain.entity.Category
+import com.steeshock.streetworkout.domain.entity.Place
 import com.steeshock.streetworkout.domain.repository.IAuthService
 import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -46,7 +46,7 @@ class AddPlaceViewModel @Inject constructor(
     private var selectedImages: MutableList<Uri> = mutableListOf()
     private var downloadedImagesLinks: MutableList<String> = mutableListOf()
 
-    private var sendingPlaceDto: PlaceDto? = null
+    private var sendingPlace: Place? = null
 
     var lastLocation: Location? = null
 
@@ -56,7 +56,7 @@ class AddPlaceViewModel @Inject constructor(
         position: String,
         address: String,
     ) {
-        sendingPlaceDto = getNewPlace(title, description, position, address)
+        sendingPlace = getNewPlace(title, description, position, address)
 
         updateViewState {
             copy(
@@ -67,7 +67,7 @@ class AddPlaceViewModel @Inject constructor(
         }
 
         if (selectedImages.size > 0) {
-            uploadDataToFirebase(selectedImages, sendingPlaceDto?.placeId)
+            uploadDataToFirebase(selectedImages, sendingPlace?.placeId)
         } else {
             createAndPublishNewPlace()
         }
@@ -192,12 +192,12 @@ class AddPlaceViewModel @Inject constructor(
         description: String,
         position: String,
         address: String,
-    ): PlaceDto {
+    ): Place {
         val placeId = UUID.randomUUID().toString()
         val userId = authService.currentUserId
         val positionValues = position.split(" ")
 
-        return PlaceDto(
+        return Place(
             placeId = placeId,
             userId = userId,
             title = title,
@@ -211,7 +211,7 @@ class AddPlaceViewModel @Inject constructor(
 
     private fun uploadDataToFirebase(selectedImages: MutableList<Uri>, placeId: String?) = viewModelScope.launch {
         selectedImages.forEach { uri ->
-            val result = placesRepository.uploadImage(uri, placeId)
+            val result = placesRepository.uploadImage(uri.toString(), placeId)
             downloadedImagesLinks.add(result.toString())
 
             updateViewState(postValue = true) { copy(sendingProgress = ++sendingProgress) }
@@ -224,9 +224,9 @@ class AddPlaceViewModel @Inject constructor(
 
     private fun createAndPublishNewPlace() = viewModelScope.launch(Dispatchers.IO) {
 
-        sendingPlaceDto?.images = downloadedImagesLinks
+        sendingPlace?.images = downloadedImagesLinks
 
-        sendingPlaceDto?.let {
+        sendingPlace?.let {
             placesRepository.insertPlaceLocal(it)
             placesRepository.insertPlaceRemote(it)
         }

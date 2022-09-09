@@ -1,15 +1,15 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.domain.favorites.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent.NoInternetConnection
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewState
-import com.steeshock.streetworkout.domain.repository.IAuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -25,11 +25,11 @@ class FavoritePlacesViewModel @Inject constructor(
     ViewStateDelegate<PlacesViewState> by ViewStateDelegateImpl(::PlacesViewState),
     ExceptionHandler by DefaultExceptionHandler() {
 
-    private val mediatorPlaces = MediatorLiveData<List<PlaceDto>>()
-    val observablePlaces: LiveData<List<PlaceDto>> = mediatorPlaces
+    private val mediatorPlaces = MediatorLiveData<List<Place>>()
+    val observablePlaces: LiveData<List<Place>> = mediatorPlaces
 
-    private val allFavoritePlaces: LiveData<List<PlaceDto>> = placesRepository.allFavoritePlaces
-    private val actualPlaces: MutableLiveData<List<PlaceDto>> = MutableLiveData()
+    private val allFavoritePlaces: LiveData<List<Place>> = placesRepository.allFavoritePlaces.asLiveData()
+    private val actualPlaces: MutableLiveData<List<Place>> = MutableLiveData()
 
     private var lastSearchString: String? = null
 
@@ -56,12 +56,12 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    fun onFavoriteStateChanged(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
-        favoritesInteractor.updatePlaceFavoriteState(placeDto)
+    fun onFavoriteStateChanged(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        favoritesInteractor.updatePlaceFavoriteState(place)
     }
 
-    fun returnPlaceToFavorites(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
-        favoritesInteractor.updatePlaceFavoriteState(placeDto, newState = true)
+    fun returnPlaceToFavorites(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        favoritesInteractor.updatePlaceFavoriteState(place, newState = true)
     }
 
     fun filterDataBySearchString(searchString: String?) {
@@ -75,18 +75,18 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    fun onPlaceDeleteClicked(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO) {
-        if (authService.isUserAuthorized && placeDto.isUserPlaceOwner) {
-            postViewEvent(PlacesViewEvent.ShowDeletePlaceAlert(placeDto))
+    fun onPlaceDeleteClicked(place: Place) = viewModelScope.launch(Dispatchers.IO) {
+        if (authService.isUserAuthorized && place.isUserPlaceOwner) {
+            postViewEvent(PlacesViewEvent.ShowDeletePlaceAlert(place))
         }
     }
 
-    fun deletePlace(placeDto: PlaceDto) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
+    fun deletePlace(place: Place) = viewModelScope.launch(Dispatchers.IO + defaultExceptionHandler {
         postViewEvent(NoInternetConnection)
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
     }) {
         updateViewState(postValue = true) { copy(showFullscreenLoader = true) }
-        if (placesRepository.deletePlace(placeDto)) {
+        if (placesRepository.deletePlace(place)) {
             postViewEvent(PlacesViewEvent.ShowDeletePlaceSuccess)
         }
         updateViewState(postValue = true) { copy(showFullscreenLoader = false) }
@@ -128,8 +128,8 @@ class FavoritePlacesViewModel @Inject constructor(
         }
     }
 
-    private fun updatePlacesOwnerStates(placeDtos: List<PlaceDto>) {
-        placeDtos.forEach {
+    private fun updatePlacesOwnerStates(places: List<Place>) {
+        places.forEach {
             it.isUserPlaceOwner = if (authService.isUserAuthorized) {
                 it.userId == authService.currentUserId
             } else {

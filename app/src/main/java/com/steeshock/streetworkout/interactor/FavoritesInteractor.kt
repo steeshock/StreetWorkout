@@ -1,12 +1,13 @@
 package com.steeshock.streetworkout.domain.favorites
 
-import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
-import com.steeshock.streetworkout.data.workers.common.IWorkerService
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
-import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.data.workers.common.IWorkerService
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
 import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
+import com.steeshock.streetworkout.domain.repository.IUserRepository
 import javax.inject.Inject
 
 class FavoritesInteractor @Inject constructor(
@@ -47,7 +48,7 @@ class FavoritesInteractor @Inject constructor(
         }
     }
 
-    override suspend fun updatePlaceFavoriteState(placeDto: PlaceDto, newState: Boolean?) {
+    override suspend fun updatePlaceFavoriteState(placeDto: Place, newState: Boolean?) {
         when (newState) {
             null -> {
                 placesRepository.updatePlace(placeDto.copy(isFavorite = !placeDto.isFavorite))

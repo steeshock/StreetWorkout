@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.data.repository.implementation.firebase
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -10,13 +9,17 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants.FIREBASE_PATH
 import com.steeshock.streetworkout.data.database.PlacesDao
+import com.steeshock.streetworkout.data.mappers.mapToDto
+import com.steeshock.streetworkout.data.mappers.mapToEntity
 import com.steeshock.streetworkout.data.model.PlaceDto
-import com.steeshock.streetworkout.data.repository.interfaces.IPlacesRepository
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -30,22 +33,26 @@ open class FirebasePlacesRepository @Inject constructor(
     private val placesDao: PlacesDao,
 ) : IPlacesRepository {
 
-    override val allPlaces: LiveData<List<PlaceDto>> = placesDao.getPlacesLive()
-    override val allFavoritePlaces: LiveData<List<PlaceDto>> = placesDao.getFavoritePlacesLive()
+    override val allPlaces = placesDao.getPlacesFlow().map { places ->
+        places.map { it.mapToEntity() }
+    }
+    override val allFavoritePlaces = placesDao.getFavoritePlacesFlow().map { places ->
+            places.map { it.mapToEntity() }
+    }
 
     override suspend fun fetchPlaces(): Boolean {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(FIREBASE_PATH)
-            val placeDtos: MutableList<PlaceDto> = mutableListOf()
+            val places: MutableList<PlaceDto> = mutableListOf()
             database.getReference("places").get().addOnSuccessListener {
-                for (child in it.children) {
-                    val place = child.getValue<PlaceDto>()
-                    val isFavorite = allPlaces.value?.find { p -> p.placeId == place?.placeId }?.isFavorite
-                    place?.isFavorite = isFavorite == true
-                    place?.let { p -> placeDtos.add(p) }
-                }
                 CoroutineScope(Dispatchers.IO).launch {
-                    placesDao.insertAllPlaces(placeDtos)
+                    for (child in it.children) {
+                        val place = child.getValue<PlaceDto>()
+                        val isFavorite = placesDao.getPlaceById(place?.placeId)?.isFavorite
+                        place?.isFavorite = isFavorite == true
+                        place?.let { p -> places.add(p) }
+                    }
+                    placesDao.insertAllPlaces(places)
                     continuation.resume(true)
                 }
             }.addOnFailureListener {
@@ -58,14 +65,14 @@ open class FirebasePlacesRepository @Inject constructor(
         return placesDao.getFavoritePlaces().map { it.placeId }
     }
 
-    override suspend fun uploadImage(uri: Uri, placeId: String?): Uri? {
+    override suspend fun uploadImage(uri: String, placeId: String?): String? {
         return suspendCoroutine { continuation ->
             val reference = Firebase.storage.reference.child("${placeId}/image-${Date().time}.jpg")
             CoroutineScope(Dispatchers.IO).launch {
-                reference.putFile(uri).await()
+                reference.putFile(Uri.parse(uri)).await()
                 reference.downloadUrl
                     .addOnSuccessListener {
-                        continuation.resume(it)
+                        continuation.resume(it.toString())
                     }
                     .addOnFailureListener {
                         continuation.resumeWithException(it)
@@ -74,31 +81,27 @@ open class FirebasePlacesRepository @Inject constructor(
         }
     }
 
-    override suspend fun insertPlaceLocal(newPlaceDto: PlaceDto) {
-        placesDao.insertPlace(newPlaceDto)
+    override suspend fun insertPlaceLocal(newPlace: Place) {
+        placesDao.insertPlace(newPlace.mapToDto())
     }
 
-    override suspend fun insertPlaceRemote(newPlaceDto: PlaceDto) {
+    override suspend fun insertPlaceRemote(newPlace: Place) {
         val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlaceDto.placeId)
-        myRef.setValue(newPlaceDto).await()
+        val myRef = database.getReference("places").child(newPlace.placeId)
+        myRef.setValue(newPlace).await()
     }
 
-    override suspend fun insertAllPlaces(placeDtos: List<PlaceDto>) {
-        placesDao.insertAllPlaces(placeDtos)
-    }
-
-    override suspend fun updatePlace(placeDto: PlaceDto) {
-        placesDao.updatePlace(placeDto)
+    override suspend fun updatePlace(place: Place) {
+        placesDao.updatePlace(place.mapToDto())
     }
 
     //TODO Do requests in parallel
-    override suspend fun deletePlace(placeDto: PlaceDto): Boolean {
+    override suspend fun deletePlace(place: Place): Boolean {
         return suspendCoroutine { continuation ->
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    if (removePlaceRemote(placeDto) && removeRelatedImagesRemote(placeDto)) {
-                        placesDao.deletePlace(placeDto)
+                    if (removePlaceRemote(place) && removeRelatedImagesRemote(place)) {
+                        placesDao.deletePlace(place.mapToDto())
                         continuation.resume(true)
                     } else {
                         continuation.resume(false)
@@ -128,10 +131,10 @@ open class FirebasePlacesRepository @Inject constructor(
         }
     }
 
-    private suspend fun removePlaceRemote(placeDto: PlaceDto): Boolean {
+    private suspend fun removePlaceRemote(place: Place): Boolean {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(FIREBASE_PATH)
-            database.getReference("places").child(placeDto.placeId).get()
+            database.getReference("places").child(place.placeId).get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot.ref.removeValue().addOnSuccessListener {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -149,9 +152,9 @@ open class FirebasePlacesRepository @Inject constructor(
      * Try to delete place's related images from Firebase Storage
      * If images doesn't exist - Firebase returns error code -13010
      */
-    private suspend fun removeRelatedImagesRemote(placeDto: PlaceDto): Boolean {
+    private suspend fun removeRelatedImagesRemote(place: Place): Boolean {
         return suspendCoroutine { continuation ->
-            Firebase.storage.reference.child(placeDto.placeId).listAll()
+            Firebase.storage.reference.child(place.placeId).listAll()
                 .addOnSuccessListener { images ->
                     CoroutineScope(Dispatchers.IO).launch {
                         images.items.forEach { deleteSingleImage(it) }
