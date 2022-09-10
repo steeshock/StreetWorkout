@@ -1,6 +1,6 @@
-package com.steeshock.streetworkout.interactor.repository
+package com.steeshock.streetworkout.domain.repository
 
-import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.domain.entity.Place
 import kotlinx.coroutines.flow.Flow
 
 interface IPlacesRepository {
@@ -48,9 +48,9 @@ interface IPlacesRepository {
     suspend fun updatePlacesWithFavoriteList(favorites: List<String>)
 
     /**
-     * Reset all favorite places, commonly after logout
+     * Reset all favorite places locally, commonly after logout
      */
-    suspend fun resetFavorites()
+    suspend fun resetFavoritesLocal()
 
     /**
      * Remove all data from Places table

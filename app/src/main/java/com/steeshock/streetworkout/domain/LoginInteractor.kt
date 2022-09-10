@@ -1,11 +1,11 @@
-package com.steeshock.streetworkout.interactor
+package com.steeshock.streetworkout.domain
 
-import com.steeshock.streetworkout.interactor.repository.IUserRepository
-import com.steeshock.streetworkout.interactor.entity.User
-import com.steeshock.streetworkout.interactor.entity.UserCredentials
-import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
-import com.steeshock.streetworkout.interactor.interactor.ILoginInteractor
-import com.steeshock.streetworkout.interactor.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.IUserRepository
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.UserCredentials
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.interactor.ILoginInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
 import javax.inject.Inject
 
 class LoginInteractor @Inject constructor(

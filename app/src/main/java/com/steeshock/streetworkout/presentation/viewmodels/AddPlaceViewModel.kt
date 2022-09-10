@@ -6,10 +6,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.steeshock.streetworkout.interactor.entity.Place
-import com.steeshock.streetworkout.interactor.repository.IAuthService
-import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
-import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate

@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.interactor.entity
+package com.steeshock.streetworkout.domain.entity
 
 data class User(
     val userId: String = "",

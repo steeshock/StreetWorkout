@@ -1,6 +1,6 @@
-package com.steeshock.streetworkout.interactor.repository
+package com.steeshock.streetworkout.domain.repository
 
-import com.steeshock.streetworkout.interactor.entity.Category
+import com.steeshock.streetworkout.domain.entity.Category
 import kotlinx.coroutines.flow.Flow
 
 interface ICategoriesRepository {

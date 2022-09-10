@@ -1,8 +1,8 @@
-package com.steeshock.streetworkout.interactor.repository
+package com.steeshock.streetworkout.domain.repository
 
-import com.steeshock.streetworkout.interactor.entity.User
-import com.steeshock.streetworkout.interactor.entity.UserCredentials
-import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.entity.User
+import com.steeshock.streetworkout.domain.entity.UserCredentials
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
 
 interface IAuthService {
     /**

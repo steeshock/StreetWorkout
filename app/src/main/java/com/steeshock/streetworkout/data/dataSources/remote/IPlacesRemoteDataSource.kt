@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.dataSources.remote
 
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.interactor.entity.Place
+import com.steeshock.streetworkout.domain.entity.Place
 
 interface IPlacesRemoteDataSource {
     /**
@@ -11,7 +11,7 @@ interface IPlacesRemoteDataSource {
 
     /**
      * Upload image with file [uri]
-     * @return Uri with uploaded file
+     * @return String uri with uploaded file
      */
     suspend fun uploadImage(uri: String, placeId: String?): String?
 

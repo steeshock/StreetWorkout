@@ -8,8 +8,8 @@ import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.data.mappers.mapToEntity
 import com.steeshock.streetworkout.data.repository.dto.CategoryDto
-import com.steeshock.streetworkout.interactor.entity.Category
-import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
+import com.steeshock.streetworkout.domain.entity.Category
+import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map

@@ -1,10 +1,10 @@
 package com.steeshock.streetworkout.presentation.viewmodels
 
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.interactor.entity.Place
-import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
-import com.steeshock.streetworkout.interactor.repository.IAuthService
-import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.*
 import com.steeshock.streetworkout.presentation.viewStates.EmptyViewState
 import com.steeshock.streetworkout.presentation.viewStates.places.PlacesViewEvent

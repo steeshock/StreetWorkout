@@ -1,13 +1,13 @@
-package com.steeshock.streetworkout.interactor
+package com.steeshock.streetworkout.domain
 
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SYNC_FAVORITES_WORK
 import com.steeshock.streetworkout.data.workers.SyncFavoritesWorker.Companion.SyncFavoritesException
 import com.steeshock.streetworkout.data.workers.common.IWorkerService
-import com.steeshock.streetworkout.interactor.entity.Place
-import com.steeshock.streetworkout.interactor.interactor.IFavoritesInteractor
-import com.steeshock.streetworkout.interactor.repository.IAuthService
-import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
-import com.steeshock.streetworkout.interactor.repository.IUserRepository
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.interactor.IFavoritesInteractor
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
+import com.steeshock.streetworkout.domain.repository.IUserRepository
 import javax.inject.Inject
 
 class FavoritesInteractor @Inject constructor(
@@ -63,7 +63,7 @@ class FavoritesInteractor @Inject constructor(
     }
 
     override suspend fun resetFavorites() {
-        placesRepository.resetFavorites()
+        placesRepository.resetFavoritesLocal()
     }
 
     private fun getMergedFavorites(remoteUserFavorites: List<String>, localUserFavorites: List<String>) =

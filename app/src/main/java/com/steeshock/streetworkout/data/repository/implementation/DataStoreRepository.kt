@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.steeshock.streetworkout.interactor.repository.IDataStoreRepository
+import com.steeshock.streetworkout.domain.repository.IDataStoreRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 

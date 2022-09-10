@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.interactor.repository
+package com.steeshock.streetworkout.domain.repository
 
 interface IDataStoreRepository {
     suspend fun putInt(preferencesKey: String, value: Int)

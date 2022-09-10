@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.presentation.viewStates.auth
 
-import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose
-import com.steeshock.streetworkout.interactor.entity.enums.SignPurpose.SIGN_UP
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose
+import com.steeshock.streetworkout.domain.entity.enums.SignPurpose.SIGN_UP
 
 /**
  * Describes UI state of Auth screen
