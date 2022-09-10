@@ -15,7 +15,7 @@ interface IPlacesLocalDataSource {
     suspend fun getLocalFavorites(): List<String>
 
     /**
-     * returns place by id from local storage
+     * Returns place by id from local storage
      */
     suspend fun getPlaceById(placeId: String): PlaceDto?
 

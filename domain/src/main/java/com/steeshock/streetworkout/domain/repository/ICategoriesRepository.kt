@@ -10,7 +10,7 @@ interface ICategoriesRepository {
     /**
      * Fetch categories from remote source and and save data to local storage
      */
-    suspend fun fetchCategories(): Boolean
+    suspend fun fetchCategories()
 
     /**
      * Update category in Category table

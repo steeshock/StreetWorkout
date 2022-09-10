@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.dataSources.implementation
+package com.steeshock.streetworkout.data.dataSources.implementation.places
 
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.dataSources.remote.IPlacesRemoteDataSource

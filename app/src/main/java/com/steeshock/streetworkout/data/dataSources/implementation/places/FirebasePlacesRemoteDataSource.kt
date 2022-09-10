@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.dataSources.implementation
+package com.steeshock.streetworkout.data.dataSources.implementation.places
 
 import android.net.Uri
 import com.google.firebase.database.ktx.database
