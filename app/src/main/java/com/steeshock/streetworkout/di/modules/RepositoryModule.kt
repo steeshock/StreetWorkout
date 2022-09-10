@@ -1,5 +1,7 @@
 package com.steeshock.streetworkout.di.modules
 
+import com.steeshock.streetworkout.data.dataSources.implementation.FirebasePlacesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebaseCategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.firebase.FirebasePlacesRepository
@@ -31,5 +33,9 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindDataStoreRepository(dataStoreRepository: DataStoreRepository): IDataStoreRepository
+
+    @Binds
+    @Singleton
+    fun bindPlacesRemoteDataStore(placesRemoteDataStore: FirebasePlacesRemoteDataSource): IPlacesRemoteDataSource
 
 }

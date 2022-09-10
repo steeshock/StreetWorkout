@@ -11,7 +11,7 @@ interface IPlacesRepository {
     /**
      * Fetch places from remote source and save data to local storage
      */
-    suspend fun fetchPlaces(): Boolean
+    suspend fun fetchPlaces()
 
     /**
      * Get favorite places id's in common List
@@ -25,29 +25,19 @@ interface IPlacesRepository {
     suspend fun uploadImage(uri: String, placeId: String?): String?
 
     /**
-     * Insert new place in local Places table
+     * Insert new place locally and remote
      */
-    suspend fun insertPlaceLocal(newPlace: Place)
-
-    /**
-     * Insert new place in Remote Places storage
-     */
-    suspend fun insertPlaceRemote(newPlace: Place)
+    suspend fun insertPlace(newPlace: Place)
 
     /**
      * Update place in Places table
      */
-    suspend fun updatePlace(place: Place)
+    suspend fun updatePlaceLocal(place: Place)
 
     /**
      * Delete place in local and remote storage
      */
     suspend fun deletePlace(place: Place): Boolean
-
-    /**
-     * Remove all data from Places table
-     */
-    suspend fun clearPlacesTable()
 
     /**
      * Update places favorite state with favorites from User
@@ -61,4 +51,10 @@ interface IPlacesRepository {
      * Reset all favorite places, commonly after logout
      */
     suspend fun resetFavorites()
+
+    /**
+     * Remove all data from Places table
+     * TODO Temporary function for easy testing
+     */
+    suspend fun clearPlacesTable()
 }

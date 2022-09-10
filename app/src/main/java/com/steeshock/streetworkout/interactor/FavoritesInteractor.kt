@@ -51,10 +51,10 @@ class FavoritesInteractor @Inject constructor(
     override suspend fun updatePlaceFavoriteState(placeDto: Place, newState: Boolean?) {
         when (newState) {
             null -> {
-                placesRepository.updatePlace(placeDto.copy(isFavorite = !placeDto.isFavorite))
+                placesRepository.updatePlaceLocal(placeDto.copy(isFavorite = !placeDto.isFavorite))
             }
             else -> {
-                placesRepository.updatePlace(placeDto.copy(isFavorite = newState))
+                placesRepository.updatePlaceLocal(placeDto.copy(isFavorite = newState))
             }
         }
         if (authService.isUserAuthorized) {

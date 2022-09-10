@@ -37,13 +37,11 @@ open class SimpleApiPlacesRepository @Inject constructor(
         places.map { it.mapToEntity() }
     }
 
-    override suspend fun fetchPlaces(): Boolean {
+    override suspend fun fetchPlaces() {
         val result = placesAPI.getPlaces()
         if (result.isSuccessful) {
             result.body()?.let { placesDao.insertAllPlaces(it) }
-            return true
         }
-        return false
     }
 
     override suspend fun getLocalFavorites(): List<String> {
@@ -69,20 +67,11 @@ open class SimpleApiPlacesRepository @Inject constructor(
         }
     }
 
-    override suspend fun insertPlaceLocal(newPlace: Place) {
-        placesDao.insertPlace(newPlace.mapToDto())
+    override suspend fun insertPlace(newPlace: Place) {
+        TODO("Not yet implemented")
     }
 
-    /**
-     * Firebase realization because of none implementation on Mock API
-     */
-    override suspend fun insertPlaceRemote(newPlace: Place) {
-        val database = Firebase.database(FIREBASE_PATH)
-        val myRef = database.getReference("places").child(newPlace.placeId)
-        myRef.setValue(newPlace).await()
-    }
-
-    override suspend fun updatePlace(place: Place) {
+    override suspend fun updatePlaceLocal(place: Place) {
         placesDao.updatePlace(place.mapToDto())
     }
 
