@@ -2,23 +2,15 @@ package com.steeshock.streetworkout.data.dataSources.implementation.places
 
 import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
 import com.steeshock.streetworkout.data.database.PlacesDao
-import com.steeshock.streetworkout.data.mappers.mapToDto
-import com.steeshock.streetworkout.data.mappers.mapToEntity
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PlacesLocalDataSource @Inject constructor(
     private val placesDao: PlacesDao,
 ) : IPlacesLocalDataSource {
 
-    override val allPlaces = placesDao.getPlacesFlow().map { places ->
-        places.map { it.mapToEntity() }
-    }
-    override val allFavoritePlaces = placesDao.getFavoritePlacesFlow().map { places ->
-        places.map { it.mapToEntity() }
-    }
+    override val allPlaces = placesDao.getPlacesFlow()
+    override val allFavoritePlaces = placesDao.getFavoritePlacesFlow()
 
     override suspend fun getLocalFavorites(): List<String> {
         return placesDao.getFavoritePlaces().map { it.placeId }
@@ -28,20 +20,20 @@ class PlacesLocalDataSource @Inject constructor(
         return placesDao.getPlaceById(placeId)
     }
 
-    override suspend fun updatePlaceLocal(place: Place) {
-        placesDao.updatePlace(place.mapToDto())
+    override suspend fun updatePlaceLocal(placeDto: PlaceDto) {
+        placesDao.updatePlace(placeDto)
     }
 
-    override suspend fun insertPlaceLocal(newPlace: Place) {
-        placesDao.insertPlace(newPlace.mapToDto())
+    override suspend fun insertPlaceLocal(placeDto: PlaceDto) {
+        placesDao.insertPlace(placeDto)
     }
 
-    override suspend fun insertAllPlacesLocal(places: List<PlaceDto>) {
-        placesDao.insertAllPlaces(places)
+    override suspend fun insertAllPlacesLocal(placesDto: List<PlaceDto>) {
+        placesDao.insertAllPlaces(placesDto)
     }
 
-    override suspend fun deletePlaceLocal(place: Place) {
-        placesDao.deletePlace(place.mapToDto())
+    override suspend fun deletePlaceLocal(placeDto: PlaceDto) {
+        placesDao.deletePlace(placeDto)
     }
 
     override suspend fun updatePlacesWithFavoriteList(favorites: List<String>) {

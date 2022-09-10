@@ -1,7 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.interfaces.remote
 
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
 
 interface IPlacesRemoteDataSource {
     /**
@@ -18,10 +17,10 @@ interface IPlacesRemoteDataSource {
     /**
      * Insert new place in Remote Places storage
      */
-    suspend fun insertPlaceRemote(newPlace: Place)
+    suspend fun insertPlaceRemote(placeDto: PlaceDto)
 
     /**
      * Delete place in remote storage
      */
-    suspend fun deletePlaceRemote(place: Place): Boolean
+    suspend fun deletePlaceRemote(placeDto: PlaceDto): Boolean
 }

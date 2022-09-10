@@ -2,10 +2,7 @@ package com.steeshock.streetworkout.data.dataSources.implementation.categories
 
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
-import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.dto.CategoryDto
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
 import javax.inject.Inject
 
 /**

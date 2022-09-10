@@ -10,7 +10,6 @@ import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,18 +59,18 @@ class FirebasePlacesRemoteDataSource @Inject constructor() : IPlacesRemoteDataSo
         }
     }
 
-    override suspend fun insertPlaceRemote(newPlace: Place) {
+    override suspend fun insertPlaceRemote(placeDto: PlaceDto) {
         val database = Firebase.database(Constants.FIREBASE_PATH)
-        val myRef = database.getReference(PLACES_REMOTE_STORAGE).child(newPlace.placeId)
-        myRef.setValue(newPlace).await()
+        val myRef = database.getReference(PLACES_REMOTE_STORAGE).child(placeDto.placeId)
+        myRef.setValue(placeDto).await()
     }
 
     //TODO Do requests in parallel
-    override suspend fun deletePlaceRemote(place: Place): Boolean {
+    override suspend fun deletePlaceRemote(placeDto: PlaceDto): Boolean {
         return suspendCoroutine { continuation ->
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    if (removePlaceRemote(place) && removeRelatedImagesRemote(place)) {
+                    if (removePlaceRemote(placeDto) && removeRelatedImagesRemote(placeDto)) {
                         continuation.resume(true)
                     } else {
                         continuation.resume(false)
@@ -83,10 +82,10 @@ class FirebasePlacesRemoteDataSource @Inject constructor() : IPlacesRemoteDataSo
         }
     }
 
-    private suspend fun removePlaceRemote(place: Place): Boolean {
+    private suspend fun removePlaceRemote(placeDto: PlaceDto): Boolean {
         return suspendCoroutine { continuation ->
             val database = Firebase.database(Constants.FIREBASE_PATH)
-            database.getReference(PLACES_REMOTE_STORAGE).child(place.placeId).get()
+            database.getReference(PLACES_REMOTE_STORAGE).child(placeDto.placeId).get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot.ref.removeValue().addOnSuccessListener {
                         CoroutineScope(Dispatchers.IO).launch {
@@ -104,9 +103,9 @@ class FirebasePlacesRemoteDataSource @Inject constructor() : IPlacesRemoteDataSo
      * Try to delete place's related images from Firebase Storage
      * If images doesn't exist - Firebase returns error code -13010
      */
-    private suspend fun removeRelatedImagesRemote(place: Place): Boolean {
+    private suspend fun removeRelatedImagesRemote(placeDto: PlaceDto): Boolean {
         return suspendCoroutine { continuation ->
-            Firebase.storage.reference.child(place.placeId).listAll()
+            Firebase.storage.reference.child(placeDto.placeId).listAll()
                 .addOnSuccessListener { images ->
                     CoroutineScope(Dispatchers.IO).launch {
                         images.items.forEach { deleteSingleImage(it) }

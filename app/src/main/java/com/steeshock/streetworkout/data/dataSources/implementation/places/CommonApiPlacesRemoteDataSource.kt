@@ -3,7 +3,6 @@ package com.steeshock.streetworkout.data.dataSources.implementation.places
 import com.steeshock.streetworkout.data.api.PlacesAPI
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
 import javax.inject.Inject
 
 /**
@@ -21,11 +20,11 @@ class CommonApiPlacesRemoteDataSource @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertPlaceRemote(newPlace: Place) {
+    override suspend fun insertPlaceRemote(placeDto: PlaceDto) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deletePlaceRemote(place: Place): Boolean {
+    override suspend fun deletePlaceRemote(placeDto: PlaceDto): Boolean {
         TODO("Not yet implemented")
     }
 }

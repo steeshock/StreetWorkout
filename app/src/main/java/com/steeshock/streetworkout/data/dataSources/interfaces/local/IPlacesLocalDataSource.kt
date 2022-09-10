@@ -1,13 +1,12 @@
 package com.steeshock.streetworkout.data.dataSources.interfaces.local
 
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.domain.entity.Place
 import kotlinx.coroutines.flow.Flow
 
 interface IPlacesLocalDataSource {
 
-    val allPlaces: Flow<List<Place>>
-    val allFavoritePlaces: Flow<List<Place>>
+    val allPlaces: Flow<List<PlaceDto>>
+    val allFavoritePlaces: Flow<List<PlaceDto>>
 
     /**
      * Get favorite places id's in common List
@@ -22,22 +21,22 @@ interface IPlacesLocalDataSource {
     /**
      * Update place in Places table
      */
-    suspend fun updatePlaceLocal(place: Place)
+    suspend fun updatePlaceLocal(placeDto: PlaceDto)
 
     /**
      * Insert new place in Local Places storage
      */
-    suspend fun insertPlaceLocal(newPlace: Place)
+    suspend fun insertPlaceLocal(placeDto: PlaceDto)
 
     /**
      * Insert all places in Local Places storage
      */
-    suspend fun insertAllPlacesLocal(places: List<PlaceDto>)
+    suspend fun insertAllPlacesLocal(placesDto: List<PlaceDto>)
 
     /**
      * Delete place in local storage
      */
-    suspend fun deletePlaceLocal(place: Place)
+    suspend fun deletePlaceLocal(placeDto: PlaceDto)
 
     /**
      * Update places favorite state with favorites from User
