@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.repository.implementation
 
-import com.steeshock.streetworkout.data.dataSources.local.ICategoriesLocalDataSource
-import com.steeshock.streetworkout.data.dataSources.remote.ICategoriesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.ICategoriesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.domain.entity.Category
 import com.steeshock.streetworkout.domain.repository.ICategoriesRepository

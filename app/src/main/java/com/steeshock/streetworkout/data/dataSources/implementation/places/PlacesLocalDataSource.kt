@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.implementation.places
 
-import com.steeshock.streetworkout.data.dataSources.local.IPlacesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
 import com.steeshock.streetworkout.data.database.PlacesDao
 import com.steeshock.streetworkout.data.mappers.mapToDto
 import com.steeshock.streetworkout.data.mappers.mapToEntity

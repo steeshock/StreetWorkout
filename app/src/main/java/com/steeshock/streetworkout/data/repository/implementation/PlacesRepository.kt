@@ -1,7 +1,7 @@
 package com.steeshock.streetworkout.data.repository.implementation
 
-import com.steeshock.streetworkout.data.dataSources.local.IPlacesLocalDataSource
-import com.steeshock.streetworkout.data.dataSources.remote.IPlacesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.domain.entity.Place
 import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import javax.inject.Inject

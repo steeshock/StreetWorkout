@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.dataSources.remote
+package com.steeshock.streetworkout.data.dataSources.interfaces.remote
 
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
 import com.steeshock.streetworkout.domain.entity.Place

@@ -4,10 +4,10 @@ import com.steeshock.streetworkout.data.dataSources.implementation.categories.Ca
 import com.steeshock.streetworkout.data.dataSources.implementation.categories.FirebaseCategoriesRemoteDataSource
 import com.steeshock.streetworkout.data.dataSources.implementation.places.FirebasePlacesRemoteDataSource
 import com.steeshock.streetworkout.data.dataSources.implementation.places.PlacesLocalDataSource
-import com.steeshock.streetworkout.data.dataSources.local.ICategoriesLocalDataSource
-import com.steeshock.streetworkout.data.dataSources.local.IPlacesLocalDataSource
-import com.steeshock.streetworkout.data.dataSources.remote.ICategoriesRemoteDataSource
-import com.steeshock.streetworkout.data.dataSources.remote.IPlacesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.ICategoriesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.implementation.CategoriesRepository
 import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
 import com.steeshock.streetworkout.data.repository.implementation.PlacesRepository

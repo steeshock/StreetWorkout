@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.implementation.categories
 
-import com.steeshock.streetworkout.data.dataSources.local.ICategoriesLocalDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.local.ICategoriesLocalDataSource
 import com.steeshock.streetworkout.data.database.CategoriesDao
 import com.steeshock.streetworkout.data.mappers.mapToEntity
 import com.steeshock.streetworkout.data.repository.dto.CategoryDto

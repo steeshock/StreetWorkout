@@ -8,7 +8,7 @@ import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.common.Constants
-import com.steeshock.streetworkout.data.dataSources.remote.IPlacesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.dto.PlaceDto
 import com.steeshock.streetworkout.domain.entity.Place
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +21,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Implementation for Firebase Realtime Database
+ */
 class FirebasePlacesRemoteDataSource @Inject constructor() : IPlacesRemoteDataSource {
 
     companion object {

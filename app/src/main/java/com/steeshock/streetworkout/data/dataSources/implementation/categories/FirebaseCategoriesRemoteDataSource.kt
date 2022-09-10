@@ -4,7 +4,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.common.Constants
-import com.steeshock.streetworkout.data.dataSources.remote.ICategoriesRemoteDataSource
+import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
 import com.steeshock.streetworkout.data.repository.dto.CategoryDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +14,9 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Implementation for Firebase Realtime Database
+ */
 class FirebaseCategoriesRemoteDataSource @Inject constructor() : ICategoriesRemoteDataSource {
 
     companion object {
