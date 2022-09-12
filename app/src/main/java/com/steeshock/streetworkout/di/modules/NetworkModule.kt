@@ -2,13 +2,14 @@ package com.steeshock.streetworkout.di.modules
 
 import com.steeshock.streetworkout.data.api.ApiUtils
 import com.steeshock.streetworkout.data.api.PlacesAPI
-import com.steeshock.streetworkout.services.auth.FirebaseAuthService
+import com.steeshock.streetworkout.data.services.auth.FirebaseAuthService
+import com.steeshock.streetworkout.data.services.connectivity.ConnectivityService
+import com.steeshock.streetworkout.data.services.connectivity.IConnectivityService
 import com.steeshock.streetworkout.domain.repository.IAuthService
-import com.steeshock.streetworkout.services.connectivity.ConnectivityService
-import com.steeshock.streetworkout.services.connectivity.IConnectivityService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 interface NetworkModule {
@@ -20,6 +21,7 @@ interface NetworkModule {
 
     companion object {
         @Provides
+        @Singleton
         fun providePlacesApi(): PlacesAPI {
             return ApiUtils.getInstance()
         }

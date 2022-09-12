@@ -15,13 +15,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "API_URL", "\"https://my-json-server.typicode.com/\"")
-        resValue("string", "google_maps_key", "AIzaSyAFbIm4Ii_HquUrbI7-BUU668yG6QkG_kQ")
     }
 
     buildTypes {
-        getByName("release")  {
+        release {
             isMinifyEnabled = true
             setProguardFiles(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"))
         }
@@ -41,6 +38,7 @@ dependencies {
 
     implementation(projects.design)
     implementation(projects.domain)
+    implementation(projects.data)
 
     implementation(libs.material)
     implementation(libs.dagger)

@@ -1,6 +1,8 @@
 include(
     ":app",
-    ":design"
+    ":design",
+    ":domain",
+    ":data",
 )
 rootProject.name = "StreetWorkout"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -89,5 +91,3 @@ dependencyResolutionManagement {
         }
     }
 }
-
-include(":domain")
