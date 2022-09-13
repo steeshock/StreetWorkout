@@ -216,9 +216,11 @@ class PlacesFragment : BaseFragment() {
     }
 
     private fun navigateToProfile() {
-        findNavController().navigate(
-            PlacesFragmentDirections.actionNavigationPlacesToNavigationProfile(SIGN_IN.toString())
-        )
+        try {
+            findNavController().navigate(
+                PlacesFragmentDirections.actionNavigationPlacesToNavigationProfile(SIGN_IN.toString())
+            )
+        } catch (e: Exception) {}
     }
 
     // region Menu
