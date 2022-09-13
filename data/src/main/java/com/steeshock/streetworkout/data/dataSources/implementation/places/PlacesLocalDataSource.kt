@@ -2,7 +2,7 @@ package com.steeshock.streetworkout.data.dataSources.implementation.places
 
 import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
 import com.steeshock.streetworkout.data.dao.PlacesDao
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
 import javax.inject.Inject
 
 class PlacesLocalDataSource @Inject constructor(

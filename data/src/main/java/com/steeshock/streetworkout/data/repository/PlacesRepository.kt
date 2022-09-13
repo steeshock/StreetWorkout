@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.repository.implementation
+package com.steeshock.streetworkout.data.repository
 
 import com.steeshock.streetworkout.data.dataSources.interfaces.local.IPlacesLocalDataSource
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource

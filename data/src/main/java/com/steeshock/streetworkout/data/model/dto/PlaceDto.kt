@@ -1,9 +1,9 @@
-package com.steeshock.streetworkout.data.repository.dto
+package com.steeshock.streetworkout.data.model.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto.Companion.TABLE_NAME
+import com.steeshock.streetworkout.data.model.dto.PlaceDto.Companion.TABLE_NAME
 
 @Entity(tableName = TABLE_NAME)
 data class PlaceDto(

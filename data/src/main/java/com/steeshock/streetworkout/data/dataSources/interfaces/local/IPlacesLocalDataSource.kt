@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.interfaces.local
 
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
 import kotlinx.coroutines.flow.Flow
 
 interface IPlacesLocalDataSource {

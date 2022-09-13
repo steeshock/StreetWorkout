@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
+import com.steeshock.streetworkout.data.repository.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.extensions.getThemeByIndex
 import com.steeshock.streetworkout.extensions.isEmailValid
 import com.steeshock.streetworkout.domain.entity.User

@@ -5,7 +5,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.data.Constants
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IUserRemoteDataSource
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

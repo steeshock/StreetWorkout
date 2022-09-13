@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.mappers
 
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
 import com.steeshock.streetworkout.domain.entity.Place
 
 fun PlaceDto.mapToEntity(): Place {

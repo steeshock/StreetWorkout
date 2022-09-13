@@ -2,7 +2,7 @@ package com.steeshock.streetworkout.data.dataSources.implementation.user
 
 import com.steeshock.streetworkout.data.dataSources.interfaces.local.IUserLocalDataSource
 import com.steeshock.streetworkout.data.dao.UserDao
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

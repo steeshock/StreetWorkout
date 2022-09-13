@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.interfaces.local
 
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 
 interface IUserLocalDataSource {
 

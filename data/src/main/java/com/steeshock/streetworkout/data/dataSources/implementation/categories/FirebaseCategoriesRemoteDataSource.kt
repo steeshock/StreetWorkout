@@ -5,7 +5,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.data.Constants
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
-import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.model.dto.CategoryDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

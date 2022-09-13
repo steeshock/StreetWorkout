@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 import com.steeshock.streetworkout.domain.entity.User
 import com.steeshock.streetworkout.domain.entity.UserCredentials
 import com.steeshock.streetworkout.domain.entity.enums.SignPurpose

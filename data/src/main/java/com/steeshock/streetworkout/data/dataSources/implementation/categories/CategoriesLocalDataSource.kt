@@ -3,7 +3,7 @@ package com.steeshock.streetworkout.data.dataSources.implementation.categories
 import com.steeshock.streetworkout.data.dataSources.interfaces.local.ICategoriesLocalDataSource
 import com.steeshock.streetworkout.data.dao.CategoriesDao
 import com.steeshock.streetworkout.data.mappers.mapToEntity
-import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.model.dto.CategoryDto
 import com.steeshock.streetworkout.domain.entity.Category
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

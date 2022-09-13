@@ -9,7 +9,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.steeshock.streetworkout.data.Constants
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.dataSources.interfaces.remote
 
-import com.steeshock.streetworkout.data.repository.dto.CategoryDto
+import com.steeshock.streetworkout.data.model.dto.CategoryDto
 
 interface ICategoriesRemoteDataSource {
     /**

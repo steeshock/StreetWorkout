@@ -1,4 +1,4 @@
-package com.steeshock.streetworkout.data.repository.implementation
+package com.steeshock.streetworkout.data.repository
 
 import android.content.Context
 import androidx.datastore.core.DataStore

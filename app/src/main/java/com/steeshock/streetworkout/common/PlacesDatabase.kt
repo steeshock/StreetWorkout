@@ -10,9 +10,9 @@ import com.steeshock.streetworkout.data.converters.ListStringConverter
 import com.steeshock.streetworkout.data.dao.CategoriesDao
 import com.steeshock.streetworkout.data.dao.PlacesDao
 import com.steeshock.streetworkout.data.dao.UserDao
-import com.steeshock.streetworkout.data.repository.dto.CategoryDto
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.CategoryDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 
 
 @Database(

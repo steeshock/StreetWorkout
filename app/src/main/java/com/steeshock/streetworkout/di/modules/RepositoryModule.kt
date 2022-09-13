@@ -12,10 +12,10 @@ import com.steeshock.streetworkout.data.dataSources.interfaces.local.IUserLocalD
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.ICategoriesRemoteDataSource
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IPlacesRemoteDataSource
 import com.steeshock.streetworkout.data.dataSources.interfaces.remote.IUserRemoteDataSource
-import com.steeshock.streetworkout.data.repository.implementation.CategoriesRepository
-import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository
-import com.steeshock.streetworkout.data.repository.implementation.PlacesRepository
-import com.steeshock.streetworkout.data.repository.implementation.UserRepository
+import com.steeshock.streetworkout.data.repository.CategoriesRepository
+import com.steeshock.streetworkout.data.repository.DataStoreRepository
+import com.steeshock.streetworkout.data.repository.PlacesRepository
+import com.steeshock.streetworkout.data.repository.UserRepository
 import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
 import com.steeshock.streetworkout.domain.repository.IDataStoreRepository
 import com.steeshock.streetworkout.domain.repository.IPlacesRepository

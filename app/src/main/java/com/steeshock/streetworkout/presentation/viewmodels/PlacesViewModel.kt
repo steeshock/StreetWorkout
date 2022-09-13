@@ -3,7 +3,7 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode
 import androidx.lifecycle.*
-import com.steeshock.streetworkout.data.repository.implementation.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
+import com.steeshock.streetworkout.data.repository.DataStoreRepository.Companion.NIGHT_MODE_PREFERENCES_KEY
 import com.steeshock.streetworkout.domain.repository.IDataStoreRepository
 import com.steeshock.streetworkout.domain.entity.Category
 import com.steeshock.streetworkout.domain.entity.Place

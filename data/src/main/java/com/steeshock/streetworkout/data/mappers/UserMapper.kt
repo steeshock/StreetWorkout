@@ -1,6 +1,6 @@
 package com.steeshock.streetworkout.data.mappers
 
-import com.steeshock.streetworkout.data.repository.dto.UserDto
+import com.steeshock.streetworkout.data.model.dto.UserDto
 import com.steeshock.streetworkout.domain.entity.User
 
 fun UserDto.mapToEntity(): User {
