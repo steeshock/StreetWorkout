@@ -1,10 +1,10 @@
 package com.steeshock.streetworkout.di.modules
 
 import android.content.Context
-import com.steeshock.streetworkout.data.database.CategoriesDao
-import com.steeshock.streetworkout.data.database.PlacesDao
-import com.steeshock.streetworkout.data.database.PlacesDatabase
-import com.steeshock.streetworkout.data.database.UserDao
+import com.steeshock.streetworkout.data.dao.CategoriesDao
+import com.steeshock.streetworkout.data.dao.PlacesDao
+import com.steeshock.streetworkout.common.PlacesDatabase
+import com.steeshock.streetworkout.data.dao.UserDao
 import dagger.Module
 import dagger.Provides
 

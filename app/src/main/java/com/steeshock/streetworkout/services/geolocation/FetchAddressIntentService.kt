@@ -25,7 +25,7 @@ import android.os.Bundle
 import android.os.ResultReceiver
 import android.util.Log
 import com.steeshock.streetworkout.R
-import com.steeshock.streetworkout.common.Constants
+import com.steeshock.streetworkout.data.Constants
 import java.io.IOException
 import java.util.*
 

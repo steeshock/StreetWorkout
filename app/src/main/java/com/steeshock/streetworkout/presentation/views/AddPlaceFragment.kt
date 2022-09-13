@@ -20,7 +20,7 @@ import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.steeshock.streetworkout.R
 import com.steeshock.streetworkout.common.BaseFragment
-import com.steeshock.streetworkout.common.Constants
+import com.steeshock.streetworkout.data.Constants
 import com.steeshock.streetworkout.common.appComponent
 import com.steeshock.streetworkout.databinding.FragmentAddPlaceBinding
 import com.steeshock.streetworkout.extensions.getAlertDialogBuilder

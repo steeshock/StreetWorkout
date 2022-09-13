@@ -1,9 +1,8 @@
 package com.steeshock.streetworkout
 
-import com.steeshock.streetworkout.data.repository.dto.CategoryDto
-import com.steeshock.streetworkout.data.repository.dto.PlaceDto
+import com.steeshock.streetworkout.data.model.dto.CategoryDto
+import com.steeshock.streetworkout.data.model.dto.PlaceDto
 import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiCategoriesRepository
-import com.steeshock.streetworkout.data.repository.implementation.mockApi.SimpleApiPlacesRepository
 import com.steeshock.streetworkout.presentation.viewmodels.PlacesViewModel
 import org.junit.Before
 import org.junit.Test

@@ -3,15 +3,13 @@ package com.steeshock.streetworkout.presentation.viewmodels
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.steeshock.streetworkout.interactor.entity.Category
-import com.steeshock.streetworkout.interactor.entity.Place
-import com.steeshock.streetworkout.interactor.repository.IAuthService
-import com.steeshock.streetworkout.interactor.repository.ICategoriesRepository
-import com.steeshock.streetworkout.interactor.repository.IPlacesRepository
+import com.steeshock.streetworkout.domain.entity.Place
+import com.steeshock.streetworkout.domain.repository.IAuthService
+import com.steeshock.streetworkout.domain.repository.ICategoriesRepository
+import com.steeshock.streetworkout.domain.repository.IPlacesRepository
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegate
 import com.steeshock.streetworkout.presentation.delegates.ViewEventDelegateImpl
 import com.steeshock.streetworkout.presentation.delegates.ViewStateDelegate
@@ -226,10 +224,7 @@ class AddPlaceViewModel @Inject constructor(
 
         sendingPlace?.images = downloadedImagesLinks
 
-        sendingPlace?.let {
-            placesRepository.insertPlaceLocal(it)
-            placesRepository.insertPlaceRemote(it)
-        }
+        sendingPlace?.let { placesRepository.insertPlace(it) }
 
         updateViewState(postValue = true) {
             copy(
